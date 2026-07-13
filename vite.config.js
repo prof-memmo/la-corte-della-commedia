@@ -4,5 +4,8 @@ import react from '@vitejs/plugin-react'
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  base: '/la-corte-della-commedia/'
+  base: '/la-corte-della-commedia/',
+  build: {
+    outDir: 'docs'
+  }
 })
