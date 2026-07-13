@@ -2,16 +2,104 @@
 <html lang="it">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>La Corte della Commedia</title>
     <!-- Google Fonts for medieval and elegant typography -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400..900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- CSS Esterno -->
+    <link rel="stylesheet" href="css/style.css">
   </head>
   <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
+    
+    <div class="app-container">
+      <header class="app-header">
+        <div style="display: flex; align-items: center; gap: 1rem;">
+          <img src="public/assets/court_emblem.png" alt="Logo" style="height: 40px;">
+          <h1>La Corte della Commedia</h1>
+        </div>
+        <button id="logout-btn" class="btn btn-secondary" style="display: none;">Esci</button>
+      </header>
+      
+      <main class="app-content">
+        <!-- VISTA LOGIN -->
+        <section id="view-login" class="view active animate-fade-in">
+          <div style="display: flex; justify-content: center; align-items: center; min-height: 60vh;">
+            <div class="parchment-panel" style="max-width: 400px; text-align: center;">
+              <img src="public/assets/court_emblem.png" alt="Emblema della Corte" style="width: 120px; margin-bottom: 1rem;">
+              <h2 class="text-gold">La Corte della Commedia</h2>
+              <p class="text-on-parchment-muted" style="margin-bottom: 2rem;">
+                Entra nel tribunale e assumi il ruolo di giudice. Esamina i casi, ascolta l'accusa e la difesa, ed emetti la tua sentenza.
+              </p>
+              <button id="login-btn" class="btn btn-primary" style="width: 100%; justify-content: center;">
+                Accedi con Google
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- VISTA DASHBOARD -->
+        <section id="view-dashboard" class="view animate-fade-in">
+          <h2 class="text-gold" id="welcome-message">Bentornato, Giudice</h2>
+          
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-top: 2rem;">
+            <!-- Profilo -->
+            <div class="parchment-panel">
+              <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                <img src="public/assets/dante_avatar.png" alt="Avatar" style="width: 60px; border-radius: 50%; border: 2px solid var(--border-gold);">
+                <div>
+                  <h3>Livello 1 - Esploratore</h3>
+                  <p class="text-on-parchment-muted" id="user-xp">XP: 0 / 500</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Lista Casi -->
+            <div class="dark-panel">
+              <h3 class="text-gold">I Tuoi Fascicoli</h3>
+              <ul style="list-style: none; margin-top: 1rem;">
+                <li style="padding: 0.5rem 0; border-bottom: 1px solid var(--border-color);">
+                  <a href="#" onclick="app.startTrial('mock_case_1'); return false;" style="color: var(--text-primary); text-decoration: none;">
+                    📕 Inferno - Caso #1: Paolo e Francesca (Clicca per avviare)
+                  </a>
+                </li>
+                <li style="padding: 0.5rem 0; border-bottom: 1px solid var(--border-color);">
+                  <span class="text-muted">📕 Inferno - Caso #2: Ciacco (Disponibile prossimamente)</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <!-- VISTA PROCESSO (TRIAL FLOW) -->
+        <section id="view-trial" class="view animate-fade-in">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <h2 class="text-gold" id="trial-title">Tribunale</h2>
+            <span class="text-muted" id="trial-phase-text">Fase 1 di 8</span>
+          </div>
+          
+          <!-- Barra di progresso -->
+          <div style="background: rgba(0,0,0,0.2); height: 6px; border-radius: 3px; margin-bottom: 2rem;">
+            <div id="trial-progress" style="background: var(--accent-gold); height: 100%; width: 12.5%; transition: width 0.3s ease;"></div>
+          </div>
+
+          <!-- Contenitore delle fasi -->
+          <div id="trial-content" class="parchment-panel animate-fade-in" style="min-height: 300px;">
+            <!-- Il contenuto verrà iniettato da JavaScript -->
+          </div>
+          
+          <div style="margin-top: 2rem; text-align: center;">
+            <button id="trial-next-btn" class="btn btn-primary">Procedi</button>
+            <button id="trial-back-btn" class="btn btn-secondary" style="margin-left: 1rem; display: none;">Torna alla Dashboard</button>
+          </div>
+        </section>
+
+      </main>
+    </div>
+
+    <!-- Firebase SDKs via CDN -->
+    <script type="module" src="js/firebase-config.js"></script>
+    <script type="module" src="js/app.js"></script>
   </body>
 </html>

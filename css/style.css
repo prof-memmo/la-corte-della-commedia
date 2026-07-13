@@ -1,13 +1,13 @@
+/* File spostato e riadattato da src/styles/index.css */
 :root {
-  /* Color Palette - Medieval Tribunal Theme */
-  --bg-primary: #1a1614; /* Deep dark wood/leather */
+  --bg-primary: #1a1614;
   --bg-secondary: #2a2421;
-  --bg-parchment: #f4ecd8; /* Classic parchment */
+  --bg-parchment: #f4ecd8;
   --bg-parchment-dark: #e8dbbd;
   
-  --text-primary: #f4ecd8; /* Light on dark background */
+  --text-primary: #f4ecd8;
   --text-secondary: #a89f91;
-  --text-on-parchment: #2c241b; /* Dark ink on parchment */
+  --text-on-parchment: #2c241b;
   --text-on-parchment-muted: #5c4d3c;
 
   --accent-gold: #d4af37;
@@ -18,19 +18,14 @@
   --border-color: rgba(212, 175, 55, 0.2);
   --border-gold: #d4af37;
 
-  /* Typography */
   --font-heading: 'Cinzel', serif;
   --font-body: 'Inter', sans-serif;
 
-  /* Effects */
-  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
   --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.4);
-  --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.5);
   --shadow-glow: 0 0 15px rgba(212, 175, 55, 0.15);
   
   --radius-sm: 4px;
   --radius-md: 8px;
-  --radius-lg: 12px;
   
   --transition: all 0.3s ease;
 }
@@ -57,7 +52,6 @@ h1, h2, h3, h4, h5, h6 {
   margin-bottom: 1rem;
 }
 
-/* App Layout */
 .app-container {
   display: flex;
   flex-direction: column;
@@ -72,16 +66,12 @@ h1, h2, h3, h4, h5, h6 {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  position: sticky;
-  top: 0;
-  z-index: 100;
 }
 
 .app-header h1 {
   color: var(--accent-gold);
   margin: 0;
   font-size: 1.5rem;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
 }
 
 .app-content {
@@ -92,7 +82,14 @@ h1, h2, h3, h4, h5, h6 {
   width: 100%;
 }
 
-/* Utility Classes */
+.view {
+  display: none;
+}
+
+.view.active {
+  display: block;
+}
+
 .parchment-panel {
   background-color: var(--bg-parchment);
   color: var(--text-on-parchment);
@@ -100,16 +97,6 @@ h1, h2, h3, h4, h5, h6 {
   padding: 2rem;
   box-shadow: var(--shadow-md);
   border: 1px solid #dcd0b3;
-  position: relative;
-  overflow: hidden;
-}
-
-.parchment-panel::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="noiseFilter"><feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noiseFilter)" opacity="0.05"/></svg>');
-  pointer-events: none;
 }
 
 .dark-panel {
@@ -120,7 +107,6 @@ h1, h2, h3, h4, h5, h6 {
   box-shadow: var(--shadow-md);
 }
 
-/* Buttons */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -139,7 +125,6 @@ h1, h2, h3, h4, h5, h6 {
 .btn-primary {
   background-color: var(--accent-gold);
   color: var(--bg-primary);
-  border: 1px solid var(--accent-gold);
 }
 
 .btn-primary:hover {
@@ -154,35 +139,10 @@ h1, h2, h3, h4, h5, h6 {
   border: 1px solid var(--border-color);
 }
 
-.btn-secondary:hover {
-  border-color: var(--accent-gold);
-  background-color: rgba(212, 175, 55, 0.1);
-}
-
-.btn-danger {
-  background-color: var(--accent-crimson);
-  color: white;
-}
-
-.btn-danger:hover {
-  background-color: var(--accent-crimson-hover);
-}
-
-/* Glassmorphism */
-.glass {
-  background: rgba(42, 36, 33, 0.6);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-/* Typography Utilities */
 .text-gold { color: var(--accent-gold); }
 .text-crimson { color: var(--accent-crimson); }
 .text-muted { color: var(--text-secondary); }
-.text-center { text-align: center; }
 
-/* Micro-animations */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
