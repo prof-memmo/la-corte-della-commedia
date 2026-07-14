@@ -311,8 +311,8 @@ const LEGAL_TEXTS = {
 window.showView = showView;
 
 // Funzione per caricare i fascicoli dello studente
-async function loadStudentCases() {
-  const listEl = document.getElementById('student-cases-list');
+async function loadStudentCases(isAdmin = false) {
+  const listEl = isAdmin ? document.getElementById('admin-cases-list') : document.getElementById('student-cases-list');
   if (!listEl || !EroiDB) return;
   
   listEl.innerHTML = '<li style="padding: 1rem; text-align: center; color: #888;">Ricerca fascicoli nell\'archivio...</li>';
