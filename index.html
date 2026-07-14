@@ -72,7 +72,6 @@
               <div class="dropdown-actions" style="display: flex; gap: 5px; flex-wrap: wrap; justify-content: center; margin-top: 5px;">
                 <button class="btn btn-secondary" onclick="window.showLegal('privacy')" style="flex: 1; min-width: 45%; border-radius: 6px; padding: 6px; font-size: 0.75rem; background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.2); color: #ccc; cursor: pointer;"><i class="fa-solid fa-shield"></i> Privacy</button>
                 <button class="btn btn-secondary" onclick="window.showLegal('terms')" style="flex: 1; min-width: 45%; border-radius: 6px; padding: 6px; font-size: 0.75rem; background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.2); color: #ccc; cursor: pointer;"><i class="fa-solid fa-scroll"></i> Termini</button>
-                <button class="btn btn-secondary" onclick="window.showLegal('regolamento')" style="flex: 1; min-width: 45%; border-radius: 6px; padding: 6px; font-size: 0.75rem; background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.2); color: #ccc; cursor: pointer;"><i class="fa-solid fa-gavel"></i> Regolamento</button>
                 <button class="btn btn-secondary" onclick="window.showContattiModal()" style="flex: 1; min-width: 45%; border-radius: 6px; padding: 6px; font-size: 0.75rem; background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.2); color: #ccc; cursor: pointer;"><i class="fa-solid fa-envelope"></i> Contatti</button>
                 <button id="logout-btn" class="btn btn-secondary" style="flex: 1; min-width: 45%; border-radius: 6px; padding: 6px; font-size: 0.75rem; background: rgba(200, 50, 50, 0.2); border: 1px solid rgba(200, 50, 50, 0.5); color: #ffcccc; cursor: pointer;"><i class="fa-solid fa-power-off"></i> Logout</button>
               </div>
@@ -214,6 +213,10 @@
         <div onclick="showView('view-dashboard')" style="text-align: center; color: var(--accent-gold); cursor: pointer; flex: 1;">
           <i class="fa-solid fa-house" style="font-size: 1.2rem; display: block; margin-bottom: 4px;"></i>
           <span style="font-size: 0.7rem;">Corte</span>
+        </div>
+        <div onclick="window.showLegal('regolamento')" style="text-align: center; color: var(--accent-gold); cursor: pointer; flex: 1;">
+          <i class="fa-solid fa-gavel" style="font-size: 1.2rem; display: block; margin-bottom: 4px;"></i>
+          <span style="font-size: 0.7rem;">Regolamento</span>
         </div>
         <div onclick="alert('La sezione Archivio è in lavorazione!')" style="text-align: center; color: #888; cursor: pointer; flex: 1;">
           <i class="fa-solid fa-book" style="font-size: 1.2rem; display: block; margin-bottom: 4px;"></i>
