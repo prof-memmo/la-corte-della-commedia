@@ -54,11 +54,11 @@ getRedirectResult(auth).then(async (result) => {
 // Event Listeners Autenticazione
 loginGoogleBtn.addEventListener('click', async () => {
   try {
-    // signInWithRedirect evita i problemi di popup bloccati su Safari
-    await signInWithRedirect(auth, googleProvider);
+    // Usa signInWithPopup invece di Redirect per un feedback immediato a schermo
+    await signInWithPopup(auth, googleProvider);
   } catch (error) {
-    console.error("Errore avvio redirect", error);
-    alert("Errore avvio redirect: " + error.message);
+    console.error("Errore avvio login Google", error);
+    alert("Errore avvio login: " + error.message);
   }
 });
 
