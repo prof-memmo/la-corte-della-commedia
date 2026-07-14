@@ -56,7 +56,14 @@ export const MapEngine = {
         return true;
     },
 
+    isAdmin: function() {
+        if (!EroiDB.cache.userProfile) return false;
+        const email = EroiDB.cache.userProfile.email ? EroiDB.cache.userProfile.email.toLowerCase() : '';
+        return EroiDB.cache.userProfile.role === 'admin' || email === 'prof.memmo@gmail.com';
+    },
+
     isCircleUnlocked: function(circleIndex) {
+        if (this.isAdmin()) return true;
         if (circleIndex === 0) return true; // Il Limbo è sempre sbloccato
         
         // Per sbloccare il cerchio N, il cerchio N-1 deve essere completato
