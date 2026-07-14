@@ -148,32 +148,63 @@ trialNextBtn.addEventListener('click', () => window.app.nextPhase());
 trialBackBtn.addEventListener('click', () => showView('view-dashboard'));
 
 // Gestione Modal Privacy e Termini
+const LEGAL_TEXTS = {
+    privacy: `
+        <h2>🔒 Privacy Policy</h2>
+        <h3>1. Titolare del trattamento</h3>
+        <p>Il titolare del trattamento è Guglielmo Piersanti, contattabile all'indirizzo email: prof.memmo@gmail.com</p>
+        <h3>2. Finalità del sito</h3>
+        <p>"La Corte della Commedia" è un'applicazione web didattica, utilizzata a scopo educativo e ludico e senza fini di lucro per l'apprendimento della lingua italiana.</p>
+        <h3>3. Dati raccolti</h3>
+        <p>Il sito può raccogliere i seguenti dati: nome utente (scelto dall'utente); informazioni di utilizzo relative agli esercizi (punteggi, attività completate, progressi); messaggi inviati tramite il modulo di contatto (nome, email, messaggio); dati tecnici minimi per il funzionamento (es. tipo di dispositivo tramite browser).</p>
+        <h3>4. Finalità del trattamento</h3>
+        <p>I dati vengono trattati esclusivamente per consentire l'accesso alle funzionalità della Corte, gestire l'esperienza didattica personalizzata (come il salvataggio dei progressi), rispondere alle richieste inviate tramite il modulo di contatto e migliorare il servizio didattico. Non vengono utilizzati per scopi commerciali o pubblicitari.</p>
+        <h3>5. Base giuridica</h3>
+        <p>Il trattamento dei dati si basa sul consenso fornito dall'utente al momento del primo accesso e sull'utilizzo delle funzionalità didattiche del sito.</p>
+        <h3>6. Conservazione dei dati</h3>
+        <p>I dati sono salvati localmente sul browser dell'utente (LocalStorage) e su database sicuri (Firebase). Non vengono venduti né ceduti a terzi. Sono mantenuti solo per il tempo necessario al funzionamento didattico o fino alla richiesta di cancellazione da parte dell'utente.</p>
+        <h3>8. Diritti dell'utente</h3>
+        <p>L'utente può richiedere in qualsiasi momento l'accesso ai propri dati o la loro cancellazione (che può avvenire anche tramite il proprio profilo utente cancellando i dati locali). Per assistenza, è possibile contattare il titolare all'indirizzo email sopra indicato.</p>
+        <h3>9. Cookie</h3>
+        <p>Il sito non utilizza cookie di profilazione a scopo pubblicitario. Utilizza esclusivamente elementi tecnici necessari per il salvataggio dei progressi di studio.</p>
+        <h3>10. Utenti minori</h3>
+        <p>Il sito è destinato a un uso didattico scolastico. Per l'utilizzo da parte di minori, è responsabilità di un genitore o di un docente assicurare la supervisione necessaria. I tutori possono richiedere la cancellazione dei dati in qualsiasi momento.</p>
+        <h3>11. Modifiche alla Policy</h3>
+        <p>Questa informativa può essere aggiornata per riflettere nuove funzionalità didattiche. Le modifiche rilevanti verranno segnalate agli utenti.</p>
+        <h3>12. Riferimenti normativi</h3>
+        <p>Questa informativa è redatta in conformità ai principi del GDPR.</p>
+    `,
+    terms: `
+        <h2>📜 Termini e Condizioni</h2>
+        <p>Ultimo aggiornamento: 02/05/26</p>
+        <h3>1. Titolare del sito</h3>
+        <p>Il presente sito web "La Corte della Commedia" è gestito da: Guglielmo Piersanti. Email di contatto: prof.memmo@gmail.com</p>
+        <h3>2. Accettazione dei termini</h3>
+        <p>L'accesso alla Corte implica l'accettazione dei presenti Termini e Condizioni. Se non si accettano tali condizioni, si invita a non utilizzare il sito.</p>
+        <h3>3. Descrizione del servizio</h3>
+        <p>Il sito offre esercizi interattivi, simulazioni di processi e contenuti per la scuola secondaria. Gli utenti possono: svolgere missioni, monitorare i propri progressi e contattare il gestore per supporto o collaborazione.</p>
+        <h3>4. Utilizzo del sito</h3>
+        <p>L'utente si impegna a utilizzare il sito in modo corretto, evitando comportamenti che possano danneggiare la piattaforma o gli altri utenti. È vietato l'invio di messaggi offensivi o spam tramite il modulo di contatto.</p>
+        <h3>5. Modulo di contatto</h3>
+        <p>L'utente è responsabile dei dati inviati tramite il modulo. Il titolare si riserva il diritto di non rispondere a messaggi non pertinenti o inappropriati.</p>
+        <h3>6. Proprietà intellettuale</h3>
+        <p>I testi e i materiali didattici originali contenuti nel sito sono di proprietà del titolare, protetti tramite deposito Patamu. Distribuiti con licenza CC BY-NC-ND 4.0. È vietata la riproduzione per scopi commerciali senza autorizzazione.</p>
+        <h3>7. Limitazione di responsabilità</h3>
+        <p>Il sito è fornito a scopo didattico gratuito. Il titolare non è responsabile per eventuali problemi tecnici temporanei o per l'uso improprio delle informazioni contenute. L'obiettivo è fornire uno strumento di supporto all'apprendimento il più accurato possibile.</p>
+        <h3>8. Link esterni</h3>
+        <p>Eventuali link a siti esterni sono forniti per approfondimento didattico; il titolare non è responsabile del contenuto di tali siti.</p>
+        <h3>9. Modifiche</h3>
+        <p>Il titolare può modificare i presenti Termini in base all'evoluzione del progetto didattico.</p>
+        <h3>10. Legge applicabile</h3>
+        <p>I presenti Termini sono regolati dalla normativa italiana.</p>
+    `
+};
+
 window.showLegal = function(type) {
     const modal = document.getElementById('legal-modal');
     const content = document.getElementById('legal-text-container');
     
-    if (type === 'privacy') {
-        content.innerHTML = `
-            <h3 style="color:var(--accent-gold); margin-bottom:1rem;">Privacy Policy</h3>
-            <p style="margin-bottom:0.5rem;"><strong>Ultimo aggiornamento:</strong> 2026</p>
-            <p style="margin-bottom:0.5rem;">Ai sensi del Regolamento (UE) 2016/679 (GDPR), ti informiamo che "La Corte della Commedia" raccoglie e tratta i tuoi dati personali (nome, cognome, indirizzo email e avatar) esclusivamente per le finalità legate al funzionamento dell'applicazione didattica.</p>
-            <p style="margin-bottom:0.5rem;"><strong>1. Titolare del Trattamento:</strong> Guglielmo Piersanti.</p>
-            <p style="margin-bottom:0.5rem;"><strong>2. Dati Raccolti:</strong> Vengono salvati l'indirizzo email e il nome associato all'account fornito per permettere il salvataggio dei progressi (XP, Livelli) nel database Firebase.</p>
-            <p style="margin-bottom:0.5rem;"><strong>3. Condivisione dei Dati:</strong> Nessun dato verrà ceduto o venduto a terzi per fini commerciali. I docenti registrati potranno visionare il nome e i progressi degli studenti iscritti alle proprie classi.</p>
-            <p style="margin-bottom:0.5rem;"><strong>4. Conservazione:</strong> I dati sono conservati su server sicuri (Google Firebase) e possono essere cancellati in qualsiasi momento tramite richiesta esplicita all'amministratore.</p>
-        `;
-    } else {
-        content.innerHTML = `
-            <h3 style="color:var(--accent-gold); margin-bottom:1rem;">Termini e Condizioni</h3>
-            <p style="margin-bottom:0.5rem;"><strong>Ultimo aggiornamento:</strong> 2026</p>
-            <p style="margin-bottom:0.5rem;">Benvenuto in "La Corte della Commedia", una piattaforma didattica interattiva.</p>
-            <p style="margin-bottom:0.5rem;"><strong>1. Età minima:</strong> L'accesso è consentito agli utenti con età minima di 16 anni, o inferiore se sotto la supervisione e l'autorizzazione di un genitore, tutore o docente.</p>
-            <p style="margin-bottom:0.5rem;"><strong>2. Utilizzo:</strong> È vietato l'uso della piattaforma per scopi illeciti o dannosi. Gli utenti (studenti e docenti) sono tenuti a mantenere un linguaggio consono e rispettoso nelle riflessioni inviate e nei nomi scelti.</p>
-            <p style="margin-bottom:0.5rem;"><strong>3. Proprietà Intellettuale:</strong> I contenuti testuali, le regole di gioco e le grafiche presenti nel sito sono di proprietà di Guglielmo Piersanti e sono protetti tramite deposito Patamu. Distribuiti con licenza CC BY-NC-ND 4.0.</p>
-            <p style="margin-bottom:0.5rem;"><strong>4. Interruzioni:</strong> La piattaforma è uno strumento didattico. Non si garantisce la continuità del servizio 24/7 e ci si riserva il diritto di sospendere l'accesso per manutenzione.</p>
-        `;
-    }
-    
+    content.innerHTML = LEGAL_TEXTS[type] || '';
     modal.classList.remove('hidden');
 };
 
