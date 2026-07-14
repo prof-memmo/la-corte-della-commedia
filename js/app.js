@@ -1,4 +1,4 @@
-import { auth, db, googleProvider, signInWithRedirect, getRedirectResult, signOut, onAuthStateChanged, doc, getDoc, setDoc } from './firebase-config.js';
+import { auth, db, googleProvider, signInWithPopup, signInWithRedirect, getRedirectResult, signOut, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile, doc, getDoc, setDoc } from './firebase-config.js';
 
 // Stato dell'applicazione
 const state = {
@@ -58,12 +58,61 @@ loginGoogleBtn.addEventListener('click', async () => {
     await signInWithRedirect(auth, googleProvider);
   } catch (error) {
     console.error("Errore avvio redirect", error);
-    alert("Impossibile avviare il login: " + error.message);
+    alert("Errore avvio redirect: " + error.message);
   }
 });
 
-loginEmailBtn.addEventListener('click', () => {
-  alert("Login con email da implementare!");
+loginEmailBtn.addEventListener('click', async () => {
+  const email = document.getElementById('login-email').value;
+  const password = document.getElementById('login-password').value;
+  if (!email || !password) {
+    alert("Inserisci email e password.");
+    return;
+  }
+  
+  // Disable button to prevent double click
+  const originalText = loginEmailBtn.textContent;
+  loginEmailBtn.textContent = 'Accesso in corso...';
+  loginEmailBtn.disabled = true;
+
+  try {
+    try {
+      // Prova il login
+      await signInWithEmailAndPassword(auth, email, password);
+    } catch (err) {
+      if (err.code === 'auth/user-not-found' || err.code === 'auth/invalid-credential') {
+        // Se non esiste, crea l'utente
+        const userCreds = await createUserWithEmailAndPassword(auth, email, password);
+        // Estrai nome dall'email per il displayName
+        let displayName = email.split('@')[0].replace('.', ' ');
+        displayName = displayName.charAt(0).toUpperCase() + displayName.slice(1);
+        
+        await updateProfile(userCreds.user, { displayName: displayName });
+        
+        // Crea record in Firestore
+        let role = 'student';
+        if (email.includes('prof')) role = 'teacher';
+        if (email.includes('esterno')) role = 'external';
+
+        await setDoc(doc(db, 'users', userCreds.user.uid), {
+          uid: userCreds.user.uid,
+          email: email,
+          displayName: displayName,
+          xp: 0,
+          level: 1,
+          role: role
+        });
+      } else {
+        throw err;
+      }
+    }
+  } catch (error) {
+    console.error("Errore email login", error);
+    alert("Errore: " + error.message);
+  } finally {
+    loginEmailBtn.textContent = originalText;
+    loginEmailBtn.disabled = false;
+  }
 });
 
 logoutBtn.addEventListener('click', () => {

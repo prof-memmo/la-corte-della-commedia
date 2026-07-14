@@ -1,0 +1,18 @@
+=== ACCOUNT DI TEST - LA CORTE DELLA COMMEDIA ===
+Questi account possono essere utilizzati per accedere tramite il modulo "Accedi con Email". 
+Se è il primo accesso, il sistema li registrerà automaticamente e assegnerà i ruoli corretti.
+
+1. Account Docente (Giudice)
+Email: prof.memmo@lacorte.it
+Password: password123
+Ruolo assegnato: teacher
+
+2. Account Studente (Avvocato/Studente)
+Email: studente.test@lacorte.it
+Password: password123
+Ruolo assegnato: student
+
+3. Account Esterno (Visitatore/Test)
+Email: esterno.test@lacorte.it
+Password: password123
+Ruolo assegnato: external
