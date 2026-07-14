@@ -38,6 +38,11 @@
           </div>
         </div>
         <div style="display: flex; align-items: center; gap: 1rem;">
+          <!-- Pulsante Disattiva Musica Header -->
+          <button id="header-audio-btn" title="Disattiva Audio" onclick="if(window.MusicPlayer) window.MusicPlayer.togglePlay()" style="background: transparent; border: none; color: var(--accent-gold); cursor: pointer; padding: 6px; font-size: 1.2rem; transition: all 0.3s; margin-right: 5px;">
+            <i class="fa-solid fa-volume-high"></i>
+          </button>
+
           <div id="user-menu-container" style="display: none; position: relative;">
             <div onclick="document.getElementById('user-dropdown').classList.toggle('hidden')" style="display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.3); padding: 5px 15px 5px 5px; border-radius: 30px; border: 1px solid var(--accent-gold); cursor: pointer; color: white; transition: all 0.2s;">
               <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--accent-gold); display: flex; align-items: center; justify-content: center; overflow: hidden; border: 1px solid #111;">
@@ -70,7 +75,7 @@
               </div>
 
               <div class="dropdown-actions" style="display: flex; gap: 5px; justify-content: center; margin-top: 5px;">
-                <button onclick="if(window.MusicPlayer) { window.MusicPlayer.togglePlay(); this.innerHTML = window.MusicPlayer.isPlaying ? '<i class=\'fa-solid fa-volume-high\'></i> Disattiva Musica' : '<i class=\'fa-solid fa-volume-xmark\'></i> Attiva Musica'; }" class="btn btn-secondary" style="flex: 1; font-size: 0.75rem; padding: 6px; border-radius: 6px; background: rgba(0,0,0,0.4); border: 1px solid var(--accent-gold); color: var(--accent-gold);" title="Disattiva Audio"><i class="fa-solid fa-volume-high"></i> Disattiva Musica</button>
+                <button id="dropdown-audio-btn" onclick="if(window.MusicPlayer) window.MusicPlayer.togglePlay()" class="btn btn-secondary" style="flex: 1; font-size: 0.75rem; padding: 6px; border-radius: 6px; background: rgba(0,0,0,0.4); border: 1px solid var(--accent-gold); color: var(--accent-gold);" title="Disattiva Audio"><i class="fa-solid fa-volume-high"></i> Disattiva Musica</button>
                 <button id="logout-btn" class="btn btn-secondary" style="flex: 1; border-radius: 6px; padding: 6px; font-size: 0.75rem; background: rgba(200, 50, 50, 0.2); border: 1px solid rgba(200, 50, 50, 0.5); color: #ffcccc; cursor: pointer;"><i class="fa-solid fa-power-off"></i> Logout</button>
               </div>
             </div>
