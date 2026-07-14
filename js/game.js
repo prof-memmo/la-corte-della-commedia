@@ -143,7 +143,7 @@ export const EroiGame = {
                             </div>
                         </div>
                         <div style="flex: 1; min-width: 200px;">
-                            <p style="font-size: 1.1rem; line-height: 1.6; font-style: italic; color: #ddd; border-left: 2px solid var(--accent-gold); padding-left: 15px;">"${reflText}"</p>
+                            <p style="font-size: 1.1rem; line-height: 1.6; font-style: italic; border-left: 2px solid var(--accent-gold); padding-left: 15px;">"${reflText}"</p>
                             <textarea class="form-input" rows="4" placeholder="Scrivi qui i tuoi appunti... (opzionale)" style="margin-top: 15px; font-size: 1rem;"></textarea>
                         </div>
                     </div>
@@ -151,15 +151,22 @@ export const EroiGame = {
                 break;
             case 7: // Fase 7: Emetti Verdetto
                 trialContent.innerHTML = `
-                    <h3 class="text-crimson" style="text-align:center;">Fase 7: Il Verdetto</h3>
-                    <p>Qual è la tua decisione sulla sorte dell'anima?</p>
-                    <select id="verdict-select" class="form-input" style="margin-bottom: 15px;">
-                        <option value="">-- Seleziona --</option>
-                        <option value="colpevole">Colpevole (Inferno)</option>
-                        <option value="attenuanti">Colpevole con attenuanti (Purgatorio)</option>
-                        <option value="innocente">Innocente / Giustificato (Paradiso)</option>
-                    </select>
-                    <textarea id="verdict-motivation" class="form-input" rows="4" placeholder="Motiva in modo dettagliato la tua sentenza... (Obbligatorio)"></textarea>
+                    <h3 class="text-crimson" style="text-align:center; margin-bottom: 20px;">Fase 7: Il Verdetto</h3>
+                    <div style="display: flex; flex-direction: column; gap: 20px; background: rgba(0,0,0,0.05); padding: 20px; border-radius: 8px; border: 1px solid var(--border-color);">
+                        <div>
+                            <label for="verdict-select" style="font-weight: bold; margin-bottom: 8px; display: block;">Qual è la tua decisione sulla sorte dell'anima?</label>
+                            <select id="verdict-select" class="form-input" style="font-size: 1.1rem; padding: 12px;">
+                                <option value="">-- Seleziona --</option>
+                                <option value="colpevole">Colpevole (Inferno)</option>
+                                <option value="attenuanti">Colpevole con attenuanti (Purgatorio)</option>
+                                <option value="innocente">Innocente / Giustificato (Paradiso)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="verdict-motivation" style="font-weight: bold; margin-bottom: 8px; display: block;">Motivazione della Sentenza:</label>
+                            <textarea id="verdict-motivation" class="form-input" rows="6" placeholder="Motiva in modo dettagliato la tua sentenza... (Obbligatorio)" style="font-size: 1.1rem; padding: 12px;"></textarea>
+                        </div>
+                    </div>
                 `;
                 trialNextBtn.textContent = 'Sigilla Sentenza';
                 break;

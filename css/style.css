@@ -138,6 +138,25 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--accent-gold);
   border: 1px solid var(--border-color);
 }
+.form-input {
+  width: 100%;
+  padding: 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background-color: rgba(255, 255, 255, 0.9);
+  color: #333;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  transition: var(--transition);
+  margin-top: 0.5rem;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--accent-gold);
+  box-shadow: 0 0 8px rgba(212, 175, 55, 0.3);
+}
+
 
 .text-gold { color: var(--accent-gold); }
 .text-crimson { color: var(--accent-crimson); }
