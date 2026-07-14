@@ -47,7 +47,7 @@
               <span style="font-size: 0.7rem;">▼</span>
             </div>
             
-            <div id="user-dropdown" class="hidden" style="position: absolute; top: calc(100% + 10px); right: 0; background: #1a1a2e; border: 1px solid var(--accent-gold); border-radius: 12px; padding: 15px; width: 250px; box-shadow: 0 10px 25px rgba(0,0,0,0.8); z-index: 1000; display: flex; flex-direction: column; gap: 15px;">
+            <div id="user-dropdown" class="hidden" style="position: absolute; top: calc(100% + 10px); right: 0; background: #1a1614; border: 1px solid var(--accent-gold); border-radius: 12px; padding: 15px; width: 250px; box-shadow: 0 10px 25px rgba(0,0,0,0.8); z-index: 1000; display: flex; flex-direction: column; gap: 15px;">
               <!-- XP preview -->
               <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.05); padding: 8px 12px; border-radius: 8px;">
                  <span style="font-size: 0.8rem; color: #ccc;">Esperienza</span>
@@ -69,8 +69,11 @@
                   </div>
               </div>
 
-              <div class="dropdown-actions" style="display: flex; gap: 5px; justify-content: center; margin-top: 5px;">
-                <button id="logout-btn" class="btn btn-secondary" style="width: 100%; border-radius: 6px; padding: 6px; font-size: 0.75rem; background: rgba(200, 50, 50, 0.2); border: 1px solid rgba(200, 50, 50, 0.5); color: #ffcccc; cursor: pointer;"><i class="fa-solid fa-power-off"></i> Logout</button>
+              <div class="dropdown-actions" style="display: flex; gap: 5px; flex-wrap: wrap; justify-content: center; margin-top: 5px;">
+                <button class="btn btn-secondary" onclick="window.showLegal('privacy')" style="flex: 1; min-width: 45%; border-radius: 6px; padding: 6px; font-size: 0.75rem; background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.2); color: #ccc; cursor: pointer;"><i class="fa-solid fa-shield"></i> Privacy</button>
+                <button class="btn btn-secondary" onclick="window.showLegal('terms')" style="flex: 1; min-width: 45%; border-radius: 6px; padding: 6px; font-size: 0.75rem; background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.2); color: #ccc; cursor: pointer;"><i class="fa-solid fa-scroll"></i> Termini</button>
+                <button class="btn btn-secondary" onclick="alert('Contatti in lavorazione')" style="flex: 1; min-width: 45%; border-radius: 6px; padding: 6px; font-size: 0.75rem; background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.2); color: #ccc; cursor: pointer;"><i class="fa-solid fa-envelope"></i> Contatti</button>
+                <button id="logout-btn" class="btn btn-secondary" style="flex: 1; min-width: 45%; border-radius: 6px; padding: 6px; font-size: 0.75rem; background: rgba(200, 50, 50, 0.2); border: 1px solid rgba(200, 50, 50, 0.5); color: #ffcccc; cursor: pointer;"><i class="fa-solid fa-power-off"></i> Logout</button>
               </div>
             </div>
           </div>

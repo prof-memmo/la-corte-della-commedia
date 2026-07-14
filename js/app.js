@@ -1,4 +1,6 @@
 import { auth, db, googleProvider, signInWithPopup, signInWithRedirect, getRedirectResult, signOut, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile, doc, getDoc, setDoc } from './firebase-config.js';
+import EroiDB from "./db.js";
+import { EroiGame } from "./game.js";
 
 // Stato dell'applicazione
 const state = {
@@ -159,10 +161,10 @@ onAuthStateChanged(auth, async (user) => {
     if (mainFooter) mainFooter.style.display = 'block';
     
     // Leggi Profilo dal database tramite EroiDB
+    let role = 'student';
     try {
-      let role = 'student';
-      if (window.EroiDB) {
-        const profile = await window.EroiDB.getUserProfile(user.uid);
+      if (EroiDB) {
+        const profile = await EroiDB.getUserProfile(user.uid);
         if (profile) {
           const xp = profile.xp || 0;
           role = profile.role || 'student';
@@ -175,19 +177,19 @@ onAuthStateChanged(auth, async (user) => {
           if (dropdownXp) dropdownXp.textContent = `${xp} XP`;
         }
       }
-      
-      // Routing in base al ruolo
-      if (user.email === 'prof.memmo@gmail.com' || role === 'admin') {
-        showView('view-admin-dashboard');
-      } else if (role === 'teacher') {
-        showView('view-teacher-dashboard');
-      } else {
-        showView('view-dashboard'); // Studente / Giurato
-        loadStudentCases();
-      }
     } catch (e) {
       console.warn("Impossibile caricare il profilo.", e);
-      showView('view-dashboard');
+    }
+    
+    // Routing in base al ruolo
+    const userEmail = user.email ? user.email.toLowerCase() : '';
+    if (userEmail === 'prof.memmo@gmail.com' || role === 'admin') {
+      showView('view-admin-dashboard');
+    } else if (role === 'teacher') {
+      showView('view-teacher-dashboard');
+    } else {
+      showView('view-dashboard'); // Studente / Giurato
+      loadStudentCases();
     }
   } else {
     // Nascondi il menu utente, header, nav e footer
@@ -209,7 +211,8 @@ onAuthStateChanged(auth, async (user) => {
 const adminSeedBtn = document.getElementById('admin-seed-btn');
 if (adminSeedBtn) {
   adminSeedBtn.addEventListener('click', async () => {
-    if (!state.user || state.user.email !== 'prof.memmo@gmail.com') return;
+    const userEmail = state.user && state.user.email ? state.user.email.toLowerCase() : '';
+    if (userEmail !== 'prof.memmo@gmail.com') return;
     adminSeedBtn.disabled = true;
     adminSeedBtn.textContent = 'Inizializzazione in corso...';
     try {
@@ -255,8 +258,8 @@ if (adminSeedBtn) {
 const trialNextBtn = document.getElementById('trial-next-btn');
 const trialBackBtn = document.getElementById('trial-back-btn');
 
-if (trialNextBtn) trialNextBtn.addEventListener('click', () => { if(window.EroiGame) window.EroiGame.nextPhase(); });
-if (trialBackBtn) trialBackBtn.addEventListener('click', () => { if(window.EroiGame) window.EroiGame.prevPhase(); });
+if (trialNextBtn) trialNextBtn.addEventListener('click', () => { if(EroiGame) EroiGame.nextPhase(); });
+if (trialBackBtn) trialBackBtn.addEventListener('click', () => { if(EroiGame) EroiGame.prevPhase(); });
 
 // Gestione Modal Privacy e Termini
 const LEGAL_TEXTS = {
@@ -316,12 +319,12 @@ window.showView = showView;
 // Funzione per caricare i fascicoli dello studente
 async function loadStudentCases() {
   const listEl = document.getElementById('student-cases-list');
-  if (!listEl || !window.EroiDB) return;
+  if (!listEl || !EroiDB) return;
   
   listEl.innerHTML = '<li style="padding: 1rem; text-align: center; color: #888;">Ricerca fascicoli nell\'archivio...</li>';
   
   try {
-    const campaigns = await window.EroiDB.getCampaigns();
+    const campaigns = await EroiDB.getCampaigns();
     if (campaigns.length === 0) {
       listEl.innerHTML = '<li style="padding: 1rem; text-align: center; color: #888;">Nessun fascicolo disponibile al momento.</li>';
       return;
@@ -329,7 +332,7 @@ async function loadStudentCases() {
     
     // Prendiamo la prima campagna attiva (es. Inferno)
     const activeCamp = campaigns[0];
-    const cases = await window.EroiDB.getCasesByCampaign(activeCamp.id);
+    const cases = await EroiDB.getCasesByCampaign(activeCamp.id);
     
     listEl.innerHTML = '';
     if (cases.length === 0) {
@@ -347,8 +350,8 @@ async function loadStudentCases() {
       a.innerHTML = `📕 ${activeCamp.name} - ${c.characterName} (Clicca per avviare)`;
       a.onclick = (e) => {
         e.preventDefault();
-        if (window.EroiGame) {
-          window.EroiGame.startTrial(c.id);
+        if (EroiGame) {
+          EroiGame.startTrial(c.id);
         } else {
           alert("Il motore del processo è in fase di caricamento.");
         }
