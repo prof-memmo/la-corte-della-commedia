@@ -69,6 +69,11 @@ const EroiDB = {
     },
 
     getCasesByCampaign: async function(campaignId) {
+        if (this.cache.cases && this.cache.cases.length > 0) {
+            const cachedCases = this.cache.cases.filter(c => c.campaignId === campaignId);
+            if (cachedCases.length > 0) return cachedCases;
+        }
+
         try {
             const q = query(collection(db, "cases"), where("campaignId", "==", campaignId));
             const querySnapshot = await getDocs(q);
@@ -77,8 +82,10 @@ const EroiDB = {
                 cases.push({ id: doc.id, ...doc.data() });
             });
             if (cases.length === 0 && campaignId === "inferno") {
+                this.cache.cases = this.cache.cases.concat(MOCK_CASES);
                 return MOCK_CASES;
             }
+            this.cache.cases = this.cache.cases.concat(cases);
             return cases;
         } catch (e) {
             console.error("Errore fetch casi:", e);
