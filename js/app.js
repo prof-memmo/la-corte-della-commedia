@@ -74,17 +74,34 @@ onAuthStateChanged(auth, async (user) => {
   state.user = user;
   if (user) {
     welcomeMessage.textContent = `Bentornato, Giudice ${user.displayName}`;
-    logoutBtn.style.display = 'block';
+    
+    // Mostra il menu utente
+    const userMenu = document.getElementById('user-menu-container');
+    if (userMenu) userMenu.style.display = 'block';
+    
+    const headerName = document.getElementById('header-user-name');
+    if (headerName) headerName.textContent = user.displayName || 'Giudice';
+    
     
     // Leggi XP dal database
     const docSnap = await getDoc(doc(db, 'users', user.uid));
     if (docSnap.exists()) {
-      document.getElementById('user-xp').textContent = `XP: ${docSnap.data().xp || 0} / 500`;
+      const xp = docSnap.data().xp || 0;
+      const xpText = `XP: ${xp} / 500`;
+      
+      const xpSpan = document.getElementById('user-xp');
+      if (xpSpan) xpSpan.textContent = xpText;
+      
+      const dropdownXp = document.getElementById('dropdown-user-xp');
+      if (dropdownXp) dropdownXp.textContent = `${xp} XP`;
     }
     
     showView('view-dashboard');
   } else {
-    logoutBtn.style.display = 'none';
+    // Nascondi il menu utente
+    const userMenu = document.getElementById('user-menu-container');
+    if (userMenu) userMenu.style.display = 'none';
+    
     showView('view-login');
   }
 });

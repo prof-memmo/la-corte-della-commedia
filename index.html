@@ -31,16 +31,33 @@
           <h1 style="font-size: 1.25rem; margin: 0; color: var(--accent-gold); letter-spacing: 2px;">LA CORTE DELLA COMMEDIA</h1>
         </div>
         <div style="display: flex; align-items: center; gap: 1rem;">
-          <!-- Music Player Widget -->
-          <div id="music-player-widget" style="background: rgba(0,0,0,0.5); padding: 5px 12px; border-radius: 20px; display: flex; align-items: center; gap: 8px; border: 1px solid var(--accent-gold); box-shadow: 0 2px 5px rgba(0,0,0,0.3);">
-            <button id="music-play-btn" onclick="if(window.MusicPlayer) window.MusicPlayer.togglePlay()" style="background: var(--accent-gold); color: #111; border: none; width: 26px; height: 26px; border-radius: 50%; font-size: 0.8rem; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; padding: 0;">▶️</button>
-            <div style="display: flex; flex-direction: column; overflow: hidden; max-width: 100px;">
-              <span style="font-size: 0.5rem; color: #aaa; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;">Sottofondo</span>
-              <span id="music-track-title" style="font-size: 0.65rem; font-weight: 700; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Pronto...</span>
+          <div id="user-menu-container" style="display: none; position: relative;">
+            <div onclick="document.getElementById('user-dropdown').classList.toggle('hidden')" style="display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.3); padding: 5px 15px 5px 5px; border-radius: 30px; border: 1px solid var(--accent-gold); cursor: pointer; color: white; transition: all 0.2s;">
+              <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--accent-gold); display: flex; align-items: center; justify-content: center; overflow: hidden; border: 1px solid #111;">
+                <img src="public/assets/dante_avatar.png" style="width:100%; height:100%; object-fit:cover;" onerror="this.style.display='none'">
+              </div>
+              <span id="header-user-name" style="font-size: 0.9rem; font-weight: bold; max-width: 120px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Giudice</span>
+              <span style="font-size: 0.7rem;">▼</span>
             </div>
-            <button onclick="if(window.MusicPlayer) window.MusicPlayer.nextTrack()" style="background: transparent; color: white; border: none; cursor: pointer; font-size: 0.8rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; padding: 0;">⏭️</button>
+            
+            <div id="user-dropdown" class="hidden" style="position: absolute; top: calc(100% + 10px); right: 0; background: #1a1a2e; border: 1px solid var(--accent-gold); border-radius: 12px; padding: 15px; width: 250px; box-shadow: 0 10px 25px rgba(0,0,0,0.8); z-index: 1000; display: flex; flex-direction: column; gap: 15px;">
+              <!-- XP preview -->
+              <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.05); padding: 8px 12px; border-radius: 8px;">
+                 <span style="font-size: 0.8rem; color: #ccc;">Esperienza</span>
+                 <span id="dropdown-user-xp" style="font-weight: bold; color: var(--accent-gold); font-size: 0.9rem;">0 XP</span>
+              </div>
+              <!-- Music Player Widget -->
+              <div id="music-player-widget" style="background: rgba(0,0,0,0.5); padding: 8px 12px; border-radius: 12px; display: flex; align-items: center; gap: 8px; border: 1px solid rgba(212,175,55,0.3);">
+                <button id="music-play-btn" onclick="if(window.MusicPlayer) window.MusicPlayer.togglePlay()" style="background: var(--accent-gold); color: #111; border: none; width: 30px; height: 30px; border-radius: 50%; font-size: 0.9rem; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; padding: 0;">▶️</button>
+                <div style="display: flex; flex-direction: column; overflow: hidden; flex: 1;">
+                  <span style="font-size: 0.55rem; color: #aaa; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;">Sottofondo</span>
+                  <span id="music-track-title" style="font-size: 0.7rem; font-weight: 700; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Pronto...</span>
+                </div>
+                <button onclick="if(window.MusicPlayer) window.MusicPlayer.nextTrack()" style="background: transparent; color: white; border: none; cursor: pointer; font-size: 0.9rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; padding: 0;">⏭️</button>
+              </div>
+              <button id="logout-btn" class="btn btn-secondary" style="width: 100%; border-radius: 8px; padding: 8px; font-size: 0.9rem; background: rgba(200, 50, 50, 0.2); border: 1px solid rgba(200, 50, 50, 0.5); color: #ffcccc; cursor: pointer;">🚪 Disconnettiti</button>
+            </div>
           </div>
-          <button id="logout-btn" class="btn btn-secondary" style="display: none;">Esci</button>
         </div>
       </header>
       
