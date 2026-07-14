@@ -27,7 +27,7 @@
   --radius-sm: 4px;
   --radius-md: 8px;
   
-  --transition: all 0.3s ease;
+  --transition: all 0.2s ease;
 }
 
 * {
@@ -144,12 +144,12 @@ h1, h2, h3, h4, h5, h6 {
 .text-muted { color: var(--text-secondary); }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
+  from { opacity: 0; transform: translateY(5px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
 .animate-fade-in {
-  animation: fadeIn 0.5s ease forwards;
+  animation: fadeIn 0.25s ease forwards;
 }
 
 /* Modal Styles */
