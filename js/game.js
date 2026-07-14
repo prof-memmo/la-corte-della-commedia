@@ -182,15 +182,20 @@ export const EroiGame = {
                 trialNextBtn.style.display = 'none';
                 trialBackBtn.style.display = 'none';
                 
-                // Aggiungiamo un bottone per tornare alla dashboard
+                // Aggiungiamo un bottone per tornare alla mappa
                 const returnBtn = document.createElement('button');
                 returnBtn.className = 'btn';
                 returnBtn.style.background = 'var(--accent-gold)';
                 returnBtn.style.color = '#1a1a2e';
                 returnBtn.style.marginTop = '20px';
-                returnBtn.textContent = 'Torna alla Dashboard';
-                returnBtn.onclick = () => window.showView('view-dashboard');
+                returnBtn.textContent = 'Torna alla Mappa';
+                returnBtn.onclick = () => window.showView('view-map');
                 trialContent.appendChild(returnBtn);
+                
+                // Segna il caso come completato
+                if (window.MapEngine) {
+                    window.MapEngine.markCaseCompleted(this.state.currentCaseId);
+                }
                 break;
         }
     }

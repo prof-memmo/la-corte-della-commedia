@@ -206,15 +206,52 @@
           </div>
         </section>
 
+        <!-- VISTA MAPPA -->
+        <section id="view-map" class="view animate-fade-in">
+          <div style="text-align: center; margin-bottom: 2rem;">
+            <h2 class="text-gold" style="font-size: 2.5rem; text-shadow: 0 0 20px rgba(212,175,55,0.5); font-family: 'Cinzel', serif;">I Regni Oltremondani</h2>
+          </div>
+          
+          <!-- Tabs -->
+          <div style="display: flex; justify-content: center; gap: 10px; margin-bottom: 2rem;">
+            <button class="btn map-tab active" onclick="window.app.switchMapTab('inferno')" style="background: var(--accent-crimson); color: white; border: 2px solid #fff; box-shadow: 0 0 10px rgba(255,0,0,0.5);">Inferno</button>
+            <button class="btn map-tab" onclick="window.app.switchMapTab('purgatorio')" style="background: #4a4a4a; color: #888; border: 1px solid #333;">Purgatorio</button>
+            <button class="btn map-tab" onclick="window.app.switchMapTab('paradiso')" style="background: #4a4a4a; color: #888; border: 1px solid #333;">Paradiso</button>
+          </div>
+
+          <!-- Mappa Inferno -->
+          <div id="map-inferno" class="map-container" style="display: block; position: relative; max-width: 600px; margin: 0 auto; padding: 2rem 0;">
+            <!-- Generato da JS -->
+          </div>
+
+          <!-- Mappa Purgatorio -->
+          <div id="map-purgatorio" class="map-container" style="display: none; text-align: center; padding: 3rem;">
+            <i class="fa-solid fa-mountain" style="font-size: 4rem; color: #555; margin-bottom: 1rem;"></i>
+            <h3 class="text-muted">La Montagna del Purgatorio è ancora avvolta dalla nebbia...</h3>
+            <p style="color: #666;">Completa prima il viaggio nell'Inferno per sbloccare l'accesso.</p>
+          </div>
+
+          <!-- Mappa Paradiso -->
+          <div id="map-paradiso" class="map-container" style="display: none; text-align: center; padding: 3rem;">
+            <i class="fa-solid fa-sun" style="font-size: 4rem; color: #555; margin-bottom: 1rem;"></i>
+            <h3 class="text-muted">Le sfere celesti non sono ancora allineate...</h3>
+            <p style="color: #666;">Completa prima il viaggio nel Purgatorio per sbloccare l'accesso.</p>
+          </div>
+        </section>
+
       </main>
 
       <!-- Bottom Nav (Solo dopo login) -->
       <nav id="mobile-bottom-nav" style="display: none; position: fixed; bottom: 0; left: 0; width: 100%; background: #1a1614; border-top: 1px solid var(--border-color); display: flex; justify-content: space-around; padding: 10px 0; z-index: 999;">
-        <div onclick="showView('view-dashboard')" style="text-align: center; color: var(--accent-gold); cursor: pointer; flex: 1;">
-          <i class="fa-solid fa-house" style="font-size: 1.2rem; display: block; margin-bottom: 4px;"></i>
-          <span style="font-size: 0.7rem;">Corte</span>
+        <div onclick="showView('view-map')" style="text-align: center; color: var(--accent-gold); cursor: pointer; flex: 1;">
+          <i class="fa-solid fa-map-location-dot" style="font-size: 1.2rem; display: block; margin-bottom: 4px;"></i>
+          <span style="font-size: 0.7rem;">Mappa</span>
         </div>
-        <div onclick="window.showLegal('regolamento')" style="text-align: center; color: var(--accent-gold); cursor: pointer; flex: 1;">
+        <div onclick="showView('view-dashboard')" style="text-align: center; color: #888; cursor: pointer; flex: 1;">
+          <i class="fa-solid fa-folder-open" style="font-size: 1.2rem; display: block; margin-bottom: 4px;"></i>
+          <span style="font-size: 0.7rem;">Casi</span>
+        </div>
+        <div onclick="window.showLegal('regolamento')" style="text-align: center; color: #888; cursor: pointer; flex: 1;">
           <i class="fa-solid fa-gavel" style="font-size: 1.2rem; display: block; margin-bottom: 4px;"></i>
           <span style="font-size: 0.7rem;">Regolamento</span>
         </div>

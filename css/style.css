@@ -206,3 +206,97 @@ h1, h2, h3, h4, h5, h6 {
 .hidden {
   display: none !important;
 }
+
+/* --- Map Styles --- */
+.map-node {
+  position: relative;
+  width: 100%;
+  max-width: 300px;
+  margin: 0 auto 3rem auto;
+  text-align: center;
+  z-index: 2;
+}
+
+.map-node::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  width: 4px;
+  height: 3rem; /* Same as margin-bottom of map-node */
+  background: var(--border-color);
+  transform: translateX(-50%);
+  z-index: -1;
+}
+
+.map-node:last-child::after {
+  display: none;
+}
+
+.circle-btn {
+  width: 100%;
+  padding: 15px;
+  border-radius: 30px;
+  background: #333;
+  color: #888;
+  border: 2px solid #555;
+  font-family: var(--font-heading);
+  font-size: 1.2rem;
+  font-weight: bold;
+  cursor: not-allowed;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.5);
+}
+
+.circle-btn .icon {
+  font-size: 1.5rem;
+  width: 30px;
+}
+
+.circle-btn.unlocked {
+  background: var(--bg-secondary);
+  color: var(--accent-gold);
+  border: 2px solid var(--accent-gold);
+  cursor: pointer;
+  box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
+}
+
+.circle-btn.unlocked:hover {
+  background: var(--accent-crimson);
+  color: white;
+  border-color: var(--accent-crimson-hover);
+  box-shadow: 0 0 20px rgba(255, 0, 0, 0.4);
+  transform: scale(1.05);
+}
+
+.circle-btn.completed {
+  background: #1a4a1a;
+  color: #aaddaa;
+  border: 2px solid #33cc33;
+  cursor: pointer;
+}
+
+.circle-btn.completed:hover {
+  background: #2a5a2a;
+}
+
+.map-node.completed::after {
+  background: #33cc33;
+  box-shadow: 0 0 10px #33cc33;
+}
+
+.map-tab {
+  padding: 10px 20px;
+  border-radius: 20px;
+  font-weight: bold;
+  font-size: 1rem;
+  opacity: 0.7;
+}
+
+.map-tab.active {
+  opacity: 1;
+  transform: scale(1.05);
+}

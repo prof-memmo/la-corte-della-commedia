@@ -1,6 +1,7 @@
 import { auth, db, googleProvider, signInWithPopup, signInWithRedirect, getRedirectResult, signOut, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile, doc, getDoc, setDoc } from './firebase-config.js';
 import EroiDB from "./db.js";
 import { EroiGame } from "./game.js";
+import { MapEngine } from "./map.js";
 
 // Stato dell'applicazione
 const state = {
@@ -186,11 +187,12 @@ onAuthStateChanged(auth, async (user) => {
     if (userEmail === 'prof.memmo@gmail.com' || role === 'admin') {
       showView('view-admin-dashboard');
       loadStudentCases(true); // Carica casi anche per admin
+      MapEngine.init();
     } else if (role === 'teacher') {
       showView('view-teacher-dashboard');
     } else {
-      showView('view-dashboard'); // Studente / Giurato
-      loadStudentCases(false);
+      showView('view-map'); // Mappa di default per Studente
+      MapEngine.init();
     }
   } else {
     // Nascondi il menu utente, header, nav e footer
@@ -228,13 +230,13 @@ if (adminSeedBtn) {
         active: true
       });
       
-      // Crea Caso Mock 1
+      // Crea Caso Mock 1 (Lussuriosi)
       await setDoc(doc(db, "cases", "paolo_francesca"), {
         id: "paolo_francesca",
         campaignId: "inferno",
         characterName: "Paolo e Francesca",
         canto: "Canto V",
-        cerchio: "Secondo Cerchio (Lussuriosi)",
+        cerchio: "Lussuriosi",
         order: 1,
         active: true,
         phases: {
@@ -242,6 +244,113 @@ if (adminSeedBtn) {
           accusation: "Hanno sottomesso la ragione al desiderio carnale, tradendo i vincoli coniugali.",
           defense: "Amore, ch'a nullo amato amar perdona... fummo travolti da una forza irresistibile."
         }
+      });
+      
+      // Crea Caso Mock Limbo
+      await setDoc(doc(db, "cases", "celestino_v"), {
+        id: "celestino_v",
+        campaignId: "inferno",
+        characterName: "Colui che fece il gran rifiuto (Celestino V)",
+        canto: "Canto III",
+        cerchio: "Ignavi", // We can use Ignavi or Limbo. Let's map it correctly based on the 9 circles requested: Limbo is 1, Ignavi are Antinferno. Let's use Omero for Limbo.
+        order: 1,
+        active: true,
+        phases: {
+            facts: "Vissero senza infamia e senza lodo.",
+            accusation: "Non presero mai posizione nella vita.",
+            defense: "Non fecero del male attivamente."
+        }
+      });
+      await setDoc(doc(db, "cases", "omero"), {
+        id: "omero",
+        campaignId: "inferno",
+        characterName: "Omero",
+        canto: "Canto IV",
+        cerchio: "Limbo", 
+        order: 1,
+        active: true,
+        phases: {
+            facts: "Poeta sommo dell'antichità, nato prima di Cristo.",
+            accusation: "Non ha ricevuto il battesimo cristiano.",
+            defense: "Visse una vita virtuosa e onorevole, illuminando il mondo con l'arte."
+        }
+      });
+
+      // Golosi
+      await setDoc(doc(db, "cases", "ciacco"), {
+        id: "ciacco",
+        campaignId: "inferno",
+        characterName: "Ciacco",
+        canto: "Canto VI",
+        cerchio: "Golosi", 
+        order: 1,
+        active: true
+      });
+
+      // Avari
+      await setDoc(doc(db, "cases", "papi_avari"), {
+        id: "papi_avari",
+        campaignId: "inferno",
+        characterName: "Papi e Cardinali",
+        canto: "Canto VII",
+        cerchio: "Avari", 
+        order: 1,
+        active: true
+      });
+
+      // Iracondi
+      await setDoc(doc(db, "cases", "filippo_argenti"), {
+        id: "filippo_argenti",
+        campaignId: "inferno",
+        characterName: "Filippo Argenti",
+        canto: "Canto VIII",
+        cerchio: "Iracondi", 
+        order: 1,
+        active: true
+      });
+
+      // Eretici
+      await setDoc(doc(db, "cases", "farinata"), {
+        id: "farinata",
+        campaignId: "inferno",
+        characterName: "Farinata degli Uberti",
+        canto: "Canto X",
+        cerchio: "Eretici", 
+        order: 1,
+        active: true
+      });
+
+      // Violenti
+      await setDoc(doc(db, "cases", "pier_della_vigna"), {
+        id: "pier_della_vigna",
+        campaignId: "inferno",
+        characterName: "Pier della Vigna",
+        canto: "Canto XIII",
+        cerchio: "Violenti", 
+        order: 1,
+        active: true
+      });
+
+      // Fraudolenti
+      await setDoc(doc(db, "cases", "ulisse"), {
+        id: "ulisse",
+        campaignId: "inferno",
+        characterName: "Ulisse",
+        canto: "Canto XXVI",
+        cerchio: "Fraudolenti", 
+        order: 1,
+        active: true
+      });
+
+      // Traditori
+      await setDoc(doc(db, "cases", "ugolino"), {
+        id: "ugolino",
+        campaignId: "inferno",
+        characterName: "Conte Ugolino",
+        canto: "Canto XXXIII",
+        cerchio: "Traditori", 
+        order: 1,
+        active: true
       });
       
       alert("Database inizializzato con successo!");
@@ -308,7 +417,27 @@ const LEGAL_TEXTS = {
     `
 };
 
+function switchMapTab(tabName) {
+  document.querySelectorAll('.map-tab').forEach(btn => btn.classList.remove('active'));
+  document.querySelectorAll('.map-container').forEach(map => map.style.display = 'none');
+  
+  // Find clicked button
+  if (event && event.currentTarget) {
+      event.currentTarget.classList.add('active');
+  }
+  
+  const mapElement = document.getElementById('map-' + tabName);
+  if (mapElement) {
+      mapElement.style.display = 'block';
+  }
+}
+
+// Esponi per l'uso nell'HTML
 window.showView = showView;
+window.app = {
+  switchMapTab,
+  showView
+};
 
 // Funzione per caricare i fascicoli dello studente
 async function loadStudentCases(isAdmin = false) {
