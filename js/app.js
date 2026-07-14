@@ -1,4 +1,4 @@
-import { auth, db, googleProvider, signInWithPopup, signOut, onAuthStateChanged, doc, getDoc, setDoc } from './firebase-config.js';
+import { auth, db, googleProvider, signInWithRedirect, getRedirectResult, signOut, onAuthStateChanged, doc, getDoc, setDoc } from './firebase-config.js';
 
 // Stato dell'applicazione
 const state = {
@@ -14,15 +14,25 @@ function showView(viewId) {
 }
 
 // Elementi DOM
-const loginBtn = document.getElementById('login-btn');
+const loginGoogleBtn = document.getElementById('login-google-btn');
+const loginEmailBtn = document.getElementById('login-email-btn');
+const ageCheck = document.getElementById('age-check');
+const privacyCheck = document.getElementById('privacy-check');
 const logoutBtn = document.getElementById('logout-btn');
 const welcomeMessage = document.getElementById('welcome-message');
 
-// Event Listeners Autenticazione
-loginBtn.addEventListener('click', async () => {
-  try {
-    const result = await signInWithPopup(auth, googleProvider);
-    // Salva in firestore al primo login
+// Abilitazione dei bottoni in base alle checkbox
+function updateLoginButtons() {
+  const isChecked = ageCheck.checked && privacyCheck.checked;
+  loginGoogleBtn.disabled = !isChecked;
+  loginEmailBtn.disabled = !isChecked;
+}
+ageCheck.addEventListener('change', updateLoginButtons);
+privacyCheck.addEventListener('change', updateLoginButtons);
+
+// Controllo del risultato del redirect (se veniamo da un login su Safari)
+getRedirectResult(auth).then(async (result) => {
+  if (result && result.user) {
     const userDocRef = doc(db, 'users', result.user.uid);
     const userDoc = await getDoc(userDocRef);
     if (!userDoc.exists()) {
@@ -35,9 +45,25 @@ loginBtn.addEventListener('click', async () => {
         role: 'student'
       });
     }
-  } catch (error) {
-    console.error("Errore di login", error);
   }
+}).catch((error) => {
+  console.error("Errore di login da redirect", error);
+  alert("Errore durante il login: " + error.message);
+});
+
+// Event Listeners Autenticazione
+loginGoogleBtn.addEventListener('click', async () => {
+  try {
+    // signInWithRedirect evita i problemi di popup bloccati su Safari
+    await signInWithRedirect(auth, googleProvider);
+  } catch (error) {
+    console.error("Errore avvio redirect", error);
+    alert("Impossibile avviare il login: " + error.message);
+  }
+});
+
+loginEmailBtn.addEventListener('click', () => {
+  alert("Login con email da implementare!");
 });
 
 logoutBtn.addEventListener('click', () => {
