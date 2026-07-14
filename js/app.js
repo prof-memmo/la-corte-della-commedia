@@ -146,3 +146,40 @@ window.app = {
 
 trialNextBtn.addEventListener('click', () => window.app.nextPhase());
 trialBackBtn.addEventListener('click', () => showView('view-dashboard'));
+
+// Gestione Modal Privacy e Termini
+window.showLegal = function(type) {
+    const modal = document.getElementById('legal-modal');
+    const content = document.getElementById('legal-text-container');
+    
+    if (type === 'privacy') {
+        content.innerHTML = `
+            <h3 style="color:var(--accent-gold); margin-bottom:1rem;">Privacy Policy</h3>
+            <p style="margin-bottom:0.5rem;"><strong>Ultimo aggiornamento:</strong> 2026</p>
+            <p style="margin-bottom:0.5rem;">Ai sensi del Regolamento (UE) 2016/679 (GDPR), ti informiamo che "La Corte della Commedia" raccoglie e tratta i tuoi dati personali (nome, cognome, indirizzo email e avatar) esclusivamente per le finalità legate al funzionamento dell'applicazione didattica.</p>
+            <p style="margin-bottom:0.5rem;"><strong>1. Titolare del Trattamento:</strong> Guglielmo Piersanti.</p>
+            <p style="margin-bottom:0.5rem;"><strong>2. Dati Raccolti:</strong> Vengono salvati l'indirizzo email e il nome associato all'account fornito per permettere il salvataggio dei progressi (XP, Livelli) nel database Firebase.</p>
+            <p style="margin-bottom:0.5rem;"><strong>3. Condivisione dei Dati:</strong> Nessun dato verrà ceduto o venduto a terzi per fini commerciali. I docenti registrati potranno visionare il nome e i progressi degli studenti iscritti alle proprie classi.</p>
+            <p style="margin-bottom:0.5rem;"><strong>4. Conservazione:</strong> I dati sono conservati su server sicuri (Google Firebase) e possono essere cancellati in qualsiasi momento tramite richiesta esplicita all'amministratore.</p>
+        `;
+    } else {
+        content.innerHTML = `
+            <h3 style="color:var(--accent-gold); margin-bottom:1rem;">Termini e Condizioni</h3>
+            <p style="margin-bottom:0.5rem;"><strong>Ultimo aggiornamento:</strong> 2026</p>
+            <p style="margin-bottom:0.5rem;">Benvenuto in "La Corte della Commedia", una piattaforma didattica interattiva.</p>
+            <p style="margin-bottom:0.5rem;"><strong>1. Età minima:</strong> L'accesso è consentito agli utenti con età minima di 16 anni, o inferiore se sotto la supervisione e l'autorizzazione di un genitore, tutore o docente.</p>
+            <p style="margin-bottom:0.5rem;"><strong>2. Utilizzo:</strong> È vietato l'uso della piattaforma per scopi illeciti o dannosi. Gli utenti (studenti e docenti) sono tenuti a mantenere un linguaggio consono e rispettoso nelle riflessioni inviate e nei nomi scelti.</p>
+            <p style="margin-bottom:0.5rem;"><strong>3. Proprietà Intellettuale:</strong> I contenuti testuali, le regole di gioco e le grafiche presenti nel sito sono di proprietà di Guglielmo Piersanti e sono protetti tramite deposito Patamu. Distribuiti con licenza CC BY-NC-ND 4.0.</p>
+            <p style="margin-bottom:0.5rem;"><strong>4. Interruzioni:</strong> La piattaforma è uno strumento didattico. Non si garantisce la continuità del servizio 24/7 e ci si riserva il diritto di sospendere l'accesso per manutenzione.</p>
+        `;
+    }
+    
+    modal.classList.remove('hidden');
+};
+
+document.getElementById('close-legal-btn').addEventListener('click', () => {
+    document.getElementById('legal-modal').classList.add('hidden');
+});
+document.getElementById('confirm-legal-btn').addEventListener('click', () => {
+    document.getElementById('legal-modal').classList.add('hidden');
+});

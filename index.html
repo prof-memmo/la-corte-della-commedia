@@ -13,6 +13,17 @@
   </head>
   <body>
     
+    <!-- Legal Modals -->
+    <div id="legal-modal" class="legal-modal hidden">
+        <div class="legal-modal-content parchment-panel">
+            <span class="close-legal" id="close-legal-btn">&times;</span>
+            <div id="legal-text-container" style="text-align: left; max-height: 60vh; overflow-y: auto; margin-bottom: 1rem; color: var(--text-on-parchment);"></div>
+            <div style="text-align:center;">
+                <button id="confirm-legal-btn" class="btn btn-primary" style="padding: 0.8rem 2.5rem; font-weight: bold; border-radius: 50px;">✅ Ho capito</button>
+            </div>
+        </div>
+    </div>
+
     <div class="app-container">
       <header class="app-header">
         <div style="display: flex; align-items: center; gap: 1rem;">
@@ -40,31 +51,29 @@
                 </label>
                 <label style="display: flex; gap: 0.5rem; align-items: flex-start; cursor: pointer;">
                   <input type="checkbox" id="privacy-check" style="margin-top: 3px;">
-                  <span>Accetto Privacy e Termini</span>
+                  <span>Accetto <a href="#" onclick="showLegal('privacy'); return false;" style="color: var(--accent-gold); font-weight: bold; text-decoration: underline;">Privacy</a> e <a href="#" onclick="showLegal('terms'); return false;" style="color: var(--accent-gold); font-weight: bold; text-decoration: underline;">Termini</a></span>
                 </label>
               </div>
 
-              <button id="login-google-btn" class="btn btn-primary" style="width: 100%; justify-content: center;" disabled>
-                Entra con Google
+              <button id="login-google-btn" class="btn btn-primary" style="background: #fff; color: #444; border: 1px solid #ddd; display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; padding: 12px; font-size: 1.1rem; font-weight: bold; border-radius: 50px; margin-bottom: 15px;" disabled>
+                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="24" height="24"> Entra con Google
               </button>
               
-              <div style="display: flex; align-items: center; gap: 1rem; color: var(--text-muted); margin: 0.5rem 0;">
-                <div style="flex: 1; height: 1px; background: var(--border-color);"></div>
-                <span>- oppure -</span>
-                <div style="flex: 1; height: 1px; background: var(--border-color);"></div>
-              </div>
+              <div style="text-align: center; color: var(--text-muted); margin-bottom: 15px; font-size: 0.85rem; font-weight: bold;">— OPPURE —</div>
 
-              <button id="login-email-btn" class="btn btn-secondary" style="width: 100%; justify-content: center;" disabled>
-                Entra con Email
-              </button>
+              <div id="login-email-form" style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px;">
+                  <input type="email" id="login-email" placeholder="Email (es: prof.memmo@gmail.com)" style="padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); background: rgba(0,0,0,0.3); color: var(--text-primary); font-size: 1rem;">
+                  <input type="password" id="login-password" placeholder="Password (es: password123)" style="padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); background: rgba(0,0,0,0.3); color: var(--text-primary); font-size: 1rem;">
+                  <button id="login-email-btn" class="btn" style="background: var(--accent-gold); color: #1a1a2e; font-weight: bold; border-radius: 8px; padding: 12px; font-size: 1.1rem;" disabled>Accedi con Email</button>
+              </div>
               
-              <p class="text-on-parchment-muted" style="font-size: 0.85rem; margin-top: 1rem;">
+              <p class="text-on-parchment-muted" style="font-size: 0.85rem; margin-top: 12px; line-height: 1.4;">
                 Se è il tuo primo accesso, verrai guidato alla selezione del profilo.
               </p>
               
               <div style="display: flex; justify-content: center; gap: 1.5rem; font-size: 0.8rem; margin-top: 1rem;">
-                <a href="#" style="color: var(--text-muted); text-decoration: none;">Privacy Policy</a>
-                <a href="#" style="color: var(--text-muted); text-decoration: none;">Termini e Condizioni</a>
+                <a href="#" onclick="showLegal('privacy'); return false;" style="color: var(--text-muted); text-decoration: underline;">Privacy Policy</a>
+                <a href="#" onclick="showLegal('terms'); return false;" style="color: var(--text-muted); text-decoration: underline;">Termini e Condizioni</a>
                 <a href="#" style="color: var(--text-muted); text-decoration: none;">Patamu</a>
               </div>
             </div>
