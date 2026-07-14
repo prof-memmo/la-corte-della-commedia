@@ -55,7 +55,25 @@ getRedirectResult(auth).then(async (result) => {
 loginGoogleBtn.addEventListener('click', async () => {
   try {
     // Usa signInWithPopup invece di Redirect per un feedback immediato a schermo
-    await signInWithPopup(auth, googleProvider);
+    const result = await signInWithPopup(auth, googleProvider);
+    if (result && result.user) {
+      const userDocRef = doc(db, 'users', result.user.uid);
+      try {
+        const userDoc = await getDoc(userDocRef);
+        if (!userDoc.exists()) {
+          await setDoc(userDocRef, {
+            uid: result.user.uid,
+            email: result.user.email,
+            displayName: result.user.displayName,
+            xp: 0,
+            level: 1,
+            role: 'student'
+          });
+        }
+      } catch (e) {
+        console.warn("Impossibile leggere/creare il documento utente. Controllo regole Firestore.", e);
+      }
+    }
   } catch (error) {
     console.error("Errore avvio login Google", error);
     alert("Errore avvio login: " + error.message);
@@ -132,17 +150,21 @@ onAuthStateChanged(auth, async (user) => {
     if (headerName) headerName.textContent = user.displayName || 'Giudice';
     
     
-    // Leggi XP dal database
-    const docSnap = await getDoc(doc(db, 'users', user.uid));
-    if (docSnap.exists()) {
-      const xp = docSnap.data().xp || 0;
-      const xpText = `XP: ${xp} / 500`;
-      
-      const xpSpan = document.getElementById('user-xp');
-      if (xpSpan) xpSpan.textContent = xpText;
-      
-      const dropdownXp = document.getElementById('dropdown-user-xp');
-      if (dropdownXp) dropdownXp.textContent = `${xp} XP`;
+    try {
+      // Leggi XP dal database
+      const docSnap = await getDoc(doc(db, 'users', user.uid));
+      if (docSnap.exists()) {
+        const xp = docSnap.data().xp || 0;
+        const xpText = `XP: ${xp} / 500`;
+        
+        const xpSpan = document.getElementById('user-xp');
+        if (xpSpan) xpSpan.textContent = xpText;
+        
+        const dropdownXp = document.getElementById('dropdown-user-xp');
+        if (dropdownXp) dropdownXp.textContent = `${xp} XP`;
+      }
+    } catch (e) {
+      console.warn("Impossibile caricare XP. L'utente ha effettuato l'accesso ma il DB potrebbe non essere accessibile.", e);
     }
     
     showView('view-dashboard');
