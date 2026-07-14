@@ -185,11 +185,12 @@ onAuthStateChanged(auth, async (user) => {
     const userEmail = user.email ? user.email.toLowerCase() : '';
     if (userEmail === 'prof.memmo@gmail.com' || role === 'admin') {
       showView('view-admin-dashboard');
+      loadStudentCases(true); // Carica casi anche per admin
     } else if (role === 'teacher') {
       showView('view-teacher-dashboard');
     } else {
       showView('view-dashboard'); // Studente / Giurato
-      loadStudentCases();
+      loadStudentCases(false);
     }
   } else {
     // Nascondi il menu utente, header, nav e footer
@@ -270,19 +271,12 @@ const LEGAL_TEXTS = {
         <h3>2. Finalità del sito</h3>
         <p>"La Corte della Commedia" è un'applicazione web didattica, utilizzata a scopo educativo e ludico e senza fini di lucro per l'apprendimento della lingua italiana.</p>
         <h3>3. Dati raccolti</h3>
-        <p>Il sito può raccogliere i seguenti dati: nome utente (scelto dall'utente); informazioni di utilizzo relative agli esercizi (punteggi, attività completate, progressi); messaggi inviati tramite il modulo di contatto (nome, email, messaggio); dati tecnici minimi per il funzionamento (es. tipo di dispositivo tramite browser).</p>
+        <p>Il sito può raccogliere i seguenti dati: nome utente (scelto dall'utente); informazioni di utilizzo relative alle attività; messaggi inviati tramite il modulo di contatto; dati tecnici minimi per il funzionamento.</p>
         <h3>4. Finalità del trattamento</h3>
-        <p>I dati vengono trattati esclusivamente per consentire l'accesso alle funzionalità della Corte, gestire l'esperienza didattica personalizzata (come il salvataggio dei progressi), rispondere alle richieste inviate tramite il modulo di contatto e migliorare il servizio didattico. Non vengono utilizzati per scopi commerciali o pubblicitari.</p>
+        <p>I dati vengono trattati esclusivamente per consentire l'accesso alle funzionalità della Corte, gestire l'esperienza didattica personalizzata, e migliorare il servizio.</p>
         <h3>5. Base giuridica</h3>
-        <p>Il trattamento dei dati si basa sul consenso fornito dall'utente al momento del primo accesso e sull'utilizzo delle funzionalità didattiche del sito.</p>
+        <p>Il trattamento dei dati si basa sul consenso fornito dall'utente al momento del primo accesso.</p>
         <h3>6. Conservazione dei dati</h3>
-        <p>I dati sono salvati localmente sul browser dell'utente (LocalStorage) e su database sicuri (Firebase). Non vengono venduti né ceduti a terzi. Sono mantenuti solo per il tempo necessario al funzionamento didattico o fino alla richiesta di cancellazione da parte dell'utente.</p>
-        <h3>8. Diritti dell'utente</h3>
-        <p>L'utente può richiedere in qualsiasi momento l'accesso ai propri dati o la loro cancellazione (che può avvenire anche tramite il proprio profilo utente cancellando i dati locali). Per assistenza, è possibile contattare il titolare all'indirizzo email sopra indicato.</p>
-        <h3>9. Cookie</h3>
-        <p>Il sito non utilizza cookie di profilazione a scopo pubblicitario. Utilizza esclusivamente elementi tecnici necessari per il salvataggio dei progressi di studio.</p>
-        <h3>10. Utenti minori</h3>
-        <p>Il sito è destinato a un uso didattico scolastico. Per l'utilizzo da parte di minori, è responsabilità di un genitore o di un docente assicurare la supervisione necessaria. I tutori possono richiedere la cancellazione dei dati in qualsiasi momento.</p>
         <h3>11. Modifiche alla Policy</h3>
         <p>Questa informativa può essere aggiornata per riflettere nuove funzionalità didattiche. Le modifiche rilevanti verranno segnalate agli utenti.</p>
         <h3>12. Riferimenti normativi</h3>

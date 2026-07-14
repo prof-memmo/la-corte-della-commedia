@@ -72,7 +72,8 @@
               <div class="dropdown-actions" style="display: flex; gap: 5px; flex-wrap: wrap; justify-content: center; margin-top: 5px;">
                 <button class="btn btn-secondary" onclick="window.showLegal('privacy')" style="flex: 1; min-width: 45%; border-radius: 6px; padding: 6px; font-size: 0.75rem; background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.2); color: #ccc; cursor: pointer;"><i class="fa-solid fa-shield"></i> Privacy</button>
                 <button class="btn btn-secondary" onclick="window.showLegal('terms')" style="flex: 1; min-width: 45%; border-radius: 6px; padding: 6px; font-size: 0.75rem; background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.2); color: #ccc; cursor: pointer;"><i class="fa-solid fa-scroll"></i> Termini</button>
-                <button class="btn btn-secondary" onclick="alert('Contatti in lavorazione')" style="flex: 1; min-width: 45%; border-radius: 6px; padding: 6px; font-size: 0.75rem; background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.2); color: #ccc; cursor: pointer;"><i class="fa-solid fa-envelope"></i> Contatti</button>
+                <button class="btn btn-secondary" onclick="window.showLegal('regolamento')" style="flex: 1; min-width: 45%; border-radius: 6px; padding: 6px; font-size: 0.75rem; background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.2); color: #ccc; cursor: pointer;"><i class="fa-solid fa-gavel"></i> Regolamento</button>
+                <button class="btn btn-secondary" onclick="window.showContattiModal()" style="flex: 1; min-width: 45%; border-radius: 6px; padding: 6px; font-size: 0.75rem; background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.2); color: #ccc; cursor: pointer;"><i class="fa-solid fa-envelope"></i> Contatti</button>
                 <button id="logout-btn" class="btn btn-secondary" style="flex: 1; min-width: 45%; border-radius: 6px; padding: 6px; font-size: 0.75rem; background: rgba(200, 50, 50, 0.2); border: 1px solid rgba(200, 50, 50, 0.5); color: #ffcccc; cursor: pointer;"><i class="fa-solid fa-power-off"></i> Logout</button>
               </div>
             </div>
@@ -163,6 +164,13 @@
             <h3>Gestione Contenuti</h3>
             <p class="text-on-parchment-muted">Essendo il database vuoto, puoi inizializzare la struttura di base (Campagna Inferno e Casi di prova).</p>
             <button id="admin-seed-btn" class="btn" style="background: var(--danger-color); color: white; margin-top: 1rem;">Inizializza Database (Casi Mock)</button>
+          </div>
+          
+          <div class="dark-panel" style="margin-top: 2rem;">
+            <h3 class="text-gold">Tutti i Fascicoli (Vista Admin)</h3>
+            <ul id="admin-cases-list" style="list-style: none; margin-top: 1rem;">
+              <li style="padding: 1rem; text-align: center; color: #888;">Caricamento casi in corso...</li>
+            </ul>
           </div>
         </section>
 
