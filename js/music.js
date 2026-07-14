@@ -83,14 +83,14 @@ const MusicPlayer = {
     },
 
     updateUI: function() {
+        const playBtn = document.getElementById('music-play-btn');
         const titleEl = document.getElementById('music-track-title');
-        const playBtnEl = document.getElementById('music-play-btn');
-        if (titleEl) {
-            let title = this.tracks[this.currentTrackIndex].replace(" (freetouse.com).mp3", "");
-            titleEl.textContent = title;
+        if (playBtn) {
+            playBtn.innerHTML = this.isPlaying ? '<i class="fa-solid fa-pause"></i>' : '<i class="fa-solid fa-play"></i>';
         }
-        if (playBtnEl) {
-            playBtnEl.innerHTML = this.isPlaying ? '⏸️' : '▶️';
+        if (titleEl) {
+            const filename = this.tracks[this.currentTrackIndex].split('/').pop().replace(' (freetouse.com).mp3', '');
+            titleEl.textContent = filename;
         }
     }
 };
