@@ -27,8 +27,7 @@
     <div class="app-container">
       <header class="app-header" style="justify-content: space-between; display: flex; align-items: center;">
         <div style="display: flex; align-items: center; gap: 1rem;">
-          <img src="public/assets/header_logo.png" alt="Logo La Corte" style="height: 45px; object-fit: contain;">
-          <h1 style="font-size: 1.25rem; margin: 0; color: var(--accent-gold); letter-spacing: 2px;">LA CORTE DELLA COMMEDIA</h1>
+          <img src="public/assets/header_logo.png" alt="Logo La Corte" style="height: 75px; object-fit: contain;">
         </div>
         <div style="display: flex; align-items: center; gap: 1rem;">
           <div id="user-menu-container" style="display: none; position: relative;">
@@ -63,8 +62,12 @@
       
       <main class="app-content">
         <!-- VISTA LOGIN -->
-        <section id="view-login" class="view active animate-fade-in">
-          <div style="display: flex; justify-content: center; align-items: center; min-height: 70vh; padding: 2rem;">
+      <section id="view-login" class="view active" style="padding-top: 10px; position: relative;">
+        <!-- Pulsante Attiva Musica Mobile/Login -->
+        <button type="button" class="btn btn-secondary" onclick="if(window.MusicPlayer) window.MusicPlayer.togglePlay()" style="position: absolute; top: 15px; right: 15px; padding: 6px 12px; border-radius: 20px; font-size: 0.8rem; border: 1px solid rgba(212,175,55,0.4); background: rgba(0,0,0,0.6); color: var(--accent-gold); display: flex; align-items: center; gap: 8px; z-index: 100; cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,0.5);">
+            ▶️ Attiva Musica
+        </button>
+        <div class="login-container" style="display: flex; justify-content: center; align-items: center; min-height: 70vh; padding: 2rem;">
             <div class="parchment-panel" style="max-width: 450px; text-align: center; display: flex; flex-direction: column; gap: 1rem;">
               <div class="login-header" style="text-align: center; margin-bottom: 2rem;">
                 <img src="public/assets/main_logo.png" alt="Logo" style="max-width: 250px; max-height: 150px; width: 100%; height: auto; object-fit: contain; margin-bottom: 15px;">
