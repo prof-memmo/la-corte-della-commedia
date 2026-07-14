@@ -25,8 +25,8 @@
         </div>
     </div>
 
-    <div class="app-container">
-      <header class="app-header" style="justify-content: space-between; display: flex; align-items: center; position: relative;">
+    <!-- App Header (Visibile solo dopo il login) -->
+    <header class="app-header" id="main-app-header" style="display: none; z-index: 1000; position: relative; justify-content: space-between; align-items: center;">
         <div style="display: flex; align-items: center; gap: 1rem;">
           <img src="public/assets/header_logo.png" alt="Logo La Corte" style="height: 75px; object-fit: contain;">
         </div>
@@ -38,12 +38,7 @@
           </div>
         </div>
         <div style="display: flex; align-items: center; gap: 1rem;">
-          <!-- Pulsante Disattiva Musica Header -->
-          <button id="header-audio-btn" title="Disattiva Audio" onclick="if(window.MusicPlayer) window.MusicPlayer.togglePlay()" style="background: transparent; border: none; color: var(--accent-gold); cursor: pointer; padding: 6px; font-size: 1.2rem; transition: all 0.3s; margin-right: 5px;">
-            <i class="fa-solid fa-volume-high"></i>
-          </button>
-
-          <div id="user-menu-container" style="display: none; position: relative;">
+          <div id="user-menu-container" style="display: none; position: relative; z-index: 1001;">
             <div onclick="document.getElementById('user-dropdown').classList.toggle('hidden')" style="display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.3); padding: 5px 15px 5px 5px; border-radius: 30px; border: 1px solid var(--accent-gold); cursor: pointer; color: white; transition: all 0.2s;">
               <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--accent-gold); display: flex; align-items: center; justify-content: center; overflow: hidden; border: 1px solid #111;">
                 <img src="public/assets/dante_avatar.png" style="width:100%; height:100%; object-fit:cover;" onerror="this.style.display='none'">
@@ -86,6 +81,11 @@
       <main class="app-content">
         <!-- VISTA LOGIN -->
       <section id="view-login" class="view active" style="padding-top: 10px; position: relative;">
+        <!-- Pulsante floating audio nel login -->
+        <button type="button" id="login-audio-btn" onclick="if(window.MusicPlayer) window.MusicPlayer.togglePlay()" style="position: absolute; top: 15px; right: 15px; padding: 6px 10px; border-radius: 20px; font-size: 0.75rem; border: 1px solid rgba(255,255,255,0.25); background: rgba(26, 22, 20, 0.8); color: var(--accent-gold); display: flex; align-items: center; gap: 6px; z-index: 100; cursor: pointer;">
+            <i class="fa-solid fa-volume-high"></i> Disattiva Musica
+        </button>
+
         <div class="login-container" style="display: flex; justify-content: center; align-items: center; min-height: 70vh; padding: 1rem;">
             <div class="parchment-panel" style="max-width: 450px; text-align: center; display: flex; flex-direction: column; gap: 0.5rem; padding: 1.5rem;">
               <div class="login-header" style="text-align: center; margin-bottom: 1rem;">
@@ -185,6 +185,23 @@
         </section>
 
       </main>
+
+      <!-- Bottom Nav (Solo dopo login) -->
+      <nav id="mobile-bottom-nav" style="display: none; position: fixed; bottom: 0; left: 0; width: 100%; background: #1a1614; border-top: 1px solid var(--border-color); display: flex; justify-content: space-around; padding: 10px 0; z-index: 999;">
+        <div style="text-align: center; color: var(--accent-gold); cursor: pointer; flex: 1;">
+          <i class="fa-solid fa-house" style="font-size: 1.2rem; display: block; margin-bottom: 4px;"></i>
+          <span style="font-size: 0.7rem;">Corte</span>
+        </div>
+        <div style="text-align: center; color: #888; cursor: pointer; flex: 1;">
+          <i class="fa-solid fa-book" style="font-size: 1.2rem; display: block; margin-bottom: 4px;"></i>
+          <span style="font-size: 0.7rem;">Archivio</span>
+        </div>
+      </nav>
+
+      <!-- Global Footer -->
+      <footer id="main-footer" style="display: none; padding: 15px; text-align: center; font-size: 0.8rem; color: #888; margin-top: 20px; margin-bottom: 60px;">
+        <p>&copy; 2026 La Corte della Commedia. Creato dal Prof. Memmo.</p>
+      </footer>
     </div>
 
     <!-- Firebase SDKs via CDN -->

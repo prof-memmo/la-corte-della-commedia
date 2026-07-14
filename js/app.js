@@ -150,8 +150,16 @@ onAuthStateChanged(auth, async (user) => {
     if (headerName) headerName.textContent = user.displayName || 'Giudice';
     
     
+    // Mostra header, nav e footer
+    const mainHeader = document.getElementById('main-app-header');
+    if (mainHeader) mainHeader.style.display = 'flex';
+    const bottomNav = document.getElementById('mobile-bottom-nav');
+    if (bottomNav) bottomNav.style.display = 'flex';
+    const mainFooter = document.getElementById('main-footer');
+    if (mainFooter) mainFooter.style.display = 'block';
+    
+    // Leggi XP dal database
     try {
-      // Leggi XP dal database
       const docSnap = await getDoc(doc(db, 'users', user.uid));
       if (docSnap.exists()) {
         const xp = docSnap.data().xp || 0;
@@ -169,9 +177,16 @@ onAuthStateChanged(auth, async (user) => {
     
     showView('view-dashboard');
   } else {
-    // Nascondi il menu utente
+    // Nascondi il menu utente, header, nav e footer
     const userMenu = document.getElementById('user-menu-container');
     if (userMenu) userMenu.style.display = 'none';
+    
+    const mainHeader = document.getElementById('main-app-header');
+    if (mainHeader) mainHeader.style.display = 'none';
+    const bottomNav = document.getElementById('mobile-bottom-nav');
+    if (bottomNav) bottomNav.style.display = 'none';
+    const mainFooter = document.getElementById('main-footer');
+    if (mainFooter) mainFooter.style.display = 'none';
     
     showView('view-login');
   }

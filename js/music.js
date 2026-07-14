@@ -84,6 +84,11 @@ const MusicPlayer = {
 
     updateUI: function() {
         const playBtn = document.getElementById('music-play-btn');
+        const loginBtn = document.getElementById('login-audio-btn');
+        if (loginBtn) {
+            loginBtn.innerHTML = this.isPlaying ? '<i class="fa-solid fa-volume-high"></i> Disattiva Musica' : '<i class="fa-solid fa-volume-xmark"></i> Attiva Musica';
+        }
+        
         const titleEl = document.getElementById('music-track-title');
         if (playBtn) {
             playBtn.innerHTML = this.isPlaying ? '<i class="fa-solid fa-pause"></i>' : '<i class="fa-solid fa-play"></i>';
@@ -91,6 +96,11 @@ const MusicPlayer = {
         if (titleEl) {
             const filename = this.tracks[this.currentTrackIndex].split('/').pop().replace(' (freetouse.com).mp3', '');
             titleEl.textContent = filename;
+        }
+
+        const dropdownBtn = document.getElementById('dropdown-audio-btn');
+        if (dropdownBtn) {
+            dropdownBtn.innerHTML = this.isPlaying ? '<i class="fa-solid fa-volume-high"></i> Disattiva Musica' : '<i class="fa-solid fa-volume-xmark"></i> Attiva Musica';
         }
     }
 };
