@@ -148,7 +148,7 @@
               <h3 class="text-gold">I Tuoi Fascicoli</h3>
               <ul style="list-style: none; margin-top: 1rem;">
                 <li style="padding: 0.5rem 0; border-bottom: 1px solid var(--border-color);">
-                  <a href="#" onclick="app.startTrial('mock_case_1'); return false;" style="color: var(--text-primary); text-decoration: none;">
+                  <a href="#" onclick="alert('Il sistema dei casi e il collegamento al database è in fase di sviluppo. Sarà pronto a breve!'); return false;" style="color: var(--text-primary); text-decoration: none;">
                     📕 Inferno - Caso #1: Paolo e Francesca (Clicca per avviare)
                   </a>
                 </li>
@@ -187,11 +187,11 @@
 
       <!-- Bottom Nav (Solo dopo login) -->
       <nav id="mobile-bottom-nav" style="display: none; position: fixed; bottom: 0; left: 0; width: 100%; background: #1a1614; border-top: 1px solid var(--border-color); display: flex; justify-content: space-around; padding: 10px 0; z-index: 999;">
-        <div style="text-align: center; color: var(--accent-gold); cursor: pointer; flex: 1;">
+        <div onclick="showView('view-dashboard')" style="text-align: center; color: var(--accent-gold); cursor: pointer; flex: 1;">
           <i class="fa-solid fa-house" style="font-size: 1.2rem; display: block; margin-bottom: 4px;"></i>
           <span style="font-size: 0.7rem;">Corte</span>
         </div>
-        <div style="text-align: center; color: #888; cursor: pointer; flex: 1;">
+        <div onclick="alert('La sezione Archivio è in lavorazione!')" style="text-align: center; color: #888; cursor: pointer; flex: 1;">
           <i class="fa-solid fa-book" style="font-size: 1.2rem; display: block; margin-bottom: 4px;"></i>
           <span style="font-size: 0.7rem;">Archivio</span>
         </div>
