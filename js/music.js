@@ -97,11 +97,6 @@ const MusicPlayer = {
             const filename = this.tracks[this.currentTrackIndex].split('/').pop().replace(' (freetouse.com).mp3', '');
             titleEl.textContent = filename;
         }
-
-        const dropdownBtn = document.getElementById('dropdown-audio-btn');
-        if (dropdownBtn) {
-            dropdownBtn.innerHTML = this.isPlaying ? '<i class="fa-solid fa-volume-high"></i> Disattiva Musica' : '<i class="fa-solid fa-volume-xmark"></i> Attiva Musica';
-        }
     }
 };
 
