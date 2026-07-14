@@ -143,20 +143,33 @@
               </div>
             </div>
 
-            <!-- Lista Casi -->
+            <!-- Lista Casi (Caricata da DB) -->
             <div class="dark-panel">
               <h3 class="text-gold">I Tuoi Fascicoli</h3>
-              <ul style="list-style: none; margin-top: 1rem;">
-                <li style="padding: 0.5rem 0; border-bottom: 1px solid var(--border-color);">
-                  <a href="#" onclick="alert('Il sistema dei casi e il collegamento al database è in fase di sviluppo. Sarà pronto a breve!'); return false;" style="color: var(--text-primary); text-decoration: none;">
-                    📕 Inferno - Caso #1: Paolo e Francesca (Clicca per avviare)
-                  </a>
-                </li>
-                <li style="padding: 0.5rem 0; border-bottom: 1px solid var(--border-color);">
-                  <span class="text-muted">📕 Inferno - Caso #2: Ciacco (Disponibile prossimamente)</span>
-                </li>
+              <ul id="student-cases-list" style="list-style: none; margin-top: 1rem;">
+                <li style="padding: 1rem; text-align: center; color: #888;">Caricamento casi in corso...</li>
               </ul>
             </div>
+          </div>
+        </section>
+
+        <!-- VISTA ADMIN -->
+        <section id="view-admin-dashboard" class="view animate-fade-in" style="display: none;">
+          <h2 class="text-gold">Pannello Amministratore</h2>
+          <div class="parchment-panel" style="margin-top: 2rem;">
+            <h3>Gestione Contenuti</h3>
+            <p class="text-on-parchment-muted">Essendo il database vuoto, puoi inizializzare la struttura di base (Campagna Inferno e Casi di prova).</p>
+            <button id="admin-seed-btn" class="btn" style="background: var(--danger-color); color: white; margin-top: 1rem;">Inizializza Database (Casi Mock)</button>
+          </div>
+        </section>
+
+        <!-- VISTA DOCENTE -->
+        <section id="view-teacher-dashboard" class="view animate-fade-in" style="display: none;">
+          <h2 class="text-gold">Pannello Docente / Presidente di Corte</h2>
+          <div class="parchment-panel" style="margin-top: 2rem;">
+            <h3>Le tue Classi e Corti</h3>
+            <p class="text-on-parchment-muted">Qui potrai creare classi, invitare studenti e monitorare i verdetti espressi.</p>
+            <button class="btn btn-secondary" onclick="alert('Funzione in arrivo!')" style="margin-top: 1rem;">+ Crea Nuova Corte</button>
           </div>
         </section>
 
@@ -205,7 +218,10 @@
 
     <!-- Firebase SDKs via CDN -->
     <script type="module" src="js/firebase-config.js"></script>
+    <script type="module" src="js/db.js"></script>
     <script src="js/music.js"></script>
+    <script type="module" src="js/game.js"></script>
+    <script type="module" src="js/minigames.js"></script>
     <script type="module" src="js/app.js"></script>
   </body>
 </html>

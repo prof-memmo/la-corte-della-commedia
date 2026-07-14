@@ -158,24 +158,37 @@ onAuthStateChanged(auth, async (user) => {
     const mainFooter = document.getElementById('main-footer');
     if (mainFooter) mainFooter.style.display = 'block';
     
-    // Leggi XP dal database
+    // Leggi Profilo dal database tramite EroiDB
     try {
-      const docSnap = await getDoc(doc(db, 'users', user.uid));
-      if (docSnap.exists()) {
-        const xp = docSnap.data().xp || 0;
-        const xpText = `XP: ${xp} / 500`;
-        
-        const xpSpan = document.getElementById('user-xp');
-        if (xpSpan) xpSpan.textContent = xpText;
-        
-        const dropdownXp = document.getElementById('dropdown-user-xp');
-        if (dropdownXp) dropdownXp.textContent = `${xp} XP`;
+      let role = 'student';
+      if (window.EroiDB) {
+        const profile = await window.EroiDB.getUserProfile(user.uid);
+        if (profile) {
+          const xp = profile.xp || 0;
+          role = profile.role || 'student';
+          const xpText = `XP: ${xp} / 500`;
+          
+          const xpSpan = document.getElementById('user-xp');
+          if (xpSpan) xpSpan.textContent = xpText;
+          
+          const dropdownXp = document.getElementById('dropdown-user-xp');
+          if (dropdownXp) dropdownXp.textContent = `${xp} XP`;
+        }
+      }
+      
+      // Routing in base al ruolo
+      if (user.email === 'prof.memmo@gmail.com' || role === 'admin') {
+        showView('view-admin-dashboard');
+      } else if (role === 'teacher') {
+        showView('view-teacher-dashboard');
+      } else {
+        showView('view-dashboard'); // Studente / Giurato
+        loadStudentCases();
       }
     } catch (e) {
-      console.warn("Impossibile caricare XP. L'utente ha effettuato l'accesso ma il DB potrebbe non essere accessibile.", e);
+      console.warn("Impossibile caricare il profilo.", e);
+      showView('view-dashboard');
     }
-    
-    showView('view-dashboard');
   } else {
     // Nascondi il menu utente, header, nav e footer
     const userMenu = document.getElementById('user-menu-container');
@@ -192,63 +205,58 @@ onAuthStateChanged(auth, async (user) => {
   }
 });
 
-// LOGICA DEL PROCESSO (TRIAL FLOW)
-const trialContent = document.getElementById('trial-content');
+// Admin Seed logic
+const adminSeedBtn = document.getElementById('admin-seed-btn');
+if (adminSeedBtn) {
+  adminSeedBtn.addEventListener('click', async () => {
+    if (!state.user || state.user.email !== 'prof.memmo@gmail.com') return;
+    adminSeedBtn.disabled = true;
+    adminSeedBtn.textContent = 'Inizializzazione in corso...';
+    try {
+      const { doc, setDoc } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
+      const { db } = await import("./firebase-config.js");
+      
+      // Crea Campagna Inferno
+      await setDoc(doc(db, "campaigns", "inferno"), {
+        id: "inferno",
+        name: "Inferno",
+        order: 1,
+        active: true
+      });
+      
+      // Crea Caso Mock 1
+      await setDoc(doc(db, "cases", "paolo_francesca"), {
+        id: "paolo_francesca",
+        campaignId: "inferno",
+        characterName: "Paolo e Francesca",
+        canto: "Canto V",
+        cerchio: "Secondo Cerchio (Lussuriosi)",
+        order: 1,
+        active: true,
+        phases: {
+          facts: "Si amarono leggendo di Lancillotto e Ginevra. Furono uccisi dal marito di lei, Gianciotto.",
+          accusation: "Hanno sottomesso la ragione al desiderio carnale, tradendo i vincoli coniugali.",
+          defense: "Amore, ch'a nullo amato amar perdona... fummo travolti da una forza irresistibile."
+        }
+      });
+      
+      alert("Database inizializzato con successo!");
+    } catch (e) {
+      console.error(e);
+      alert("Errore inizializzazione db: " + e.message);
+    } finally {
+      adminSeedBtn.disabled = false;
+      adminSeedBtn.textContent = 'Inizializza Database (Casi Mock)';
+    }
+  });
+}
+
+// LOGICA DEL PROCESSO delegata a game.js
 const trialNextBtn = document.getElementById('trial-next-btn');
 const trialBackBtn = document.getElementById('trial-back-btn');
 
-window.app = {
-  startTrial: function(caseId) {
-    state.currentCaseId = caseId;
-    state.currentPhase = 1;
-    showView('view-trial');
-    this.renderPhase();
-  },
-  
-  nextPhase: function() {
-    if (state.currentPhase < 8) {
-      state.currentPhase++;
-      this.renderPhase();
-    }
-  },
-
-  renderPhase: function() {
-    document.getElementById('trial-phase-text').textContent = `Fase ${state.currentPhase} di 8`;
-    document.getElementById('trial-progress').style.width = `${(state.currentPhase / 8) * 100}%`;
-    
-    trialBackBtn.style.display = 'none';
-    trialNextBtn.style.display = 'inline-block';
-    trialNextBtn.textContent = 'Procedi';
-
-    if (state.currentPhase === 1) {
-      trialContent.innerHTML = `
-        <h3 class="text-crimson" style="text-align:center;">Apertura del Fascicolo</h3>
-        <p style="text-align:center;">Paolo e Francesca (Canto V, Secondo Cerchio)</p>
-        <p>Giudice, la Corte è convocata. Analizza i fatti e ascolta l'accusa.</p>
-      `;
-    } else if (state.currentPhase === 7) {
-      trialContent.innerHTML = `
-        <h3 class="text-crimson" style="text-align:center;">Emetti il tuo Verdetto</h3>
-        <p>Decidi la sorte dell'anima e motiva la tua sentenza.</p>
-      `;
-      trialNextBtn.textContent = 'Sigilla Sentenza';
-    } else if (state.currentPhase === 8) {
-      trialContent.innerHTML = `
-        <div style="text-align:center;">
-          <h2 class="text-gold">Sentenza Eseguita!</h2>
-          <p>Hai ottenuto +500 XP per la tua motivazione.</p>
-        </div>
-      `;
-      trialNextBtn.style.display = 'none';
-      trialBackBtn.style.display = 'inline-block';
-    } else {
-      trialContent.innerHTML = `<p style="text-align:center;">Contenuto della Fase ${state.currentPhase} in caricamento...</p>`;
-    }
-  }
-};
-
-trialNextBtn.addEventListener('click', () => window.app.nextPhase());
-trialBackBtn.addEventListener('click', () => showView('view-dashboard'));
+if (trialNextBtn) trialNextBtn.addEventListener('click', () => { if(window.EroiGame) window.EroiGame.nextPhase(); });
+if (trialBackBtn) trialBackBtn.addEventListener('click', () => { if(window.EroiGame) window.EroiGame.prevPhase(); });
 
 // Gestione Modal Privacy e Termini
 const LEGAL_TEXTS = {
@@ -302,6 +310,58 @@ const LEGAL_TEXTS = {
         <p>I presenti Termini sono regolati dalla normativa italiana.</p>
     `
 };
+
+window.showView = showView;
+
+// Funzione per caricare i fascicoli dello studente
+async function loadStudentCases() {
+  const listEl = document.getElementById('student-cases-list');
+  if (!listEl || !window.EroiDB) return;
+  
+  listEl.innerHTML = '<li style="padding: 1rem; text-align: center; color: #888;">Ricerca fascicoli nell\'archivio...</li>';
+  
+  try {
+    const campaigns = await window.EroiDB.getCampaigns();
+    if (campaigns.length === 0) {
+      listEl.innerHTML = '<li style="padding: 1rem; text-align: center; color: #888;">Nessun fascicolo disponibile al momento.</li>';
+      return;
+    }
+    
+    // Prendiamo la prima campagna attiva (es. Inferno)
+    const activeCamp = campaigns[0];
+    const cases = await window.EroiDB.getCasesByCampaign(activeCamp.id);
+    
+    listEl.innerHTML = '';
+    if (cases.length === 0) {
+      listEl.innerHTML = '<li style="padding: 1rem; text-align: center; color: #888;">La campagna non ha ancora casi.</li>';
+      return;
+    }
+    
+    cases.forEach(c => {
+      const li = document.createElement('li');
+      li.style.cssText = "padding: 0.5rem 0; border-bottom: 1px solid var(--border-color);";
+      
+      const a = document.createElement('a');
+      a.href = "#";
+      a.style.cssText = "color: var(--text-primary); text-decoration: none;";
+      a.innerHTML = `📕 ${activeCamp.name} - ${c.characterName} (Clicca per avviare)`;
+      a.onclick = (e) => {
+        e.preventDefault();
+        if (window.EroiGame) {
+          window.EroiGame.startTrial(c.id);
+        } else {
+          alert("Il motore del processo è in fase di caricamento.");
+        }
+      };
+      
+      li.appendChild(a);
+      listEl.appendChild(li);
+    });
+  } catch (e) {
+    console.error("Errore caricamento casi", e);
+    listEl.innerHTML = '<li style="padding: 1rem; text-align: center; color: var(--danger-color);">Errore di connessione all\'Archivio.</li>';
+  }
+}
 
 window.showLegal = function(type) {
     const modal = document.getElementById('legal-modal');
