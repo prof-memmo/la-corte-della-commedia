@@ -2,109 +2,78 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     
-    // Funzioni di utilità
-    function isAuthenticated() {
-      return request.auth != null;
+    // Funzioni di supporto
+    function isAuthenticated() { 
+      return request.auth != null; 
     }
     
-    function isAdmin() {
-      return isAuthenticated() && request.auth.token.email == 'prof.memmo@gmail.com';
+    function isAdmin() { 
+      return isAuthenticated() && request.auth.token.email == 'prof.memmo@gmail.com'; 
     }
     
-    function isOwner(userId) {
-      return isAuthenticated() && request.auth.uid == userId;
+    function isOwner(userId) { 
+      return isAuthenticated() && request.auth.uid == userId; 
+    }
+    
+    function isTeacherOrPresident(classId) { 
+      return isAuthenticated() && get(/databases/$(database)/documents/classes/$(classId)).data.ownerId == request.auth.uid;
     }
 
-    // Nega tutto di default per sicurezza
+    // Regola globale di default (chiudi tutto)
     match /{document=**} {
-      allow read, write: if isAdmin();
-    }
-    
-    // ----------------------------------------------------------------------
-    // UTENTI E PROFILI
-    // ----------------------------------------------------------------------
-    match /users/{userId} {
-      // Chiunque autenticato può leggere (necessario per classifiche e membri corte)
-      allow read: if isAuthenticated(); 
-      // L'utente può modificare solo il proprio profilo (escludendo ruoli e XP diretti)
-      allow update: if isOwner(userId) && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['role', 'xp', 'level', 'badges']);
-      allow create: if isOwner(userId);
-    }
-    
-    // ----------------------------------------------------------------------
-    // DATI DI GIOCO (Data-Driven) - Sola lettura per gli utenti
-    // ----------------------------------------------------------------------
-    match /campaigns/{id} { allow read: if isAuthenticated(); }
-    match /cases/{id} { allow read: if isAuthenticated(); }
-    match /characters/{id} { allow read: if isAuthenticated(); }
-    match /cantos/{id} { allow read: if isAuthenticated(); }
-    match /activities/{id} { allow read: if isAuthenticated(); }
-    match /questions/{id} { allow read: if isAuthenticated(); }
-    match /badges/{id} { allow read: if isAuthenticated(); }
-    match /missions/{id} { allow read: if isAuthenticated(); }
-    match /levels/{id} { allow read: if isAuthenticated(); }
-    
-    // ----------------------------------------------------------------------
-    // PROGRESSI E SENTENZE
-    // ----------------------------------------------------------------------
-    match /progress/{progressId} {
-      // TODO: Implementare controlli specifici per Docenti e Presidenti di Corte
-      allow read: if isOwner(resource.data.userId);
-      allow create: if isOwner(request.resource.data.userId);
-      allow update: if isOwner(resource.data.userId);
-    }
-    
-    match /sentences/{sentenceId} {
-      allow read: if isOwner(resource.data.userId) || resource.data.isPublic == true;
-      allow create: if isOwner(request.resource.data.userId);
+      allow read, write: if false;
     }
 
-    match /xpLogs/{logId} {
-      allow read: if isOwner(resource.data.userId);
-      allow create: if isOwner(request.resource.data.userId);
+    // UTENTI: Ognuno legge/scrive il proprio. L'admin fa tutto. I docenti leggono i membri delle loro classi.
+    match /users/{userId} {
+      allow read: if isAuthenticated(); // Consente di leggere avatar e displayName per classifiche
+      allow write: if isOwner(userId) || isAdmin();
     }
-    
-    // ----------------------------------------------------------------------
-    // CORTI PRIVATE E MEMBRI
-    // ----------------------------------------------------------------------
-    match /courts/{courtId} {
-      allow read: if isAuthenticated();
-      allow create: if isAuthenticated();
-      allow update: if isAuthenticated() && resource.data.creatorId == request.auth.uid;
-    }
-    
-    match /courtMembers/{memberId} {
-      allow read: if isAuthenticated();
-      allow create: if isAuthenticated();
-      // Solo l'utente o il creatore della corte possono rimuovere/modificare
-      allow update, delete: if isAuthenticated() && (resource.data.userId == request.auth.uid || get(/databases/$(database)/documents/courts/$(resource.data.courtId)).data.creatorId == request.auth.uid);
-    }
-    
-    // ----------------------------------------------------------------------
-    // SCUOLE E CLASSI (Solo lettura per studenti, scrittura per docenti/admin)
-    // ----------------------------------------------------------------------
-    match /schools/{schoolId} {
-      allow read: if isAuthenticated();
-    }
+
+    // CONTENUTI DATA-DRIVEN: Lettura per tutti gli autenticati, scrittura solo Admin.
+    match /campaigns/{docId} { allow read: if isAuthenticated(); allow write: if isAdmin(); }
+    match /cases/{docId} { allow read: if isAuthenticated(); allow write: if isAdmin(); }
+    match /activities/{docId} { allow read: if isAuthenticated(); allow write: if isAdmin(); }
+    match /badges/{docId} { allow read: if isAuthenticated(); allow write: if isAdmin(); }
+    match /levels/{docId} { allow read: if isAuthenticated(); allow write: if isAdmin(); }
+    match /questions/{docId} { allow read: if isAuthenticated(); allow write: if isAdmin(); }
+    match /characters/{docId} { allow read: if isAuthenticated(); allow write: if isAdmin(); }
+    match /cantos/{docId} { allow read: if isAuthenticated(); allow write: if isAdmin(); }
+    match /missions/{docId} { allow read: if isAuthenticated(); allow write: if isAdmin(); }
+    match /settings/{docId} { allow read: if isAuthenticated(); allow write: if isAdmin(); }
+
+    // CLASSI e CORTI
     match /classes/{classId} {
-      allow read: if isAuthenticated();
-      allow create: if isAuthenticated() && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'teacher';
-      allow update, delete: if isAuthenticated() && resource.data.teacherId == request.auth.uid;
-    }
-    match /classMembers/{memberId} {
-      allow read: if isAuthenticated();
-      allow create: if isAuthenticated();
-      allow delete: if isAuthenticated() && (resource.data.studentId == request.auth.uid || get(/databases/$(database)/documents/classes/$(resource.data.classId)).data.teacherId == request.auth.uid);
+      allow read: if isAuthenticated(); 
+      allow create: if isAuthenticated(); // Qualsiasi docente/giurato può creare una corte
+      allow update, delete: if isTeacherOrPresident(classId) || isAdmin();
     }
     
-    // ----------------------------------------------------------------------
-    // NOTIFICHE E IMPOSTAZIONI
-    // ----------------------------------------------------------------------
-    match /notifications/{notifId} {
-      allow read, update: if isOwner(resource.data.userId);
+    match /courts/{courtId} {
+      allow read: if isAuthenticated(); 
+      allow create: if isAuthenticated();
+      allow update, delete: if isTeacherOrPresident(courtId) || isAdmin(); // La logica è la stessa delle classi
     }
-    match /settings/{settingId} {
-      allow read, write: if isOwner(resource.data.userId);
+
+    // SENTENZE E VERDETTI
+    match /sentences/{sentenceId} {
+      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
+      // Può leggerla chi l'ha scritta, l'insegnante della classe, o l'admin
+      allow read: if isOwner(resource.data.userId) || 
+                  isTeacherOrPresident(resource.data.classId) || 
+                  isAdmin();
+      allow update, delete: if isAdmin();
+    }
+    
+    // LOG XP E PROGRESSI
+    match /xpLogs/{logId} {
+      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
+      allow read: if isOwner(resource.data.userId) || isAdmin();
+    }
+    
+    match /progress/{progressId} {
+      allow create, update: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
+      allow read: if isOwner(resource.data.userId) || isTeacherOrPresident(resource.data.classId) || isAdmin();
     }
   }
 }
