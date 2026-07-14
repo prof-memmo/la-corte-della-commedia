@@ -6,70 +6,255 @@ export const MinigamesEngine = {
     },
     
     loadMinigame: function(caseId, containerElement) {
-        // Esempio base: "Ricerca degli Indizi" testuale
-        
+        // Mostriamo un menu per scegliere il minigioco da testare
         containerElement.innerHTML = `
-            <div class="minigame-wrapper" style="background: rgba(0,0,0,0.4); border-radius: 8px; padding: 20px; border: 1px solid var(--border-color);">
-                <h4 class="text-gold" style="text-align: center; margin-bottom: 15px;">🔍 Ispezione del Luogo (Cerchio dei Lussuriosi)</h4>
-                <p style="text-align: center; font-size: 0.9rem; margin-bottom: 20px;">
-                    Clicca sugli indizi nascosti nel testo per raccoglierli. Devi trovare almeno 2 prove per procedere.
-                </p>
-                
-                <div class="evidence-scene" style="line-height: 1.8; font-size: 1.1rem; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 8px;">
-                    La bufera infernal, che mai non resta, mena li spirti con la sua rapina. 
-                    Tra le anime trascinate dal vento, noti un <span class="clue" data-clue="Libro galeotto" style="color: #666; cursor: pointer; border-bottom: 1px dashed #666; transition: all 0.3s;">libro consumato</span> che cade a terra. 
-                    Più in là, le due anime volano leggere, unite per l'eternità da un <span class="clue" data-clue="Amore tragico e adultero" style="color: #666; cursor: pointer; border-bottom: 1px dashed #666; transition: all 0.3s;">legame indissolubile</span>.
-                    Nessun pentimento appare sui loro volti, solo il ricordo del <span class="clue" data-clue="Bacio proibito" style="color: #666; cursor: pointer; border-bottom: 1px dashed #666; transition: all 0.3s;">primo bacio</span> fatale.
+            <div style="text-align: center; margin-bottom: 20px;">
+                <h4 class="text-gold">Scegli il Metodo di Indagine</h4>
+                <div style="display: flex; justify-content: center; gap: 10px; margin-top: 15px; flex-wrap: wrap;">
+                    <button class="btn btn-secondary" id="btn-mg-hidden">👁️ Occhio dell'Inquisitore</button>
+                    <button class="btn btn-secondary" id="btn-mg-sequence">🗝️ Enigma della Serratura</button>
+                    <button class="btn btn-secondary" id="btn-mg-crypto">📜 Analisi Criptata</button>
+                </div>
+            </div>
+            <div id="active-minigame-area" style="min-height: 250px;">
+                <p style="text-align: center; color: #666; font-style: italic;">Seleziona un'indagine per iniziare la Fase 3.</p>
+            </div>
+        `;
+
+        // Blocchiamo il bottone "Procedi"
+        const trialNextBtn = document.getElementById('trial-next-btn');
+        if (trialNextBtn) trialNextBtn.disabled = true;
+
+        document.getElementById('btn-mg-hidden').onclick = () => this.loadHiddenObject(document.getElementById('active-minigame-area'), trialNextBtn);
+        document.getElementById('btn-mg-sequence').onclick = () => this.loadSequencePuzzle(document.getElementById('active-minigame-area'), trialNextBtn);
+        document.getElementById('btn-mg-crypto').onclick = () => this.loadCryptoText(document.getElementById('active-minigame-area'), trialNextBtn);
+    },
+
+    loadHiddenObject: function(container, nextBtn) {
+        if (nextBtn) nextBtn.disabled = true;
+        
+        container.innerHTML = `
+            <div class="minigame-wrapper animate-fade-in" style="background: rgba(0,0,0,0.6); border-radius: 8px; border: 1px solid var(--accent-gold); overflow: hidden; position: relative;">
+                <div style="padding: 10px; background: rgba(0,0,0,0.8); text-align: center;">
+                    <h5 class="text-gold" style="margin:0;">L'Occhio dell'Inquisitore</h5>
+                    <p style="margin:5px 0 0 0; font-size: 0.8rem; color: #ccc;">Esamina la scrivania. Trova il "Libro Proibito" e la "Lettera d'Amore" cliccando nei punti giusti. Errori rimanenti: <span id="ho-errors" class="text-crimson">3</span></p>
                 </div>
                 
-                <div style="margin-top: 25px; border-top: 1px solid rgba(212,175,55,0.2); padding-top: 15px;">
-                    <h5 class="text-gold">Prove Raccolte: <span id="clue-counter">0</span>/3</h5>
-                    <ul id="collected-clues" style="list-style-type: none; padding-left: 0; min-height: 50px; color: #a89f91;">
-                        <li style="font-style: italic; color: #555;">Nessuna prova trovata...</li>
+                <div id="ho-image-container" style="position: relative; width: 100%; aspect-ratio: 16/9; background: url('assets/Immagini/12.png') center/cover no-repeat; cursor: crosshair;">
+                    <!-- Hitbox 1: Libro -->
+                    <div class="ho-hitbox" data-clue="Libro Proibito" style="position: absolute; left: 60%; top: 50%; width: 25%; height: 20%; cursor: pointer;"></div>
+                    <!-- Hitbox 2: Lettera (Pergamena a sinistra) -->
+                    <div class="ho-hitbox" data-clue="Lettera d'Amore" style="position: absolute; left: 25%; top: 60%; width: 45%; height: 35%; cursor: pointer;"></div>
+                </div>
+                
+                <div style="padding: 10px; background: rgba(0,0,0,0.8);">
+                    <ul id="ho-collected" style="list-style-type: none; padding-left: 0; margin: 0; min-height: 25px; color: #a89f91; font-size: 0.9rem; display: flex; gap: 15px; justify-content: center;">
                     </ul>
                 </div>
             </div>
         `;
+
+        let found = 0;
+        let errors = 3;
+        const errorDisplay = document.getElementById('ho-errors');
+        const collectedList = document.getElementById('ho-collected');
         
-        let collectedCount = 0;
-        const maxClues = 3;
-        const clueCounter = document.getElementById('clue-counter');
-        const collectedList = document.getElementById('collected-clues');
-        const clues = containerElement.querySelectorAll('.clue');
-        
-        // Blocchiamo il bottone "Procedi" finché non trova le prove
-        const trialNextBtn = document.getElementById('trial-next-btn');
-        if (trialNextBtn) trialNextBtn.disabled = true;
-        
-        clues.forEach(clueEl => {
-            clueEl.addEventListener('click', function() {
-                if (this.classList.contains('found')) return;
-                
-                this.classList.add('found');
-                this.style.color = 'var(--accent-gold)';
-                this.style.fontWeight = 'bold';
-                this.style.borderBottom = 'none';
-                this.style.textShadow = '0 0 8px rgba(212,175,55,0.5)';
-                
-                if (collectedCount === 0) {
-                    collectedList.innerHTML = ''; // Rimuovi il testo segnaposto
+        // Gestione Click Sbagliati (sull'immagine intera)
+        document.getElementById('ho-image-container').addEventListener('click', (e) => {
+            if (e.target.id === 'ho-image-container') {
+                errors--;
+                errorDisplay.textContent = errors;
+                if (errors <= 0) {
+                    alert("Indagine fallita! Hai perso la lucidità. Riprova.");
+                    this.loadHiddenObject(container, nextBtn);
+                } else {
+                    // Feedback visivo di errore (flash rosso)
+                    e.target.style.boxShadow = "inset 0 0 50px rgba(255,0,0,0.5)";
+                    setTimeout(() => e.target.style.boxShadow = "none", 300);
                 }
+            }
+        });
+
+        // Gestione Click Corretti (sulle hitbox)
+        const hitboxes = container.querySelectorAll('.ho-hitbox');
+        hitboxes.forEach(hb => {
+            hb.addEventListener('click', (e) => {
+                e.stopPropagation(); // Evita di contare come errore
+                if (hb.dataset.found === "true") return;
                 
-                collectedCount++;
-                clueCounter.textContent = collectedCount;
+                hb.dataset.found = "true";
+                found++;
+                
+                // Evidenzia visivamente l'area
+                hb.style.border = "2px solid var(--accent-gold)";
+                hb.style.backgroundColor = "rgba(212,175,55,0.3)";
                 
                 const li = document.createElement('li');
-                li.innerHTML = `📜 <strong>${this.dataset.clue}</strong> (Prova acquisita al fascicolo)`;
-                li.style.animation = 'fadeIn 0.5s ease forwards';
-                li.style.marginBottom = '5px';
+                li.innerHTML = `✅ ${hb.dataset.clue}`;
+                li.style.animation = 'fadeIn 0.3s ease forwards';
                 collectedList.appendChild(li);
                 
-                // Sblocca il pulsante procedi se ha almeno 2 prove
-                if (collectedCount >= 2 && trialNextBtn) {
-                    trialNextBtn.disabled = false;
-                    trialNextBtn.classList.add('glow'); // Effetto opzionale
+                if (found === hitboxes.length) {
+                    if (nextBtn) {
+                        nextBtn.disabled = false;
+                        nextBtn.classList.add('glow');
+                    }
+                    setTimeout(() => alert("Ottimo lavoro, Inquisitore. Tutte le prove raccolte!"), 300);
                 }
             });
+        });
+    },
+
+    loadSequencePuzzle: function(container, nextBtn) {
+        if (nextBtn) nextBtn.disabled = true;
+        
+        container.innerHTML = `
+            <div class="minigame-wrapper animate-fade-in" style="background: rgba(0,0,0,0.4); border-radius: 8px; padding: 20px; border: 1px solid var(--accent-gold);">
+                <h5 class="text-gold" style="text-align: center; margin-bottom: 10px;">L'Enigma della Serratura</h5>
+                <p style="text-align: center; font-size: 0.9rem; margin-bottom: 20px;">
+                    Per sbloccare il diario dell'imputato, ordina gli elementi chiave della sua storia. (La soluzione corretta per Paolo e Francesca è: Amore, Libro, Tragedia).
+                </p>
+                
+                <div style="display: flex; justify-content: center; gap: 15px; margin-bottom: 20px;">
+                    <!-- Slot della soluzione -->
+                    <div class="seq-slot" data-index="0" style="width: 80px; height: 80px; border: 2px dashed #666; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 2rem; cursor: pointer; transition: 0.2s;"></div>
+                    <div class="seq-slot" data-index="1" style="width: 80px; height: 80px; border: 2px dashed #666; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 2rem; cursor: pointer; transition: 0.2s;"></div>
+                    <div class="seq-slot" data-index="2" style="width: 80px; height: 80px; border: 2px dashed #666; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 2rem; cursor: pointer; transition: 0.2s;"></div>
+                </div>
+                
+                <div style="text-align: center; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 8px;">
+                    <p style="margin-bottom: 10px; font-size: 0.8rem; color: #aaa;">Simboli disponibili (Clicca per inserirli):</p>
+                    <div id="seq-options" style="display: flex; justify-content: center; gap: 10px;">
+                        <button class="btn btn-secondary seq-option" data-val="1">💖 (Amore)</button>
+                        <button class="btn btn-secondary seq-option" data-val="2">📖 (Libro)</button>
+                        <button class="btn btn-secondary seq-option" data-val="3">⚔️ (Tragedia)</button>
+                        <button class="btn btn-secondary seq-option" data-val="4">⛰️ (Montagna)</button>
+                    </div>
+                </div>
+                
+                <div style="text-align: center; margin-top: 15px;">
+                    <button class="btn btn-primary" id="seq-check-btn">Sblocca Serratura</button>
+                    <p id="seq-feedback" style="margin-top: 10px; font-size: 0.9rem; display: none;"></p>
+                </div>
+            </div>
+        `;
+
+        let currentSequence = [null, null, null];
+        let currentSlot = 0;
+        
+        const slots = container.querySelectorAll('.seq-slot');
+        const options = container.querySelectorAll('.seq-option');
+        const checkBtn = document.getElementById('seq-check-btn');
+        const feedback = document.getElementById('seq-feedback');
+        
+        options.forEach(opt => {
+            opt.onclick = () => {
+                if (currentSlot < 3) {
+                    currentSequence[currentSlot] = opt.dataset.val;
+                    slots[currentSlot].textContent = opt.textContent.split(' ')[0]; // Prende solo l'emoji
+                    slots[currentSlot].style.borderColor = 'var(--accent-gold)';
+                    currentSlot++;
+                }
+            };
+        });
+        
+        slots.forEach(slot => {
+            slot.onclick = () => {
+                // Reset manuale
+                currentSequence = [null, null, null];
+                currentSlot = 0;
+                slots.forEach(s => { s.textContent = ''; s.style.borderColor = '#666'; });
+                feedback.style.display = 'none';
+            };
+        });
+        
+        checkBtn.onclick = () => {
+            if (currentSlot < 3) {
+                feedback.textContent = "Riempi tutti gli spazi prima di sbloccare.";
+                feedback.style.color = "var(--text-secondary)";
+                feedback.style.display = "block";
+                return;
+            }
+            
+            // Soluzione corretta: 1 (Amore), 2 (Libro), 3 (Tragedia)
+            if (currentSequence[0] === "1" && currentSequence[1] === "2" && currentSequence[2] === "3") {
+                feedback.textContent = "Serratura Sbloccata! Prove acquisite.";
+                feedback.style.color = "#4CAF50";
+                feedback.style.display = "block";
+                checkBtn.disabled = true;
+                if (nextBtn) {
+                    nextBtn.disabled = false;
+                    nextBtn.classList.add('glow');
+                }
+            } else {
+                feedback.textContent = "Sequenza errata. La serratura è bloccata. (Clicca sui quadrati per resettare)";
+                feedback.style.color = "var(--danger-color)";
+                feedback.style.display = "block";
+            }
+        };
+    },
+
+    loadCryptoText: function(container, nextBtn) {
+        if (nextBtn) nextBtn.disabled = true;
+        
+        container.innerHTML = `
+            <div class="minigame-wrapper animate-fade-in" style="background: rgba(0,0,0,0.4); border-radius: 8px; padding: 20px; border: 1px solid var(--accent-gold);">
+                <h5 class="text-gold" style="text-align: center; margin-bottom: 10px;">Analisi Criptata</h5>
+                <p style="text-align: center; font-size: 0.9rem; margin-bottom: 20px;">
+                    La testimonianza è parzialmente censurata. Usa il decodificatore per ricostruire la parola mancante.<br>
+                    <strong>Indizio:</strong> "Cosa condannò i due amanti?" (Anagramma: OBRLI)
+                </p>
+                
+                <div style="background: url('assets/Immagini/parchment_bg.png') center; padding: 25px; border-radius: 5px; color: #333; font-family: 'Times New Roman', serif; font-size: 1.2rem; text-align: center; line-height: 1.6; margin-bottom: 20px; box-shadow: inset 0 0 20px rgba(0,0,0,0.5);">
+                    "E non ci fu alcun dubbio, la colpa fu tutta di quel maledetto <br>
+                    <span id="crypto-word" style="display: inline-block; padding: 5px 15px; margin-top: 10px; background: rgba(0,0,0,0.8); color: var(--accent-gold); letter-spacing: 5px; font-weight: bold; border-radius: 4px;">_ _ _ _ _</span>"
+                </div>
+                
+                <div style="display: flex; justify-content: center; gap: 10px;">
+                    <input type="text" id="crypto-input" class="form-input" placeholder="Scrivi la parola..." style="width: 200px; text-transform: uppercase; text-align: center; font-weight: bold; letter-spacing: 2px;">
+                    <button class="btn btn-primary" id="crypto-check-btn">Decodifica</button>
+                </div>
+                <p id="crypto-feedback" style="text-align: center; margin-top: 10px; display: none;"></p>
+            </div>
+        `;
+
+        const input = document.getElementById('crypto-input');
+        const checkBtn = document.getElementById('crypto-check-btn');
+        const feedback = document.getElementById('crypto-feedback');
+        const wordDisplay = document.getElementById('crypto-word');
+        
+        checkBtn.onclick = () => {
+            const guess = input.value.trim().toUpperCase();
+            if (guess === "LIBRO") {
+                wordDisplay.textContent = "L I B R O";
+                wordDisplay.style.background = "none";
+                wordDisplay.style.color = "#8b0000"; // Rosso sangue
+                
+                feedback.textContent = "Testimonianza decodificata con successo!";
+                feedback.style.color = "#4CAF50";
+                feedback.style.display = "block";
+                
+                input.disabled = true;
+                checkBtn.disabled = true;
+                
+                if (nextBtn) {
+                    nextBtn.disabled = false;
+                    nextBtn.classList.add('glow');
+                }
+            } else {
+                feedback.textContent = "Decodifica errata, riprova.";
+                feedback.style.color = "var(--danger-color)";
+                feedback.style.display = "block";
+                input.value = "";
+            }
+        };
+        
+        // Permetti Invio da tastiera
+        input.addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                checkBtn.click();
+            }
         });
     }
 };
