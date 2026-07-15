@@ -217,20 +217,12 @@ h1, h2, h3, h4, h5, h6 {
   z-index: 2;
 }
 
-.map-node::after {
-  content: '';
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  width: 4px;
-  height: 3rem; /* Same as margin-bottom of map-node */
-  background: var(--border-color);
-  transform: translateX(-50%);
-  z-index: -1;
+.map-node:nth-child(odd) {
+  transform: translateX(-30px);
 }
 
-.map-node:last-child::after {
-  display: none;
+.map-node:nth-child(even) {
+  transform: translateX(30px);
 }
 
 .circle-btn {

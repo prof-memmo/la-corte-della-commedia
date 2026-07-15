@@ -77,7 +77,27 @@ export const MapEngine = {
         
         container.innerHTML = '';
         
-        let previousCompleted = true; // flag per l'animazione della linea
+        // Layer SVG per la linea di connessione (stile Duolingo)
+        const svgLayer = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svgLayer.style.position = 'absolute';
+        svgLayer.style.top = '0';
+        svgLayer.style.left = '0';
+        svgLayer.style.width = '100%';
+        svgLayer.style.height = '100%';
+        svgLayer.style.zIndex = '0';
+        svgLayer.style.pointerEvents = 'none';
+        container.appendChild(svgLayer);
+
+        // Layer per i nodi HTML
+        const nodesLayer = document.createElement('div');
+        nodesLayer.style.position = 'relative';
+        nodesLayer.style.zIndex = '1';
+        nodesLayer.style.display = 'flex';
+        nodesLayer.style.flexDirection = 'column';
+        nodesLayer.style.alignItems = 'center';
+        container.appendChild(nodesLayer);
+        
+        const renderedNodes = [];
 
         INFERNO_CIRCLES.forEach((circle, index) => {
             const unlocked = this.isCircleUnlocked(index);
@@ -121,8 +141,72 @@ export const MapEngine = {
 
             node.appendChild(btn);
             node.appendChild(infoText);
-            container.appendChild(node);
+            nodesLayer.appendChild(node);
+            renderedNodes.push({ node, completed });
         });
+
+        // Disegna il percorso SVG sfalsato una volta renderizzati i nodi
+        setTimeout(() => {
+            let pathD = "";
+            let completedPathD = "";
+
+            const cRect = container.getBoundingClientRect();
+            
+            for (let i = 0; i < renderedNodes.length - 1; i++) {
+                const n1 = renderedNodes[i].node;
+                const n2 = renderedNodes[i+1].node;
+                
+                // Usa offsetTop/offsetLeft relativi al container per non dipendere dallo scroll
+                const btn1 = n1.querySelector('.circle-btn');
+                const btn2 = n2.querySelector('.circle-btn');
+                
+                // Coordinate centro del bottone (n1)
+                const x1 = n1.offsetLeft + btn1.offsetLeft + (btn1.offsetWidth / 2);
+                const y1 = n1.offsetTop + btn1.offsetTop + (btn1.offsetHeight / 2);
+                
+                // Coordinate centro del bottone (n2)
+                const x2 = n2.offsetLeft + btn2.offsetLeft + (btn2.offsetWidth / 2);
+                const y2 = n2.offsetTop + btn2.offsetTop + (btn2.offsetHeight / 2);
+
+                if (i === 0) {
+                    pathD += `M ${x1} ${y1} `;
+                    completedPathD += `M ${x1} ${y1} `;
+                }
+                
+                const yMid = (y1 + y2) / 2;
+                const curveStr = `C ${x1} ${yMid}, ${x2} ${yMid}, ${x2} ${y2} `;
+                pathD += curveStr;
+                
+                if (renderedNodes[i].completed && renderedNodes[i+1].completed) {
+                    completedPathD += curveStr;
+                } else if (renderedNodes[i].completed) {
+                    // Traccia fino a metà o fino al prossimo non completato
+                    completedPathD += `C ${x1} ${yMid}, ${x2} ${yMid}, ${x2} ${y2} `;
+                }
+            }
+            
+            if (pathD) {
+                // Sfondo (linea scura/disattivata)
+                const bgPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                bgPath.setAttribute('d', pathD);
+                bgPath.setAttribute('fill', 'none');
+                bgPath.setAttribute('stroke', 'rgba(255, 255, 255, 0.1)');
+                bgPath.setAttribute('stroke-width', '12');
+                bgPath.setAttribute('stroke-linecap', 'round');
+                svgLayer.appendChild(bgPath);
+                
+                // Primo piano (linea dorata/verde completata)
+                if (completedPathD) {
+                    const fgPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                    fgPath.setAttribute('d', completedPathD);
+                    fgPath.setAttribute('fill', 'none');
+                    fgPath.setAttribute('stroke', '#d4af37'); // oro
+                    fgPath.setAttribute('stroke-width', '12');
+                    fgPath.setAttribute('stroke-linecap', 'round');
+                    svgLayer.appendChild(fgPath);
+                }
+            }
+        }, 50);
     },
 
     openCircleDashboard: function(circleId, cases) {
