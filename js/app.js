@@ -180,6 +180,15 @@ onAuthStateChanged(auth, async (user) => {
       console.warn("Impossibile caricare il profilo.", e);
     }
     
+    const navLabel = document.getElementById('nav-dashboard-label');
+    if (navLabel) {
+      if (role === 'teacher' || role === 'admin' || (user.email && user.email.toLowerCase() === 'prof.memmo@gmail.com')) {
+        navLabel.textContent = 'Loggia';
+      } else {
+        navLabel.textContent = 'Fascicoli';
+      }
+    }
+    
     // Routing in base al ruolo
     const userEmail = user.email ? user.email.toLowerCase() : '';
     if (role === 'pending') {
@@ -193,6 +202,7 @@ onAuthStateChanged(auth, async (user) => {
       MapEngine.init();
     } else if (role === 'teacher') {
       showView('view-teacher-dashboard');
+      if (window.TeacherDashboard) window.TeacherDashboard.init();
     } else if (role === 'external') {
       showView('view-map');
       MapEngine.init();
@@ -509,4 +519,160 @@ window.switchTeacherTab = function(tabName) {
         activeBtn.style.color = 'white';
         activeBtn.style.border = '2px solid #fff';
     }
+};
+
+// --- LOGICA TEACHER DASHBOARD ---
+import { firebaseConfig, initializeApp, getAuth } from "./firebase-config.js";
+
+window.TeacherDashboard = {
+  init: async function() {
+    console.log("Init Teacher Dashboard");
+    await this.renderClasses();
+    this.bindEvents();
+  },
+
+  renderClasses: async function() {
+    if (!state.user) return;
+    const classes = await EroiDB.getTeacherClasses(state.user.email);
+    
+    // Popola select classe
+    const selectStudentClass = document.getElementById('new-student-class');
+    if (selectStudentClass) {
+        selectStudentClass.innerHTML = classes.length ? '' : '<option disabled>Crea prima una classe</option>';
+        classes.forEach(c => {
+            const opt = document.createElement('option');
+            opt.value = c.id;
+            opt.textContent = c.name + " (" + c.id + ")";
+            selectStudentClass.appendChild(opt);
+        });
+    }
+
+    // Popola lista iscritti globale
+    const listContainer = document.querySelector('.dark-panel div[style*="min-height: 150px"]');
+    if (!listContainer) return;
+    
+    listContainer.innerHTML = ''; 
+    let totalStudents = 0;
+    
+    const table = document.createElement('table');
+    table.style.width = '100%';
+    table.style.borderCollapse = 'collapse';
+    table.style.textAlign = 'left';
+    table.innerHTML = `
+      <tr style="border-bottom: 1px solid var(--border-color); color: var(--accent-gold);">
+        <th style="padding: 10px;">Nome</th>
+        <th style="padding: 10px;">Email</th>
+        <th style="padding: 10px;">Classe</th>
+        <th style="padding: 10px;">Livello</th>
+      </tr>
+    `;
+
+    for (let c of classes) {
+        const students = await EroiDB.getStudentsByClass(c.id);
+        totalStudents += students.length;
+        students.forEach(s => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td style="padding: 10px;">${s.displayName || s.name}</td>
+                <td style="padding: 10px; color: #aaa;">${s.email}</td>
+                <td style="padding: 10px;">${c.name}</td>
+                <td style="padding: 10px;">${s.level || 1}</td>
+            `;
+            table.appendChild(tr);
+        });
+    }
+
+    if (totalStudents > 0) {
+        listContainer.style.display = 'block';
+        listContainer.style.background = 'transparent';
+        listContainer.appendChild(table);
+    } else {
+        listContainer.innerHTML = '<p style="color: #888; font-style: italic; text-align: center;">Nessuno studente iscritto al momento.</p>';
+    }
+
+    // Aggiorna schede statistiche (Assumendo che .stat-card h3 al primo indice sia le classi)
+    const statsCards = document.querySelectorAll('.stat-card h3');
+    if (statsCards.length >= 2) {
+        statsCards[0].textContent = classes.length;
+        statsCards[1].textContent = totalStudents;
+    }
+  },
+
+  bindEvents: function() {
+    const self = this;
+    // Crea Studente
+    const formStudent = document.getElementById('form-create-student');
+    if (formStudent && !formStudent.hasAttribute('data-bound')) {
+        formStudent.setAttribute('data-bound', 'true');
+        formStudent.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('btn-save-new-student');
+            const name = document.getElementById('new-student-name').value;
+            const email = document.getElementById('new-student-email').value;
+            const classId = document.getElementById('new-student-class').value;
+
+            if (!classId) return alert("Crea prima una classe!");
+            btn.disabled = true;
+            btn.textContent = 'Creazione...';
+
+            try {
+                // Secondary app per Auth (evita di disconnettere il docente)
+                const secondaryApp = initializeApp(firebaseConfig, "Secondary");
+                const secondaryAuth = getAuth(secondaryApp);
+                const defaultPassword = name.toLowerCase().replace(/\\s+/g, '') + "123";
+
+                const userCred = await createUserWithEmailAndPassword(secondaryAuth, email, defaultPassword);
+                
+                await setDoc(doc(db, 'users', userCred.user.uid), {
+                  uid: userCred.user.uid,
+                  email: email,
+                  displayName: name,
+                  xp: 0,
+                  level: 1,
+                  role: 'student',
+                  classId: classId
+                });
+
+                await secondaryAuth.signOut(); // Esci sulla secondary app
+
+                alert("Studente creato con successo!\\nEmail: " + email + "\\nPassword: " + defaultPassword);
+                formStudent.reset();
+                self.renderClasses();
+            } catch (err) {
+                console.error(err);
+                alert("Errore: " + err.message);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Aggiungi';
+            }
+        });
+    }
+
+    // Crea Classe
+    const formClass = document.getElementById('form-create-class');
+    if (formClass && !formClass.hasAttribute('data-bound')) {
+        formClass.setAttribute('data-bound', 'true');
+        formClass.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = document.querySelector('#form-create-class input[placeholder*="Codice"]').value.trim().toUpperCase();
+            const name = document.querySelector('#form-create-class input[placeholder*="Nome esteso"]').value.trim();
+            
+            if (!id || !name) return alert("Inserisci codice e nome classe.");
+
+            try {
+                await EroiDB.saveClass({
+                    id: id,
+                    name: name,
+                    teacher: state.user.email,
+                    createdAt: new Date().toISOString()
+                });
+                alert("Classe creata con successo!");
+                formClass.reset();
+                self.renderClasses();
+            } catch (err) {
+                alert("Errore creazione classe: " + err.message);
+            }
+        });
+    }
+  }
 };

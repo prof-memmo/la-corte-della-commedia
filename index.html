@@ -267,6 +267,28 @@
                 </form>
               </div>
 
+              <!-- Nuovo Studente -->
+              <div class="dark-panel" style="margin-bottom: 24px;">
+                <h3 class="panel-title" style="color: var(--accent-gold); font-family: 'Cinzel', serif; margin-bottom: 1rem;">Nuovo Studente</h3>
+                <form id="form-create-student" onsubmit="return false;" style="display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 15px; align-items: flex-end;">
+                  <div class="form-group" style="margin-bottom: 0;">
+                    <label for="new-student-name" style="color: #aaa; font-size: 0.9rem;">Nome e Cognome</label>
+                    <input type="text" id="new-student-name" class="form-input" required placeholder="Ettore Priamo">
+                  </div>
+                  <div class="form-group" style="margin-bottom: 0;">
+                    <label for="new-student-email" style="color: #aaa; font-size: 0.9rem;">Email</label>
+                    <input type="email" id="new-student-email" class="form-input" required placeholder="ettore@scuola.it">
+                  </div>
+                  <div class="form-group" style="margin-bottom: 0;">
+                    <label for="new-student-class" style="color: #aaa; font-size: 0.9rem;">Classe</label>
+                    <select id="new-student-class" class="form-input" required>
+                      <!-- Popolata dinamicamente -->
+                    </select>
+                  </div>
+                  <button type="submit" class="btn btn-primary" style="height: 44px; margin-bottom: 6px;" id="btn-save-new-student">Aggiungi</button>
+                </form>
+              </div>
+
               <!-- Lista Classi e Iscritti -->
               <div class="dark-panel">
                 <h3 style="color: var(--accent-gold); font-family: 'Cinzel', serif; margin-bottom: 1rem;">Studenti Iscritti</h3>
@@ -360,7 +382,8 @@
 
           <!-- Mappa Purgatorio -->
           <div id="map-purgatorio" class="map-container" style="display: none; text-align: center; padding: 5rem 3rem; background: linear-gradient(to bottom, #2c3e50, #1a252f); border-radius: 20px; box-shadow: inset 0 0 50px #000; min-height: 400px; position: relative;">
-            <div style="background: rgba(0,0,0,0.7); padding: 2rem; border-radius: 10px; display: inline-block;">
+            <img src="assets/Immagini/6.png" style="position: absolute; top: 10%; right: 10%; width: 150px; height: 150px; object-fit: cover; border-radius: 50%; opacity: 0.8; box-shadow: 0 0 20px #000; border: 2px solid #fff;">
+            <div style="background: rgba(0,0,0,0.7); padding: 2rem; border-radius: 10px; display: inline-block; position: relative; z-index: 1;">
                 <i class="fa-solid fa-mountain" style="font-size: 4rem; color: #aaa; margin-bottom: 1rem;"></i>
                 <h3 class="text-gold">La Montagna del Purgatorio è ancora avvolta dalla nebbia...</h3>
                 <p style="color: #ddd;">Completa prima il viaggio nell'Inferno per sbloccare l'accesso.</p>
@@ -369,7 +392,8 @@
 
           <!-- Mappa Paradiso -->
           <div id="map-paradiso" class="map-container" style="display: none; text-align: center; padding: 5rem 3rem; background: linear-gradient(to bottom, #d4af37, #8b6508); border-radius: 20px; box-shadow: inset 0 0 50px #000; min-height: 400px; position: relative;">
-            <div style="background: rgba(0,0,0,0.7); padding: 2rem; border-radius: 10px; display: inline-block;">
+            <img src="assets/Immagini/8.png" style="position: absolute; bottom: 10%; left: 10%; width: 150px; height: 150px; object-fit: cover; border-radius: 50%; opacity: 0.8; box-shadow: 0 0 20px #000; border: 2px solid #fff;">
+            <div style="background: rgba(0,0,0,0.7); padding: 2rem; border-radius: 10px; display: inline-block; position: relative; z-index: 1;">
                 <i class="fa-solid fa-sun" style="font-size: 4rem; color: #aaa; margin-bottom: 1rem;"></i>
                 <h3 class="text-gold">Le sfere celesti non sono ancora allineate...</h3>
                 <p style="color: #ddd;">Completa prima il viaggio nel Purgatorio per sbloccare l'accesso.</p>

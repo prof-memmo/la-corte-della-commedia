@@ -97,6 +97,37 @@ export const MapEngine = {
         nodesLayer.style.alignItems = 'center';
         container.appendChild(nodesLayer);
         
+        // Elemento Decorativo (Duolingo Style)
+        const decorImg = document.createElement('img');
+        decorImg.src = 'assets/Immagini/10.png';
+        decorImg.style.position = 'absolute';
+        decorImg.style.top = '15%';
+        decorImg.style.right = '5%';
+        decorImg.style.width = '120px';
+        decorImg.style.height = '120px';
+        decorImg.style.objectFit = 'cover';
+        decorImg.style.borderRadius = '50%';
+        decorImg.style.boxShadow = '0 0 20px rgba(0,0,0,0.8)';
+        decorImg.style.border = '2px solid var(--border-color)';
+        decorImg.style.zIndex = '0';
+        decorImg.style.opacity = '0.8';
+        container.appendChild(decorImg);
+        
+        const decorImg2 = document.createElement('img');
+        decorImg2.src = 'assets/Immagini/10.png';
+        decorImg2.style.position = 'absolute';
+        decorImg2.style.bottom = '15%';
+        decorImg2.style.left = '5%';
+        decorImg2.style.width = '100px';
+        decorImg2.style.height = '100px';
+        decorImg2.style.objectFit = 'cover';
+        decorImg2.style.borderRadius = '50%';
+        decorImg2.style.boxShadow = '0 0 20px rgba(0,0,0,0.8)';
+        decorImg2.style.border = '2px solid var(--border-color)';
+        decorImg2.style.zIndex = '0';
+        decorImg2.style.opacity = '0.6';
+        container.appendChild(decorImg2);
+        
         const renderedNodes = [];
 
         INFERNO_CIRCLES.forEach((circle, index) => {

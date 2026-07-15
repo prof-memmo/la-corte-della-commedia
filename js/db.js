@@ -77,6 +77,47 @@ const EroiDB = {
         }
     },
 
+    // --- DOCENTI E CLASSI ---
+    saveClass: async function(classData) {
+        try {
+            await setDoc(doc(db, "classes", classData.id), classData);
+            return classData.id;
+        } catch (e) {
+            console.error("Errore saveClass:", e);
+            throw e;
+        }
+    },
+
+    getTeacherClasses: async function(teacherEmail) {
+        try {
+            const q = query(collection(db, "classes"), where("teacher", "==", teacherEmail));
+            const querySnapshot = await getDocs(q);
+            const classes = [];
+            querySnapshot.forEach((doc) => {
+                classes.push(doc.data());
+            });
+            return classes;
+        } catch (e) {
+            console.error("Errore getTeacherClasses:", e);
+            return [];
+        }
+    },
+
+    getStudentsByClass: async function(classId) {
+        try {
+            const q = query(collection(db, "users"), where("classId", "==", classId), where("role", "==", "student"));
+            const querySnapshot = await getDocs(q);
+            const students = [];
+            querySnapshot.forEach((doc) => {
+                students.push(doc.data());
+            });
+            return students;
+        } catch (e) {
+            console.error("Errore getStudentsByClass:", e);
+            return [];
+        }
+    },
+
     // --- CAMPAGNE E CASI ---
     getCampaigns: async function() {
         if (this.cache.campaigns.length > 0) return this.cache.campaigns;
