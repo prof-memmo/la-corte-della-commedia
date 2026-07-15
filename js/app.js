@@ -207,7 +207,7 @@ onAuthStateChanged(auth, async (user) => {
       showView('view-map');
       MapEngine.init();
     } else {
-      showView('view-map'); // Mappa di default per Studente
+      window.goToDashboard();
       MapEngine.init();
     }
   } else {
@@ -241,7 +241,15 @@ window.goToDashboard = function() {
     } else if (role === 'teacher') {
         showView('view-teacher-dashboard');
     } else {
-        showView('view-map');
+        showView('view-student-dashboard');
+        // Popola i dati nella dashboard studente
+        const sName = document.getElementById('student-home-name');
+        const sXp = document.getElementById('student-home-xp');
+        const sLevel = document.getElementById('student-home-level');
+        
+        if (sName) sName.textContent = state.user.displayName || 'Studente';
+        if (sXp) sXp.textContent = profile ? (profile.xp || 0) : 0;
+        if (sLevel) sLevel.textContent = profile ? (profile.level || 1) : 1;
     }
 };
 

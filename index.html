@@ -422,6 +422,52 @@
           </div>
         </section>
 
+        <!-- DASHBOARD STUDENTE (Home) -->
+        <section id="view-student-dashboard" class="view animate-fade-in">
+          <div style="text-align: center; margin-bottom: 2rem;">
+            <h2 class="text-gold" style="font-size: 2.5rem; text-shadow: 0 0 20px rgba(212,175,55,0.5); font-family: 'Cinzel', serif;">La Tua Scrivania</h2>
+            <p style="color: #ccc; font-style: italic;">Preparati per il prossimo processo, <span id="student-home-name">Studente</span></p>
+          </div>
+          
+          <div style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; margin-bottom: 2rem;">
+            <!-- XP Card -->
+            <div class="stat-card" style="background: linear-gradient(145deg, #2a2a2a, #1a1a1a); padding: 1.5rem; border-radius: 15px; border: 1px solid var(--border-color); width: 250px; text-align: center;">
+              <i class="fa-solid fa-star text-gold" style="font-size: 2rem; margin-bottom: 10px;"></i>
+              <p style="color: #888; font-size: 0.9rem; text-transform: uppercase;">Punti Esperienza</p>
+              <h3 id="student-home-xp" style="font-size: 2rem; color: #fff; margin: 5px 0;">0</h3>
+            </div>
+            <!-- Level Card -->
+            <div class="stat-card" style="background: linear-gradient(145deg, #2a2a2a, #1a1a1a); padding: 1.5rem; border-radius: 15px; border: 1px solid var(--border-color); width: 250px; text-align: center;">
+              <i class="fa-solid fa-medal text-gold" style="font-size: 2rem; margin-bottom: 10px;"></i>
+              <p style="color: #888; font-size: 0.9rem; text-transform: uppercase;">Livello Attuale</p>
+              <h3 id="student-home-level" style="font-size: 2rem; color: #fff; margin: 5px 0;">1</h3>
+            </div>
+          </div>
+
+          <div style="text-align: center; margin-top: 3rem;">
+            <button class="btn btn-primary" onclick="showView('view-map')" style="font-size: 1.2rem; padding: 15px 40px;">
+              <i class="fa-solid fa-map-location-dot"></i> Esplora i Fascicoli (Mappa)
+            </button>
+          </div>
+        </section>
+
+        <!-- ARCHIVIO (Storico Verdetti) -->
+        <section id="view-archivio" class="view animate-fade-in">
+          <div style="text-align: center; margin-bottom: 2rem;">
+            <h2 class="text-gold" style="font-size: 2.5rem; text-shadow: 0 0 20px rgba(212,175,55,0.5); font-family: 'Cinzel', serif;">Archivio Storico</h2>
+            <p style="color: #ccc; font-style: italic;">Consulta i verdetti passati e le valutazioni ottenute.</p>
+          </div>
+          
+          <div class="parchment-panel">
+            <h3 style="color: var(--accent-crimson); font-family: 'Cinzel', serif; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 20px;">I Tuoi Processi Conclusi</h3>
+            
+            <!-- Lista mockata per ora -->
+            <div style="background: rgba(255,255,255,0.3); border: 1px dashed #aaa; padding: 20px; text-align: center; border-radius: 8px;">
+              <p style="color: #666; font-style: italic;">Nessun caso completato finora.</p>
+            </div>
+          </div>
+        </section>
+
       </main>
 
       <!-- Bottom Nav (Solo dopo login) -->
@@ -438,12 +484,10 @@
           <i class="fa-solid fa-gavel" style="font-size: 1.2rem; display: block; margin-bottom: 4px;"></i>
           <span style="font-size: 0.7rem;">Regolamento</span>
         </div>
-        <!-- Archivio disabilitato per ora
-        <div onclick="alert('La sezione Archivio è in lavorazione!')" style="text-align: center; color: #888; cursor: pointer; flex: 1;">
+        <div onclick="showView('view-archivio')" style="text-align: center; color: #888; cursor: pointer; flex: 1;">
           <i class="fa-solid fa-book" style="font-size: 1.2rem; display: block; margin-bottom: 4px;"></i>
           <span style="font-size: 0.7rem;">Archivio</span>
         </div>
-        -->
       </nav>
 
       <!-- Global Footer -->
