@@ -430,7 +430,7 @@
           <i class="fa-solid fa-map-location-dot" style="font-size: 1.2rem; display: block; margin-bottom: 4px;"></i>
           <span style="font-size: 0.7rem;">Mappa</span>
         </div>
-        <div onclick="if(window.app && window.app.goDashboard) { window.app.goDashboard(); } else { showView('view-dashboard'); }" style="text-align: center; color: #888; cursor: pointer; flex: 1;">
+        <div onclick="goToDashboard()" style="text-align: center; color: #888; cursor: pointer; flex: 1;">
           <i class="fa-solid fa-folder-open" style="font-size: 1.2rem; display: block; margin-bottom: 4px;"></i>
           <span style="font-size: 0.7rem;" id="nav-dashboard-label">Casi</span>
         </div>
@@ -438,10 +438,12 @@
           <i class="fa-solid fa-gavel" style="font-size: 1.2rem; display: block; margin-bottom: 4px;"></i>
           <span style="font-size: 0.7rem;">Regolamento</span>
         </div>
+        <!-- Archivio disabilitato per ora
         <div onclick="alert('La sezione Archivio è in lavorazione!')" style="text-align: center; color: #888; cursor: pointer; flex: 1;">
           <i class="fa-solid fa-book" style="font-size: 1.2rem; display: block; margin-bottom: 4px;"></i>
           <span style="font-size: 0.7rem;">Archivio</span>
         </div>
+        -->
       </nav>
 
       <!-- Global Footer -->

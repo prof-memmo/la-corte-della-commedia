@@ -226,6 +226,24 @@ onAuthStateChanged(auth, async (user) => {
   }
 });
 
+// Funzione globale per la Dashboard
+window.goToDashboard = function() {
+    if (!state.user) {
+        showView('view-login');
+        return;
+    }
+    const profile = EroiDB && EroiDB.cache ? EroiDB.cache.userProfile : null;
+    const role = profile ? profile.role : 'student';
+    const userEmail = state.user.email ? state.user.email.toLowerCase() : '';
+    
+    if (userEmail === 'prof.memmo@gmail.com' || role === 'admin') {
+        showView('view-admin-dashboard');
+    } else if (role === 'teacher') {
+        showView('view-teacher-dashboard');
+    } else {
+        showView('view-map');
+    }
+};
 
 // LOGICA DEL PROCESSO delegata a game.js
 const trialNextBtn = document.getElementById('trial-next-btn');
