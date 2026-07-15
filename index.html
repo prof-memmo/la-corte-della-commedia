@@ -113,9 +113,9 @@
               <div style="text-align: center; color: var(--text-muted); margin-bottom: 10px; font-size: 0.8rem; font-weight: bold;">— OPPURE —</div>
 
               <div id="login-email-form" style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 5px;">
-                  <input type="email" id="login-email" placeholder="Email (es: prof.memmo@gmail.com)" style="padding: 10px; border-radius: 8px; border: 1px solid #ddd; background: rgba(255,255,255,0.9); color: #1a1a2e; font-size: 0.95rem;">
-                  <input type="password" id="login-password" placeholder="Password (es: password123)" style="padding: 10px; border-radius: 8px; border: 1px solid #ddd; background: rgba(255,255,255,0.9); color: #1a1a2e; font-size: 0.95rem;">
-                  <button id="login-email-btn" class="btn" style="background: var(--accent-gold); color: #1a1a2e; font-weight: bold; border-radius: 8px; padding: 10px; font-size: 1rem;" disabled>Accedi con Email</button>
+                  <input type="email" id="login-email" placeholder="Email" style="padding: 10px; border-radius: 8px; border: 1px solid #ddd; background: rgba(255,255,255,0.9); color: #1a1a2e; font-size: 0.95rem;">
+                  <input type="password" id="login-password" placeholder="Password" style="padding: 10px; border-radius: 8px; border: 1px solid #ddd; background: rgba(255,255,255,0.9); color: #1a1a2e; font-size: 0.95rem;">
+                  <button id="login-email-btn" class="btn" style="background: var(--accent-gold); color: #1a1a2e; font-weight: bold; border-radius: 8px; padding: 10px; font-size: 1rem;" disabled>Accedi o Registrati</button>
               </div>
               
               <p class="text-on-parchment-muted" style="font-size: 0.8rem; margin-top: 5px; line-height: 1.3;">
@@ -123,6 +123,36 @@
               </p>
             </div>
           </div>
+        </section>
+
+        <!-- VISTA ONBOARDING -->
+        <section id="view-onboarding" class="view animate-fade-in" style="padding-top: 2rem;">
+          <h2 class="text-gold" style="text-align: center; font-size: 2.5rem; font-family: 'Cinzel', serif;">Scegli il tuo percorso</h2>
+          <p style="text-align: center; color: #ccc; margin-bottom: 2rem;">Seleziona con quale veste vuoi varcare le porte dell'Inferno.</p>
+          
+          <div style="display: flex; flex-direction: column; gap: 15px; max-width: 600px; margin: 0 auto; padding: 0 1rem;">
+              <!-- Studente -->
+              <div class="dark-panel" style="padding: 20px; text-align: center; border: 2px solid #4da8da; cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'" onclick="window.app.selectRole('student')">
+                  <div style="font-size: 3rem; margin-bottom: 10px;">🎓</div>
+                  <h3 style="color: #4da8da; margin: 0;">STUDENTE</h3>
+                  <p style="font-size: 0.85rem; color: #aaa; margin-top: 10px;">Accumula XP, raccogli pergamene e conquista i titoli di saggezza.</p>
+              </div>
+
+              <!-- Docente -->
+              <div class="dark-panel" style="padding: 20px; text-align: center; border: 2px solid var(--accent-gold); cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'" onclick="window.app.selectRole('teacher')">
+                  <div style="font-size: 3rem; margin-bottom: 10px;">👨‍🏫</div>
+                  <h3 style="color: var(--accent-gold); margin: 0;">DOCENTE</h3>
+                  <p style="font-size: 0.85rem; color: #aaa; margin-top: 10px;">Accedi alla Loggia dei Giudici per guidare i tuoi allievi e valutare i loro verdetti.</p>
+              </div>
+
+              <!-- Pellegrino -->
+              <div class="dark-panel" style="padding: 20px; text-align: center; border: 2px solid #ccc; cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'" onclick="window.app.selectRole('external')">
+                  <div style="font-size: 3rem; margin-bottom: 10px;">🤝</div>
+                  <h3 style="color: #ccc; margin: 0;">PELLEGRINO</h3>
+                  <p style="font-size: 0.85rem; color: #aaa; margin-top: 10px;">Viaggiatore esterno. Esplora liberamente la mappa e le sentenze pubbliche.</p>
+              </div>
+          </div>
+        </section>
           
           <footer style="display: flex; align-items: center; justify-content: space-between; padding: 2rem; width: 100%; box-sizing: border-box; font-size: 0.75rem; color: var(--text-muted); line-height: 1.5; text-transform: uppercase; letter-spacing: 0.5px;">
             <p style="text-align: justify; margin: 0; flex: 1;">© 2026 Guglielmo Piersanti. Tutti i contenuti presenti su questo sito sono di proprietà dell'autore e sono protetti tramite deposito e marcatura temporale presso Patamu. I contenuti sono inoltre distribuiti con licenza Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0).</p>
@@ -130,51 +160,101 @@
           </footer>
         </section>
 
-        <!-- VISTA DASHBOARD -->
+        <!-- VISTA PROFILO (LIBRERIA) -->
         <section id="view-dashboard" class="view animate-fade-in">
-          <h2 class="text-gold" id="welcome-message">Bentornato, Giudice</h2>
+          <div style="text-align: center; margin-bottom: 2rem;">
+            <h2 class="text-gold" id="welcome-message" style="font-size: 2.5rem; text-shadow: 0 0 20px rgba(212,175,55,0.5); font-family: 'Cinzel', serif;">La Tua Libreria</h2>
+          </div>
           
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-top: 2rem;">
-            <!-- Profilo -->
-            <div class="parchment-panel">
-              <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
-                <img src="public/assets/dante_avatar.png" alt="Avatar" style="width: 60px; border-radius: 50%; border: 2px solid var(--border-gold);">
-                <div>
-                  <h3>Livello 1 - Esploratore</h3>
-                  <p class="text-on-parchment-muted" id="user-xp">XP: 0 / 500</p>
+          <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 2rem; margin-top: 2rem; align-items: start;">
+            
+            <!-- Pannello Medaglie / Badge -->
+            <div class="parchment-panel" style="text-align: center;">
+              <img src="public/assets/dante_avatar.png" alt="Avatar" style="width: 100px; border-radius: 50%; border: 3px solid var(--border-gold); margin-bottom: 1rem; box-shadow: 0 0 15px rgba(0,0,0,0.5);">
+              <h3 style="margin-bottom: 5px;" id="profile-name">Studente</h3>
+              <p class="text-on-parchment-muted" style="margin-bottom: 1.5rem;" id="user-xp">XP: 0 / 500</p>
+              
+              <hr style="border: 0; border-top: 1px solid rgba(0,0,0,0.1); margin-bottom: 1rem;">
+              <h4 style="color: var(--accent-crimson); font-family: 'Cinzel', serif; margin-bottom: 1rem;">I Tuoi Titoli</h4>
+              
+              <div style="display: flex; flex-direction: column; gap: 10px; text-align: left; padding: 0 10px;" id="badges-container">
+                <!-- I badge verranno accesi da JS -->
+                <div class="badge-item locked" id="badge-lettore" style="display: flex; align-items: center; gap: 10px; opacity: 0.5;">
+                  <span style="font-size: 1.5rem;">📖</span> <span>Lettore instancabile</span>
+                </div>
+                <div class="badge-item locked" id="badge-conoscitore" style="display: flex; align-items: center; gap: 10px; opacity: 0.5;">
+                  <span style="font-size: 1.5rem;">🦉</span> <span>Conoscitore di Dante</span>
+                </div>
+                <div class="badge-item locked" id="badge-fonti" style="display: flex; align-items: center; gap: 10px; opacity: 0.5;">
+                  <span style="font-size: 1.5rem;">📜</span> <span>Custode delle fonti</span>
+                </div>
+                <div class="badge-item locked" id="badge-maestro" style="display: flex; align-items: center; gap: 10px; opacity: 0.5;">
+                  <span style="font-size: 1.5rem;">⚖</span> <span>Maestro dell'argomentazione</span>
+                </div>
+                <div class="badge-item locked" id="badge-giudice" style="display: flex; align-items: center; gap: 10px; opacity: 0.5;">
+                  <span style="font-size: 1.5rem;">🏛</span> <span>Giudice imparziale</span>
                 </div>
               </div>
             </div>
 
-            <!-- Lista Casi (Caricata da DB) -->
-            <div class="dark-panel">
-              <h3 class="text-gold">I Tuoi Fascicoli</h3>
-              <ul id="student-cases-list" style="list-style: none; margin-top: 1rem;">
-                <li style="padding: 1rem; text-align: center; color: #888;">Caricamento casi in corso...</li>
-              </ul>
+            <!-- Libreria Fascicoli -->
+            <div class="dark-panel" style="background: url('assets/Immagini/4.png') no-repeat center center; background-size: cover; border-radius: 15px; padding: 2rem; box-shadow: inset 0 0 50px rgba(0,0,0,0.8); min-height: 400px; position: relative;">
+              <div style="background: rgba(0,0,0,0.6); position: absolute; top:0; left:0; right:0; bottom:0; border-radius: 15px;"></div>
+              
+              <div style="position: relative; z-index: 1;">
+                <h3 class="text-gold" style="font-family: 'Cinzel', serif; font-size: 1.8rem; border-bottom: 2px solid var(--accent-gold); padding-bottom: 10px; margin-bottom: 2rem;">Collezione Sentenze</h3>
+                
+                <div id="library-shelves" style="display: flex; flex-wrap: wrap; gap: 20px;">
+                  <!-- Le pergamene generate da JS -->
+                  <div style="width: 100%; text-align: center; color: #aaa; font-style: italic; margin-top: 2rem;">Caricamento libreria in corso...</div>
+                </div>
+              </div>
             </div>
           </div>
         </section>
 
         <!-- VISTA ADMIN -->
         <section id="view-admin-dashboard" class="view animate-fade-in">
-          <h2 class="text-gold">Pannello Amministratore</h2>
-          <!-- Rimosso bottone Inizializza -->
-          <div class="dark-panel" style="margin-top: 2rem;">
-            <h3 class="text-gold">Tutti i Fascicoli (Vista Admin)</h3>
-            <ul id="admin-cases-list" style="list-style: none; margin-top: 1rem;">
-              <li style="padding: 1rem; text-align: center; color: #888;">Caricamento casi in corso...</li>
-            </ul>
+          <div style="text-align: center; margin-bottom: 2rem;">
+            <h2 class="text-gold" style="font-size: 2.5rem; text-shadow: 0 0 20px rgba(212,175,55,0.5); font-family: 'Cinzel', serif;">Supremo Tribunale</h2>
+            <p style="color: #ccc; font-style: italic;">Pannello di Amministrazione Globale</p>
+          </div>
+          
+          <div style="display: grid; grid-template-columns: 1fr; gap: 2rem; margin-top: 2rem;">
+            <div class="dark-panel" style="background: url('assets/Immagini/4.png') no-repeat center center; background-size: cover; border-radius: 15px; padding: 2rem; position: relative;">
+              <div style="background: rgba(0,0,0,0.85); position: absolute; top:0; left:0; right:0; bottom:0; border-radius: 15px;"></div>
+              <div style="position: relative; z-index: 1;">
+                <h3 class="text-gold" style="font-family: 'Cinzel', serif; border-bottom: 1px solid var(--border-gold); padding-bottom: 10px; margin-bottom: 20px;"><img src="assets/Immagini/1.png" style="width: 30px; vertical-align: middle; margin-right: 10px;">Archivio Segreto dei Fascicoli</h3>
+                <ul id="admin-cases-list" style="list-style: none; padding: 0;">
+                  <li style="padding: 1rem; text-align: center; color: #888;">Caricamento casi in corso...</li>
+                </ul>
+              </div>
+            </div>
           </div>
         </section>
 
         <!-- VISTA DOCENTE -->
         <section id="view-teacher-dashboard" class="view animate-fade-in">
-          <h2 class="text-gold">Pannello Docente / Presidente di Corte</h2>
-          <div class="parchment-panel" style="margin-top: 2rem;">
-            <h3>Le tue Classi e Corti</h3>
-            <p class="text-on-parchment-muted">Qui potrai creare classi, invitare studenti e monitorare i verdetti espressi.</p>
-            <button class="btn btn-secondary" onclick="alert('Funzione in arrivo!')" style="margin-top: 1rem;">+ Crea Nuova Corte</button>
+          <div style="text-align: center; margin-bottom: 2rem;">
+            <h2 class="text-gold" style="font-size: 2.5rem; text-shadow: 0 0 20px rgba(212,175,55,0.5); font-family: 'Cinzel', serif;">Loggia dei Giudici</h2>
+            <p style="color: #ccc; font-style: italic;">Pannello Docente / Presidente di Corte</p>
+          </div>
+          <div class="parchment-panel" style="margin-top: 2rem; border-radius: 15px;">
+            <h3 style="font-family: 'Cinzel', serif; color: var(--accent-crimson);"><img src="assets/Immagini/2.png" style="width: 30px; vertical-align: middle; margin-right: 10px;">Le tue Corti</h3>
+            <p class="text-on-parchment-muted" style="margin-top: 1rem;">La funzione di gestione aule e studenti per i docenti è in fase di costruzione.</p>
+          </div>
+        </section>
+
+        <!-- VISTA PELLEGRINI -->
+        <section id="view-external-dashboard" class="view animate-fade-in">
+          <div style="text-align: center; margin-bottom: 2rem;">
+            <h2 class="text-gold" style="font-size: 2.5rem; text-shadow: 0 0 20px rgba(212,175,55,0.5); font-family: 'Cinzel', serif;">Rifugio dei Pellegrini</h2>
+            <p style="color: #ccc; font-style: italic;">Benvenuto, Viaggiatore</p>
+          </div>
+          <div class="parchment-panel" style="margin-top: 2rem; border-radius: 15px; text-align: center;">
+            <img src="assets/Immagini/4.png" style="width: 80px; margin-bottom: 1rem; filter: drop-shadow(0 5px 10px rgba(0,0,0,0.5));">
+            <h3 style="font-family: 'Cinzel', serif; color: var(--accent-crimson);">L'Archivio Pubblico</h3>
+            <p class="text-on-parchment-muted" style="margin-top: 1rem; font-size: 1.1rem; line-height: 1.6;">Benvenuto nella Corte della Commedia. Come ospite (Pellegrino), hai accesso limitato alle stanze interne del Tribunale, ma sei libero di esplorare la mappa e tentare di farti strada tra i dannati.<br><br>Puoi navigare tramite la <strong>Mappa</strong> in basso per avviare il tuo primo caso.</p>
           </div>
         </section>
 
@@ -215,22 +295,26 @@
           </div>
 
           <!-- Mappa Inferno -->
-          <div id="map-inferno" class="map-container" style="display: block; position: relative; max-width: 600px; margin: 0 auto; padding: 2rem 0;">
+          <div id="map-inferno" class="map-container" style="display: block; position: relative; max-width: 800px; margin: 0 auto; padding: 3rem 1rem; background: url('assets/Immagini/10.png') no-repeat center center; background-size: cover; border-radius: 20px; box-shadow: inset 0 0 50px #000;">
             <!-- Generato da JS -->
           </div>
 
           <!-- Mappa Purgatorio -->
-          <div id="map-purgatorio" class="map-container" style="display: none; text-align: center; padding: 3rem;">
-            <i class="fa-solid fa-mountain" style="font-size: 4rem; color: #555; margin-bottom: 1rem;"></i>
-            <h3 class="text-muted">La Montagna del Purgatorio è ancora avvolta dalla nebbia...</h3>
-            <p style="color: #666;">Completa prima il viaggio nell'Inferno per sbloccare l'accesso.</p>
+          <div id="map-purgatorio" class="map-container" style="display: none; text-align: center; padding: 5rem 3rem; background: url('assets/Immagini/6.png') no-repeat center center; background-size: cover; border-radius: 20px; box-shadow: inset 0 0 50px #000; min-height: 400px; position: relative;">
+            <div style="background: rgba(0,0,0,0.7); padding: 2rem; border-radius: 10px; display: inline-block;">
+                <i class="fa-solid fa-mountain" style="font-size: 4rem; color: #aaa; margin-bottom: 1rem;"></i>
+                <h3 class="text-gold">La Montagna del Purgatorio è ancora avvolta dalla nebbia...</h3>
+                <p style="color: #ddd;">Completa prima il viaggio nell'Inferno per sbloccare l'accesso.</p>
+            </div>
           </div>
 
           <!-- Mappa Paradiso -->
-          <div id="map-paradiso" class="map-container" style="display: none; text-align: center; padding: 3rem;">
-            <i class="fa-solid fa-sun" style="font-size: 4rem; color: #555; margin-bottom: 1rem;"></i>
-            <h3 class="text-muted">Le sfere celesti non sono ancora allineate...</h3>
-            <p style="color: #666;">Completa prima il viaggio nel Purgatorio per sbloccare l'accesso.</p>
+          <div id="map-paradiso" class="map-container" style="display: none; text-align: center; padding: 5rem 3rem; background: url('assets/Immagini/8.png') no-repeat center center; background-size: cover; border-radius: 20px; box-shadow: inset 0 0 50px #000; min-height: 400px; position: relative;">
+            <div style="background: rgba(0,0,0,0.7); padding: 2rem; border-radius: 10px; display: inline-block;">
+                <i class="fa-solid fa-sun" style="font-size: 4rem; color: #aaa; margin-bottom: 1rem;"></i>
+                <h3 class="text-gold">Le sfere celesti non sono ancora allineate...</h3>
+                <p style="color: #ddd;">Completa prima il viaggio nel Purgatorio per sbloccare l'accesso.</p>
+            </div>
           </div>
         </section>
 
@@ -242,9 +326,9 @@
           <i class="fa-solid fa-map-location-dot" style="font-size: 1.2rem; display: block; margin-bottom: 4px;"></i>
           <span style="font-size: 0.7rem;">Mappa</span>
         </div>
-        <div onclick="showView('view-dashboard')" style="text-align: center; color: #888; cursor: pointer; flex: 1;">
+        <div onclick="if(window.app && window.app.goDashboard) { window.app.goDashboard(); } else { showView('view-dashboard'); }" style="text-align: center; color: #888; cursor: pointer; flex: 1;">
           <i class="fa-solid fa-folder-open" style="font-size: 1.2rem; display: block; margin-bottom: 4px;"></i>
-          <span style="font-size: 0.7rem;">Casi</span>
+          <span style="font-size: 0.7rem;" id="nav-dashboard-label">Casi</span>
         </div>
         <div onclick="window.showLegal('regolamento')" style="text-align: center; color: #888; cursor: pointer; flex: 1;">
           <i class="fa-solid fa-gavel" style="font-size: 1.2rem; display: block; margin-bottom: 4px;"></i>
@@ -257,8 +341,9 @@
       </nav>
 
       <!-- Global Footer -->
-      <footer id="main-footer" style="display: none; padding: 15px; text-align: center; font-size: 0.8rem; color: #888; margin-top: 20px; margin-bottom: 60px;">
-        <p>&copy; 2026 La Corte della Commedia. Creato dal Prof. Memmo.</p>
+      <footer id="main-footer" style="display: none; padding: 2rem; width: 100%; box-sizing: border-box; text-align: center; font-size: 0.75rem; color: #888; margin-top: 20px; margin-bottom: 70px; line-height: 1.5; text-transform: uppercase; letter-spacing: 0.5px;">
+        <p style="margin: 0 0 1rem 0; text-align: justify;">© 2026 Guglielmo Piersanti. Tutti i contenuti presenti su questo sito sono di proprietà dell'autore e sono protetti tramite deposito e marcatura temporale presso Patamu. I contenuti sono inoltre distribuiti con licenza Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0).</p>
+        <img src="public/assets/patamu_pencil.png" alt="Patamu" style="height: 50px; object-fit: contain; opacity: 0.8;">
       </footer>
     </div>
 

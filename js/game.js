@@ -25,7 +25,7 @@ export const EroiGame = {
     },
     
     nextPhase: function() {
-        if (this.state.currentPhase < 8) {
+        if (this.state.currentPhase < 7) {
             this.state.currentPhase++;
             this.renderPhase();
         }
@@ -43,8 +43,8 @@ export const EroiGame = {
         const trialNextBtn = document.getElementById('trial-next-btn');
         const trialBackBtn = document.getElementById('trial-back-btn');
         
-        document.getElementById('trial-phase-text').textContent = `Fase ${this.state.currentPhase} di 8`;
-        document.getElementById('trial-progress').style.width = `${(this.state.currentPhase / 8) * 100}%`;
+        document.getElementById('trial-phase-text').textContent = `Fase ${this.state.currentPhase} di 7`;
+        document.getElementById('trial-progress').style.width = `${(this.state.currentPhase / 7) * 100}%`;
         
         trialBackBtn.style.display = 'inline-block';
         trialNextBtn.style.display = 'inline-block';
@@ -58,144 +58,133 @@ export const EroiGame = {
         const isPaolo = this.state.currentCaseId === "paolo_francesca";
 
         switch (this.state.currentPhase) {
-            case 1: // Fase 1: Apertura
+            case 1: // Fase 1: Indagine
                 trialContent.innerHTML = `
-                    <h3 class="text-crimson" style="text-align:center;">Fase 1: Convocazione della Corte</h3>
-                    <p style="text-align:center;"><strong>Imputato: ${data.characterName}</strong> | <span class="text-muted">${data.canto} - ${data.cerchio}</span></p>
+                    <h3 class="text-crimson" style="text-align:center;">Fase 1: L'Indagine</h3>
+                    <p style="text-align:center;"><strong>Fascicolo: ${data.characterName}</strong> | <span class="text-muted">${data.canto} - ${data.cerchio}</span></p>
                     <hr style="border-color: rgba(212,175,55,0.2); margin: 15px 0;">
                     
-                    <div style="display: flex; gap: 20px; align-items: flex-end; margin-top: 20px; flex-wrap: wrap;">
-                        <div style="flex: 0 0 180px; display: flex; justify-content: center;">
-                            <img src="public/assets/dante_full.png" style="max-height: 350px; width: auto; filter: drop-shadow(0 0 10px rgba(0,0,0,0.8));">
-                        </div>
-                        <div style="flex: 1; background: url('assets/Immagini/parchment_bg.png') center/cover; padding: 25px; border-radius: 10px; color: #222; font-family: 'Times New Roman', serif; box-shadow: inset 0 0 30px rgba(0,0,0,0.4), 0 5px 15px rgba(0,0,0,0.5); min-width: 250px;">
-                            <h4 style="color: #6a040f; margin-top: 0; border-bottom: 1px solid rgba(106, 4, 15, 0.3); padding-bottom: 5px;">Dante Alighieri</h4>
-                            <p style="font-size: 1.15rem; line-height: 1.7; font-weight: bold; font-style: italic;">"O animal grazïoso e benigno..."</p>
-                            <p style="font-size: 1.1rem; line-height: 1.6;">Benvenuto, Giudice. La Corte Infernale è ora convocata per esaminare il caso di ${data.characterName}. Ti affido l'arduo compito di ascoltare i fatti, valutare le prove e decidere se la pena assegnata dalla Giustizia Divina sia, ai tuoi occhi contemporanei, proporzionata al peccato commesso.</p>
-                        </div>
-                    </div>
-                `;
-                break;
-            case 2: // Fase 2: I Fatti (Studio)
-                const factsText = isPaolo ? 
-                    `Siamo nel secondo cerchio dell'Inferno, dove la bufera infernal che mai non resta trascina gli spiriti dei lussuriosi, coloro che <em>sottomisero la ragione al talento</em>.<br><br>Francesca da Polenta, data in sposa per motivi politici a Gianciotto Malatesta (uomo deforme e zoppo), si innamorò perdutamente del fratello di lui, l'affascinante Paolo.<br><br>Un giorno, mentre i due leggevano per diletto le avventure di Lancillotto e Ginevra, arrivarono al punto in cui l'eroe bacia la regina. In quell'istante, come confessa Francesca stessa:<br><br><span style="display:block; text-align:center; font-style:italic; margin: 15px 0; color: #6a040f;">"Galeotto fu 'l libro e chi lo scrisse:<br>quel giorno più non vi leggemmo avante."</span><br>Gianciotto li sorprese in flagrante e, accecato dall'ira e dal disonore, li trafisse entrambi con la sua spada, unendoli nella morte come lo erano stati nell'amore.`
-                    : (data.phases?.facts || "Descrizione dei fatti non disponibile.");
-                    
-                trialContent.innerHTML = `
-                    <h3 class="text-crimson" style="text-align:center;">Fase 2: Ricostruzione dei Fatti</h3>
                     <div style="background: rgba(0,0,0,0.3); padding: 25px; border-left: 4px solid var(--accent-gold); margin-top: 20px; border-radius: 4px; box-shadow: 0 4px 10px rgba(0,0,0,0.3);">
-                        <p style="line-height: 1.8; font-size: 1.1rem;">${factsText}</p>
+                        <h4 style="color: var(--accent-gold); margin-top: 0; margin-bottom: 15px;">I Fatti</h4>
+                        <p style="line-height: 1.8; font-size: 1.15rem;">${data.phases?.facts || "Descrizione dei fatti non disponibile. Controlla gli archivi."}</p>
                     </div>
                 `;
                 break;
-            case 3: // Fase 3: Le Prove (Minigioco)
+
+            case 2: // Fase 2: Raccolta Prove
                 trialContent.innerHTML = `
-                    <h3 class="text-crimson" style="text-align:center;">Fase 3: Ricerca delle Prove</h3>
+                    <h3 class="text-crimson" style="text-align:center;">Fase 2: Raccolta Prove</h3>
+                    <p style="text-align:center; font-style: italic; color: #aaa;">Supera questa prova per dimostrare la tua comprensione del caso.</p>
                     <div id="minigame-container" style="margin-top: 20px;"></div>
                 `;
                 if (window.MinigamesEngine) {
                     window.MinigamesEngine.loadMinigame(data.id, document.getElementById('minigame-container'));
                 }
                 break;
-            case 4: // Fase 4: L'Accusa
-                const accText = isPaolo ? 
-                    `Onorevole Giudice, questi due spiriti hanno commesso il più vile dei tradimenti contro il sacro vincolo del matrimonio! Hanno permesso che il desiderio carnale prevalesse sulla ragione, principio divino che ci eleva dalle bestie.<br><br>Non lasciatevi ingannare dalle loro lacrime: non vi è pentimento in loro. Hanno infranto le leggi degli uomini e di Dio per soddisfare un capriccio terreno. La loro lussuria ha scatenato sangue e morte, distruggendo l'onore della famiglia Malatesta!`
-                    : (data.phases?.accusation || "Requisitoria dell'accusa non disponibile.");
-                    
+
+            case 3: // Fase 3: L'Accusa (Dante)
                 trialContent.innerHTML = `
-                    <h3 class="text-crimson" style="text-align:center;">Fase 4: Requisitoria dell'Accusa</h3>
-                    <div style="background: rgba(200, 50, 50, 0.1); padding: 25px; border-left: 4px solid var(--danger-color); margin-top: 20px; border-radius: 4px; border-right: 1px solid rgba(255,0,0,0.2); box-shadow: inset 0 0 20px rgba(255,0,0,0.05);">
-                        <h4 style="color: var(--danger-color); margin-top: 0;">L'Accusatore (Minosse)</h4>
-                        <p style="line-height: 1.8; font-size: 1.1rem; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">${accText}</p>
+                    <h3 class="text-crimson" style="text-align:center;">Fase 3: L'Accusa</h3>
+                    <div style="display: flex; gap: 20px; align-items: flex-end; margin-top: 20px; flex-wrap: wrap;">
+                        <div style="flex: 0 0 180px; display: flex; justify-content: center;">
+                            <img src="public/assets/dante_full.png" style="max-height: 350px; width: auto; filter: drop-shadow(0 0 10px rgba(0,0,0,0.8));">
+                        </div>
+                        <div style="flex: 1; background: url('assets/Immagini/parchment_bg.png') center/cover; padding: 25px; border-radius: 10px; color: #222; font-family: 'Times New Roman', serif; box-shadow: inset 0 0 30px rgba(0,0,0,0.4), 0 5px 15px rgba(0,0,0,0.5); min-width: 250px;">
+                            <h4 style="color: #6a040f; margin-top: 0; border-bottom: 1px solid rgba(106, 4, 15, 0.3); padding-bottom: 5px;">Dante Alighieri (Accusa)</h4>
+                            <p style="line-height: 1.8; font-size: 1.15rem; text-shadow: 0 1px 2px rgba(255,255,255,0.5);">${data.phases?.accusation || "L'accusa è silente."}</p>
+                        </div>
                     </div>
                 `;
                 break;
-            case 5: // Fase 5: La Difesa
-                const defText = isPaolo ? 
-                    `Vostro Onore, vi prego di guardare non all'atto in sé, ma alla forza sovrumana che l'ha generato. L'Amore è un signore potente e invincibile per i cuori gentili. Come ha detto la mia assistita:<br><br><span style="display:block; font-style:italic; margin: 15px 0; color: #4a2c11; font-weight: bold;">"Amor, ch'a nullo amato amar perdona,<br>mi prese del costui piacer sì forte,<br>che, come vedi, ancor non m'abbandona."</span><br>Non è stata una scelta maliziosa e calcolata, ma l'impeto di un sentimento così puro e travolgente da accecare chiunque. Condannerete davvero per l'eternità due anime la cui unica colpa è stata l'aver amato troppo?`
-                    : (data.phases?.defense || "Arringa della difesa non disponibile.");
-                    
+
+            case 4: // Fase 4: La Difesa (Avvocato)
                 trialContent.innerHTML = `
-                    <h3 class="text-crimson" style="text-align:center;">Fase 5: L'Arringa della Difesa</h3>
+                    <h3 class="text-crimson" style="text-align:center;">Fase 4: La Difesa</h3>
                     <div style="display: flex; gap: 20px; align-items: flex-end; margin-top: 20px; flex-wrap: wrap; flex-direction: row-reverse;">
                         <div style="flex: 0 0 180px; display: flex; justify-content: center;">
                             <img src="public/assets/difesa_full.png" style="max-height: 380px; width: auto; filter: drop-shadow(0 0 10px rgba(0,0,0,0.8));">
                         </div>
                         <div style="flex: 1; background: url('assets/Immagini/parchment_bg.png') center/cover; padding: 25px; border-radius: 10px; color: #222; font-family: 'Times New Roman', serif; box-shadow: inset 0 0 30px rgba(0,0,0,0.4), 0 5px 15px rgba(0,0,0,0.5); min-width: 250px;">
-                            <h4 style="color: #4a2c11; margin-top: 0; border-bottom: 1px solid rgba(74, 44, 17, 0.3); padding-bottom: 5px; text-align: right;">L'Avvocato Difensore</h4>
-                            <p style="font-size: 1.1rem; line-height: 1.7;">${defText}</p>
+                            <h4 style="color: #4a2c11; margin-top: 0; border-bottom: 1px solid rgba(74, 44, 17, 0.3); padding-bottom: 5px; text-align: right;">Avvocato Difensore</h4>
+                            <p style="font-size: 1.15rem; line-height: 1.8; text-shadow: 0 1px 2px rgba(255,255,255,0.5);">${data.phases?.defense || "La difesa tace."}</p>
                         </div>
                     </div>
                 `;
                 break;
-            case 6: // Fase 6: Dante Oggi (Riflessione contemporanea)
-                const reflText = isPaolo ?
-                    `Ai miei tempi, la lussuria era una tempesta fisica. Oggi vedo che il vostro mondo è dominato dagli schermi. Quanti tradimenti nascono non da un libro galeotto, ma da un "mi piace", da un messaggio nascosto, da una chat segreta? L'illusione dell'Amore virtuale è forse meno colpevole? Che significato ha oggi la fedeltà?`
-                    : "Rifletti su come questo peccato si manifesta oggi. Che forma prende nella società moderna?";
-                    
+
+            case 5: // Fase 5: Dante Oggi
                 trialContent.innerHTML = `
-                    <h3 class="text-crimson" style="text-align:center;">Fase 6: La Riflessione del Poeta</h3>
-                    <div style="display: flex; gap: 20px; align-items: flex-start; margin-top: 20px; flex-wrap: wrap;">
-                        <div style="flex: 0 0 150px; display: flex; justify-content: center;">
-                            <!-- Immagine di Dante mezzo busto -->
-                            <div style="width: 120px; height: 120px; border-radius: 50%; overflow: hidden; border: 3px solid var(--accent-gold); box-shadow: 0 0 15px rgba(212,175,55,0.4);">
+                    <h3 class="text-crimson" style="text-align:center;">Fase 5: Dante Oggi</h3>
+                    <div style="display: flex; gap: 20px; align-items: flex-start; margin-top: 20px; flex-wrap: wrap; background: rgba(255,255,255,0.05); padding: 20px; border-radius: 10px;">
+                        <div style="flex: 0 0 100px; display: flex; justify-content: center;">
+                            <div style="width: 80px; height: 80px; border-radius: 50%; overflow: hidden; border: 2px solid var(--accent-gold); box-shadow: 0 0 15px rgba(212,175,55,0.4);">
                                 <img src="public/assets/dante_full.png" style="width: 100%; height: auto; object-fit: cover; object-position: top;">
                             </div>
                         </div>
                         <div style="flex: 1; min-width: 200px;">
-                            <p style="font-size: 1.1rem; line-height: 1.6; font-style: italic; border-left: 2px solid var(--accent-gold); padding-left: 15px;">"${reflText}"</p>
-                            <textarea class="form-input" rows="4" placeholder="Scrivi qui i tuoi appunti... (opzionale)" style="margin-top: 15px; font-size: 1rem;"></textarea>
+                            <p style="font-size: 1.2rem; line-height: 1.6; font-style: italic; border-left: 2px solid var(--accent-gold); padding-left: 15px; color: #fff;">"${data.phases?.reflection || "Riflessione non disponibile."}"</p>
+                            <p style="margin-top: 15px; color: #aaa; font-size: 0.9rem;">Prendi nota delle tue riflessioni (opzionale):</p>
+                            <textarea class="form-input" rows="3" placeholder="I tuoi appunti per il verdetto..." style="margin-top: 5px; font-size: 1rem; width: 100%; border-radius: 8px; border: 1px solid #444; background: rgba(0,0,0,0.5); color: #fff; padding: 10px;"></textarea>
                         </div>
                     </div>
                 `;
                 break;
-            case 7: // Fase 7: Emetti Verdetto
+
+            case 6: // Fase 6: Il Verdetto
                 trialContent.innerHTML = `
-                    <h3 class="text-crimson" style="text-align:center; margin-bottom: 20px;">Fase 7: Il Verdetto</h3>
-                    <div style="display: flex; flex-direction: column; gap: 20px; background: rgba(0,0,0,0.05); padding: 20px; border-radius: 8px; border: 1px solid var(--border-color);">
-                        <div>
-                            <label for="verdict-select" style="font-weight: bold; margin-bottom: 8px; display: block;">Qual è la tua decisione sulla sorte dell'anima?</label>
-                            <select id="verdict-select" class="form-input" style="font-size: 1.1rem; padding: 12px;">
-                                <option value="">-- Seleziona --</option>
-                                <option value="colpevole">Colpevole (Inferno)</option>
-                                <option value="attenuanti">Colpevole con attenuanti (Purgatorio)</option>
-                                <option value="innocente">Innocente / Giustificato (Paradiso)</option>
+                    <h3 class="text-crimson" style="text-align:center; margin-bottom: 20px; font-size: 2rem;">Fase 6: Il Verdetto</h3>
+                    
+                    <div style="background: url('assets/Immagini/2.png') center/cover; border-radius: 15px; padding: 30px; box-shadow: inset 0 0 80px rgba(0,0,0,0.9); position: relative; overflow: hidden;">
+                        <div style="background: rgba(0,0,0,0.7); position: absolute; top:0; left:0; right:0; bottom:0;"></div>
+                        
+                        <div style="position: relative; z-index: 1;">
+                            <div style="text-align: center; margin-bottom: 30px;">
+                                <img src="assets/Immagini/1.png" style="width: 80px; filter: drop-shadow(0 0 10px rgba(255,255,255,0.3));">
+                                <h4 style="color: var(--accent-gold); font-size: 1.5rem; margin-top: 10px;">La Corte attende la tua decisione</h4>
+                            </div>
+
+                            <label for="verdict-select" style="font-weight: bold; margin-bottom: 10px; display: block; color: #fff; font-size: 1.2rem;">Qual è la tua sentenza per ${data.characterName}?</label>
+                            <select id="verdict-select" style="font-size: 1.1rem; padding: 15px; width: 100%; border-radius: 8px; border: 2px solid var(--accent-gold); background: rgba(20,20,30,0.9); color: #fff; margin-bottom: 25px;">
+                                <option value="">-- Pronuncia il Verdetto --</option>
+                                <option value="conferma">✔ Confermo Dante (Colpevolezza invariata)</option>
+                                <option value="riduzione">✔ Riduco la pena (Circostanze attenuanti)</option>
+                                <option value="aggravo">✔ Aggraverei la pena (Maggiore severità)</option>
+                                <option value="assoluzione">✔ Assolverei (Innocente ai giorni nostri)</option>
                             </select>
-                        </div>
-                        <div>
-                            <label for="verdict-motivation" style="font-weight: bold; margin-bottom: 8px; display: block;">Motivazione della Sentenza:</label>
-                            <textarea id="verdict-motivation" class="form-input" rows="6" placeholder="Motiva in modo dettagliato la tua sentenza... (Obbligatorio)" style="font-size: 1.1rem; padding: 12px;"></textarea>
+
+                            <label for="verdict-motivation" style="font-weight: bold; margin-bottom: 10px; display: block; color: #fff; font-size: 1.2rem;">Perché?</label>
+                            <textarea id="verdict-motivation" rows="5" placeholder="Sostieni il tuo verdetto con l'argomentazione..." style="font-size: 1.1rem; padding: 15px; width: 100%; border-radius: 8px; border: 2px solid #555; background: rgba(0,0,0,0.6); color: #fff; box-sizing: border-box;"></textarea>
                         </div>
                     </div>
                 `;
-                trialNextBtn.textContent = 'Sigilla Sentenza';
+                trialNextBtn.textContent = 'Batti il Martello';
                 break;
-            case 8: // Fase 8: Sentenza Eseguita
+
+            case 7: // Fase 7: Chiusura
                 trialContent.innerHTML = `
                     <div style="text-align:center;">
-                        <h2 class="text-gold">Sentenza Emessa!</h2>
-                        <img src="public/assets/pergamena_crest.png" style="width: 100px; opacity: 0.8; margin: 20px 0;">
-                        <p>Il tuo verdetto è stato archiviato negli annali della Corte.</p>
-                        <p class="text-crimson" style="font-weight: bold; font-size: 1.2rem;">+500 XP</p>
+                        <h2 class="text-gold" style="font-size: 2.5rem; margin-bottom: 20px;">Sentenza Archiviata</h2>
+                        <img src="assets/Immagini/3.png" style="width: 150px; margin: 20px 0; filter: drop-shadow(0 10px 10px rgba(0,0,0,0.8));">
+                        <p style="font-size: 1.2rem;">Il tuo verdetto e le tue argomentazioni sono state sigillate negli annali della Corte.</p>
+                        <p class="text-crimson" style="font-weight: bold; font-size: 1.8rem; margin-top: 20px; animation: pulse 1s infinite alternate;">+100 XP</p>
                     </div>
                 `;
                 trialNextBtn.style.display = 'none';
                 trialBackBtn.style.display = 'none';
                 
-                // Aggiungiamo un bottone per tornare alla mappa
                 const returnBtn = document.createElement('button');
                 returnBtn.className = 'btn';
                 returnBtn.style.background = 'var(--accent-gold)';
                 returnBtn.style.color = '#1a1a2e';
-                returnBtn.style.marginTop = '20px';
-                returnBtn.textContent = 'Torna alla Mappa';
-                returnBtn.onclick = () => window.showView('view-map');
+                returnBtn.style.marginTop = '30px';
+                returnBtn.style.fontSize = '1.2rem';
+                returnBtn.style.padding = '15px 30px';
+                returnBtn.textContent = 'Torna alla Libreria';
+                returnBtn.onclick = () => {
+                    if (window.MapEngine) window.MapEngine.markCaseCompleted(this.state.currentCaseId);
+                    window.showView('view-dashboard');
+                };
                 trialContent.appendChild(returnBtn);
-                
-                // Segna il caso come completato
-                if (window.MapEngine) {
-                    window.MapEngine.markCaseCompleted(this.state.currentCaseId);
-                }
                 break;
         }
     }

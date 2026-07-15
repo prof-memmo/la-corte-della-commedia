@@ -45,7 +45,7 @@ getRedirectResult(auth).then(async (result) => {
         displayName: result.user.displayName,
         xp: 0,
         level: 1,
-        role: 'student'
+        role: 'pending'
       });
     }
   }
@@ -70,7 +70,7 @@ loginGoogleBtn.addEventListener('click', async () => {
             displayName: result.user.displayName,
             xp: 0,
             level: 1,
-            role: 'student'
+            role: 'pending'
           });
         }
       } catch (e) {
@@ -110,10 +110,8 @@ loginEmailBtn.addEventListener('click', async () => {
         
         await updateProfile(userCreds.user, { displayName: displayName });
         
-        // Crea record in Firestore
-        let role = 'student';
-        if (email.includes('prof')) role = 'teacher';
-        if (email.includes('esterno')) role = 'external';
+        // Crea record in Firestore (Ruolo pending di default)
+        let role = 'pending';
 
         await setDoc(doc(db, 'users', userCreds.user.uid), {
           uid: userCreds.user.uid,
@@ -184,12 +182,20 @@ onAuthStateChanged(auth, async (user) => {
     
     // Routing in base al ruolo
     const userEmail = user.email ? user.email.toLowerCase() : '';
-    if (userEmail === 'prof.memmo@gmail.com' || role === 'admin') {
+    if (role === 'pending') {
+      showView('view-onboarding');
+      // Nascondi menu utente e nav bar durante l'onboarding
+      if (userMenu) userMenu.style.display = 'none';
+      if (bottomNav) bottomNav.style.display = 'none';
+    } else if (userEmail === 'prof.memmo@gmail.com' || role === 'admin') {
       showView('view-admin-dashboard');
       loadStudentCases(true); // Carica casi anche per admin
       MapEngine.init();
     } else if (role === 'teacher') {
       showView('view-teacher-dashboard');
+    } else if (role === 'external') {
+      showView('view-map');
+      MapEngine.init();
     } else {
       showView('view-map'); // Mappa di default per Studente
       MapEngine.init();
@@ -261,6 +267,17 @@ const LEGAL_TEXTS = {
         <p>Il titolare può modificare i presenti Termini in base all'evoluzione del progetto didattico.</p>
         <h3>10. Legge applicabile</h3>
         <p>I presenti Termini sono regolati dalla normativa italiana.</p>
+    `,
+    regolamento: `
+        <h2>⚖️ Regolamento della Corte</h2>
+        <h3>1. Lo Scopo del Viaggio</h3>
+        <p>Come giudice, il tuo compito è ascoltare le anime, analizzare le prove e i documenti, ed esprimere un verdetto motivato sulle loro colpe o meriti.</p>
+        <h3>2. Acquisizione dell'Esperienza (XP)</h3>
+        <p>Ogni fascicolo risolto correttamente o valutato dal tuo Docente (se sei in una classe) ti farà guadagnare punti Esperienza (XP). Accumulando XP, sbloccherai nuovi titoli e distintivi di saggezza nella tua Libreria.</p>
+        <h3>3. Condotta nella Corte</h3>
+        <p>Le argomentazioni fornite nei verdetti devono essere rispettose e scritte in un italiano corretto e pertinente. I docenti hanno la facoltà di respingere o penalizzare verdetti non consoni.</p>
+        <h3>4. Esplorazione</h3>
+        <p>I Regni si sbloccano progressivamente. Completa i fascicoli dell'Inferno per poter poi accedere al Purgatorio e, infine, al Paradiso.</p>
     `
 };
 
@@ -269,8 +286,8 @@ function switchMapTab(tabName) {
   document.querySelectorAll('.map-container').forEach(map => map.style.display = 'none');
   
   // Find clicked button
-  if (event && event.currentTarget) {
-      event.currentTarget.classList.add('active');
+  if (window.event && window.event.currentTarget) {
+      window.event.currentTarget.classList.add('active');
   }
   
   const mapElement = document.getElementById('map-' + tabName);
@@ -279,60 +296,174 @@ function switchMapTab(tabName) {
   }
 }
 
+function goDashboard() {
+  if (window.EroiDB && window.EroiDB.cache && window.EroiDB.cache.userProfile) {
+    const role = window.EroiDB.cache.userProfile.role || 'student';
+    const email = (window.EroiDB.cache.userProfile.email || '').toLowerCase();
+    
+    if (role === 'admin' || email === 'prof.memmo@gmail.com') {
+      showView('view-admin-dashboard');
+      loadStudentCases(true);
+    } else if (role === 'teacher') {
+      showView('view-teacher-dashboard');
+    } else if (role === 'external') {
+      showView('view-external-dashboard');
+    } else {
+      showView('view-dashboard');
+      loadStudentCases(false);
+    }
+  } else {
+    // Fallback se DB non è ancora caricato
+    showView('view-dashboard');
+    loadStudentCases(false);
+  }
+}
+
+async function selectRole(role) {
+  if (!state.user) return;
+  
+  try {
+    const userDocRef = doc(db, 'users', state.user.uid);
+    await updateDoc(userDocRef, { role: role });
+    
+    // Aggiorna cache locale
+    if (window.EroiDB && window.EroiDB.cache && window.EroiDB.cache.userProfile) {
+        window.EroiDB.cache.userProfile.role = role;
+    }
+    
+    // Mostra nav bar
+    const bottomNav = document.getElementById('mobile-bottom-nav');
+    if (bottomNav) bottomNav.style.display = 'flex';
+    const userMenu = document.getElementById('user-menu-container');
+    if (userMenu) userMenu.style.display = 'block';
+
+    // Vai alla dashboard o mappa
+    if (role === 'teacher') {
+      showView('view-teacher-dashboard');
+    } else if (role === 'external') {
+      showView('view-map');
+      MapEngine.init();
+    } else {
+      showView('view-map');
+      MapEngine.init();
+    }
+  } catch (error) {
+    console.error("Errore salvataggio ruolo:", error);
+    alert("Errore durante la selezione del ruolo.");
+  }
+}
+
 // Esponi per l'uso nell'HTML
 window.showView = showView;
 window.app = {
   switchMapTab,
-  showView
+  showView,
+  goDashboard,
+  selectRole
 };
 
-// Funzione per caricare i fascicoli dello studente
 async function loadStudentCases(isAdmin = false) {
-  const listEl = isAdmin ? document.getElementById('admin-cases-list') : document.getElementById('student-cases-list');
-  if (!listEl || !EroiDB) return;
+  if (isAdmin) {
+      const listEl = document.getElementById('admin-cases-list');
+      if (!listEl || !EroiDB) return;
+      listEl.innerHTML = '<li style="padding: 1rem; text-align: center; color: #888;">Ricerca fascicoli nell\'archivio...</li>';
+      try {
+        const campaigns = await EroiDB.getCampaigns();
+        const activeCamp = campaigns[0];
+        const cases = await EroiDB.getCasesByCampaign(activeCamp.id);
+        listEl.innerHTML = '';
+        cases.forEach(c => {
+          const li = document.createElement('li');
+          li.style.cssText = "padding: 0.5rem 0; border-bottom: 1px solid var(--border-color);";
+          const a = document.createElement('a');
+          a.href = "#";
+          a.style.cssText = "color: var(--text-primary); text-decoration: none;";
+          a.innerHTML = `📕 ${activeCamp.name} - ${c.characterName} (Clicca per avviare)`;
+          a.onclick = (e) => {
+            e.preventDefault();
+            if (window.EroiGame) window.EroiGame.startTrial(c.id);
+          };
+          li.appendChild(a);
+          listEl.appendChild(li);
+        });
+      } catch (e) {
+          console.error(e);
+      }
+      return;
+  }
+
+  // STUDENTE: LOGICA LIBRERIA
+  const libraryEl = document.getElementById('library-shelves');
+  if (!libraryEl || !EroiDB) return;
   
-  listEl.innerHTML = '<li style="padding: 1rem; text-align: center; color: #888;">Ricerca fascicoli nell\'archivio...</li>';
+  libraryEl.innerHTML = '<div style="width: 100%; text-align: center; color: #aaa; font-style: italic; margin-top: 2rem;">Spolverando gli scaffali...</div>';
   
   try {
     const campaigns = await EroiDB.getCampaigns();
-    if (campaigns.length === 0) {
-      listEl.innerHTML = '<li style="padding: 1rem; text-align: center; color: #888;">Nessun fascicolo disponibile al momento.</li>';
-      return;
-    }
-    
-    // Prendiamo la prima campagna attiva (es. Inferno)
+    if (campaigns.length === 0) return;
     const activeCamp = campaigns[0];
-    const cases = await EroiDB.getCasesByCampaign(activeCamp.id);
+    const allCases = await EroiDB.getCasesByCampaign(activeCamp.id);
     
-    listEl.innerHTML = '';
-    if (cases.length === 0) {
-      listEl.innerHTML = '<li style="padding: 1rem; text-align: center; color: #888;">La campagna non ha ancora casi.</li>';
-      return;
+    // Recupera casi completati da localStorage o UserProfile
+    let completedCaseIds = [];
+    if (EroiDB.cache.userProfile && EroiDB.cache.userProfile.completedCases) {
+        completedCaseIds = EroiDB.cache.userProfile.completedCases;
+    } else {
+        completedCaseIds = JSON.parse(localStorage.getItem('completedCases') || '[]');
     }
+
+    // Calcolo XP (100 a caso) e Titolo
+    const xp = completedCaseIds.length * 100;
+    const maxXP = allCases.length * 100 || 500;
+    document.getElementById('user-xp').textContent = `XP: ${xp} / ${maxXP}`;
     
-    cases.forEach(c => {
-      const li = document.createElement('li');
-      li.style.cssText = "padding: 0.5rem 0; border-bottom: 1px solid var(--border-color);";
-      
-      const a = document.createElement('a');
-      a.href = "#";
-      a.style.cssText = "color: var(--text-primary); text-decoration: none;";
-      a.innerHTML = `📕 ${activeCamp.name} - ${c.characterName} (Clicca per avviare)`;
-      a.onclick = (e) => {
-        e.preventDefault();
-        if (EroiGame) {
-          EroiGame.startTrial(c.id);
-        } else {
-          alert("Il motore del processo è in fase di caricamento.");
-        }
-      };
-      
-      li.appendChild(a);
-      listEl.appendChild(li);
+    let title = "Lettore Novizio";
+    if (xp >= 100) title = "Lettore Instancabile";
+    if (xp >= 300) title = "Custode delle Fonti";
+    if (xp >= 500) title = "Conoscitore di Dante";
+    if (xp >= 800) title = "Maestro dell'argomentazione";
+    if (xp >= 1000) title = "Giudice Imparziale";
+    
+    document.getElementById('profile-name').textContent = title;
+
+    // Aggiorna Badge
+    if (xp >= 100) document.getElementById('badge-lettore').style.opacity = '1';
+    if (xp >= 300) document.getElementById('badge-fonti').style.opacity = '1';
+    if (xp >= 500) document.getElementById('badge-conoscitore').style.opacity = '1';
+    if (xp >= 800) document.getElementById('badge-maestro').style.opacity = '1';
+    if (xp >= 1000) document.getElementById('badge-giudice').style.opacity = '1';
+
+    // Disegna Pergamene
+    libraryEl.innerHTML = '';
+    const completedCases = allCases.filter(c => completedCaseIds.includes(c.id));
+    
+    if (completedCases.length === 0) {
+        libraryEl.innerHTML = '<div style="width: 100%; text-align: center; color: #aaa; font-style: italic; margin-top: 2rem;">Non hai ancora completato alcun fascicolo. Gli scaffali sono vuoti.</div>';
+        return;
+    }
+
+    completedCases.forEach(c => {
+        const scroll = document.createElement('div');
+        scroll.style.cssText = "display: flex; flex-direction: column; align-items: center; width: 120px; cursor: pointer; transition: transform 0.2s;";
+        scroll.onmouseover = () => scroll.style.transform = 'scale(1.05)';
+        scroll.onmouseout = () => scroll.style.transform = 'scale(1)';
+        scroll.onclick = () => {
+            if (window.EroiGame) window.EroiGame.startTrial(c.id);
+        };
+
+        // Usa l'icona pergamena
+        scroll.innerHTML = `
+            <img src="assets/Immagini/3.png" alt="Scroll" style="width: 60px; filter: drop-shadow(0 5px 5px rgba(0,0,0,0.5)); margin-bottom: 10px;">
+            <div style="background: rgba(0,0,0,0.7); padding: 5px 8px; border-radius: 5px; border: 1px solid var(--accent-gold); text-align: center; width: 100%;">
+                <span style="color: var(--accent-gold); font-size: 0.8rem; font-weight: bold; display: block; line-height: 1.1;">${c.characterName}</span>
+                <span style="color: #ccc; font-size: 0.7rem;">${c.canto}</span>
+            </div>
+        `;
+        libraryEl.appendChild(scroll);
     });
+
   } catch (e) {
-    console.error("Errore caricamento casi", e);
-    listEl.innerHTML = '<li style="padding: 1rem; text-align: center; color: var(--danger-color);">Errore di connessione all\'Archivio.</li>';
+    console.error("Errore libreria", e);
   }
 }
 
