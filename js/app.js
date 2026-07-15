@@ -240,16 +240,42 @@ window.goToDashboard = function() {
         showView('view-admin-dashboard');
     } else if (role === 'teacher') {
         showView('view-teacher-dashboard');
+        if (window.TeacherDashboard) window.TeacherDashboard.init();
+    } else if (role === 'external') {
+        showView('view-external-dashboard');
     } else {
         showView('view-student-dashboard');
         // Popola i dati nella dashboard studente
-        const sName = document.getElementById('student-home-name');
-        const sXp = document.getElementById('student-home-xp');
-        const sLevel = document.getElementById('student-home-level');
+        const sName = document.getElementById('stud-dashboard-name');
+        const sLevel = document.getElementById('stud-dashboard-level');
+        const sFiorini = document.getElementById('stud-dashboard-fiorini');
+        const sXpText = document.getElementById('stud-dashboard-xp-text');
+        const sXpFill = document.getElementById('stud-dashboard-xp-fill');
+        
+        const currentXp = profile ? (profile.xp || 0) : 0;
+        const currentLevel = profile ? (profile.level || 1) : 1;
+        const nextXp = currentLevel * 300; // Formula XP finta
         
         if (sName) sName.textContent = state.user.displayName || 'Studente';
-        if (sXp) sXp.textContent = profile ? (profile.xp || 0) : 0;
-        if (sLevel) sLevel.textContent = profile ? (profile.level || 1) : 1;
+        if (sLevel) sLevel.textContent = currentLevel;
+        if (sFiorini) sFiorini.innerHTML = `${profile && profile.fiorini ? profile.fiorini : 0} <i class="fa-solid fa-coins"></i>`;
+        
+        if (sXpText) sXpText.textContent = `${currentXp} / ${nextXp} XP`;
+        if (sXpFill) {
+            const perc = Math.min(100, Math.max(0, (currentXp / nextXp) * 100));
+            sXpFill.style.width = perc + "%";
+        }
+        
+        // Mock Stats Base
+        const logica = document.getElementById('stud-stat-logica');
+        const retorica = document.getElementById('stud-stat-retorica');
+        const giuris = document.getElementById('stud-stat-giurisprudenza');
+        const empatia = document.getElementById('stud-stat-empatia');
+        
+        if (logica) logica.textContent = 10 + (currentLevel * 2);
+        if (retorica) retorica.textContent = 10 + (currentLevel * 2);
+        if (giuris) giuris.textContent = 10 + (currentLevel * 2);
+        if (empatia) empatia.textContent = 10 + (currentLevel * 2);
     }
 };
 
@@ -553,8 +579,62 @@ import { firebaseConfig, initializeApp, getAuth } from "./firebase-config.js";
 window.TeacherDashboard = {
   init: async function() {
     console.log("Init Teacher Dashboard");
+    this.switchTab('panoramica'); // Default tab
+    this.selectStatsCategory('classes'); // Default stats panel
     await this.renderClasses();
     this.bindEvents();
+  },
+
+  switchTab: function(tabId) {
+    // Rimuovi active dai bottoni
+    const btns = document.querySelectorAll('.tabs-header .tab-btn');
+    btns.forEach(btn => {
+      btn.classList.remove('active');
+      btn.style.borderBottom = 'none';
+      btn.style.color = '#888';
+    });
+    const activeBtn = document.getElementById('t-btn-' + tabId);
+    if (activeBtn) {
+      activeBtn.classList.add('active');
+      activeBtn.style.borderBottom = '2px solid var(--accent-gold)';
+      activeBtn.style.color = 'var(--accent-gold)';
+    }
+
+    // Nascondi tutti i tab content
+    const contents = document.querySelectorAll('.teacher-tab-content');
+    contents.forEach(c => c.style.display = 'none');
+    
+    // Mostra quello corretto
+    const target = document.getElementById('t-tab-' + tabId);
+    if (target) {
+      target.style.display = 'block';
+    }
+  },
+
+  selectStatsCategory: function(category) {
+    // Aggiorna styling card
+    const cards = document.querySelectorAll('.stat-card-interactive');
+    cards.forEach(card => {
+      card.classList.remove('active');
+      card.style.border = '1px solid #333';
+      card.style.background = '#111';
+    });
+    
+    const activeCard = document.getElementById('card-stats-' + category);
+    if (activeCard) {
+      activeCard.classList.add('active');
+      activeCard.style.border = '1px solid var(--accent-gold)';
+      activeCard.style.background = '#1a1a1a';
+    }
+
+    // Nascondi sottomenu panoramica
+    const subPanels = document.querySelectorAll('.panoramica-sub-panel');
+    subPanels.forEach(p => p.style.display = 'none');
+    
+    const targetPanel = document.getElementById('panel-stats-' + category);
+    if (targetPanel) {
+      targetPanel.style.display = 'block';
+    }
   },
 
   renderClasses: async function() {
@@ -574,7 +654,7 @@ window.TeacherDashboard = {
     }
 
     // Popola lista iscritti globale
-    const listContainer = document.querySelector('.dark-panel div[style*="min-height: 150px"]');
+    const listContainer = document.getElementById('teacher-students-list');
     if (!listContainer) return;
     
     listContainer.innerHTML = ''; 
@@ -609,19 +689,18 @@ window.TeacherDashboard = {
     }
 
     if (totalStudents > 0) {
-        listContainer.style.display = 'block';
         listContainer.style.background = 'transparent';
         listContainer.appendChild(table);
     } else {
         listContainer.innerHTML = '<p style="color: #888; font-style: italic; text-align: center;">Nessuno studente iscritto al momento.</p>';
     }
 
-    // Aggiorna schede statistiche (Assumendo che .stat-card h3 al primo indice sia le classi)
-    const statsCards = document.querySelectorAll('.stat-card h3');
-    if (statsCards.length >= 2) {
-        statsCards[0].textContent = classes.length;
-        statsCards[1].textContent = totalStudents;
-    }
+    // Aggiorna contatori
+    const classBadge = document.getElementById('teacher-stats-classes');
+    if (classBadge) classBadge.textContent = classes.length;
+    
+    const studentBadge = document.getElementById('teacher-stats-students');
+    if (studentBadge) studentBadge.textContent = totalStudents;
   },
 
   bindEvents: function() {
@@ -642,7 +721,6 @@ window.TeacherDashboard = {
             btn.textContent = 'Creazione...';
 
             try {
-                // Secondary app per Auth (evita di disconnettere il docente)
                 const secondaryApp = initializeApp(firebaseConfig, "Secondary");
                 const secondaryAuth = getAuth(secondaryApp);
                 const defaultPassword = name.toLowerCase().replace(/\\s+/g, '') + "123";
@@ -659,7 +737,7 @@ window.TeacherDashboard = {
                   classId: classId
                 });
 
-                await secondaryAuth.signOut(); // Esci sulla secondary app
+                await secondaryAuth.signOut();
 
                 alert("Studente creato con successo!\\nEmail: " + email + "\\nPassword: " + defaultPassword);
                 formStudent.reset();

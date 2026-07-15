@@ -231,97 +231,98 @@
         </section>
 
         <!-- VISTA DOCENTE -->
+        <!-- DASHBOARD DOCENTE (Solo per Prof e Admin) -->
         <section id="view-teacher-dashboard" class="view animate-fade-in">
-          <div style="text-align: center; margin-bottom: 2rem;">
-            <h2 class="text-gold" style="font-size: 2.5rem; text-shadow: 0 0 20px rgba(212,175,55,0.5); font-family: 'Cinzel', serif;">Loggia dei Giudici</h2>
-            <p style="color: #ccc; font-style: italic;">Pannello Docente / Presidente di Corte</p>
-          </div>
-          
-          <div style="display: flex; justify-content: center; gap: 10px; margin-bottom: 2rem;">
-            <button class="btn map-tab active" onclick="switchTeacherTab('panoramica')" id="tab-btn-panoramica" style="background: var(--accent-crimson); color: white; border: 2px solid #fff;">Gestione Classi</button>
-            <button class="btn map-tab" onclick="switchTeacherTab('verdetti')" id="tab-btn-verdetti" style="background: #4a4a4a; color: #888; border: 1px solid #333;">Valutazione Verdetti</button>
-            <button class="btn map-tab" onclick="switchTeacherTab('impostazioni')" id="tab-btn-impostazioni" style="background: #4a4a4a; color: #888; border: 1px solid #333;">Impostazioni</button>
-          </div>
+          <div class="glass-panel" style="background: rgba(26,22,20,0.9); border: 1px solid var(--border-color); padding: 20px; border-radius: 8px;">
+            <h2 class="section-title" style="font-family: 'Cinzel', serif; color: var(--accent-gold); margin-bottom: 20px; text-align: center;"><i class="fa-solid fa-gavel"></i> Loggia dei Magistrati</h2>
+            
+            <div class="tabs-header" style="display: flex; border-bottom: 1px solid #333; margin-bottom: 20px;">
+              <button class="tab-btn active" onclick="if(window.TeacherDashboard) window.TeacherDashboard.switchTab('panoramica')" id="t-btn-panoramica" style="flex: 1; background: transparent; border: none; color: var(--accent-gold); padding: 15px; cursor: pointer; border-bottom: 2px solid var(--accent-gold);">Panoramica</button>
+              <button class="tab-btn" onclick="if(window.TeacherDashboard) window.TeacherDashboard.switchTab('valutazione')" id="t-btn-valutazione" style="flex: 1; background: transparent; border: none; color: #888; padding: 15px; cursor: pointer;">Valutazione</button>
+              <button class="tab-btn" onclick="if(window.TeacherDashboard) window.TeacherDashboard.switchTab('impostazioni')" id="t-btn-impostazioni" style="flex: 1; background: transparent; border: none; color: #888; padding: 15px; cursor: pointer;"><i class="fa-solid fa-gear"></i></button>
+            </div>
 
-          <!-- TAB PANORAMICA -->
-          <div id="t-tab-panoramica" class="teacher-tab-content" style="display: block;">
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 24px;">
-              <div class="dark-panel" style="text-align: center; padding: 15px; cursor: pointer; border: 1px solid var(--accent-gold);">
-                <span style="font-size: 0.75rem; color: #aaa; text-transform: uppercase;">Classi Attive</span>
-                <h4 style="font-size: 1.8rem; color: var(--accent-gold); margin-top: 5px;">0</h4>
+            <!-- TAB PANORAMICA -->
+            <div id="t-tab-panoramica" class="teacher-tab-content active">
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 24px;">
+                <div class="glass-panel stat-card-interactive active" style="background: #1a1a1a; border: 1px solid var(--accent-gold); text-align: center; padding: 15px; cursor: pointer; border-radius: 8px;" onclick="if(window.TeacherDashboard) window.TeacherDashboard.selectStatsCategory('classes')" id="card-stats-classes">
+                  <span style="font-size: 0.75rem; color: #888; text-transform: uppercase;">Classi</span>
+                  <h4 style="font-size: 1.8rem; color: var(--accent-gold); margin-top: 5px;" id="teacher-stats-classes">0</h4>
+                </div>
+                <div class="glass-panel stat-card-interactive" style="background: #111; border: 1px solid #333; text-align: center; padding: 15px; cursor: pointer; border-radius: 8px;" onclick="if(window.TeacherDashboard) window.TeacherDashboard.selectStatsCategory('students')" id="card-stats-students">
+                  <span style="font-size: 0.75rem; color: #888; text-transform: uppercase;">Studenti</span>
+                  <h4 style="font-size: 1.8rem; color: var(--accent-gold); margin-top: 5px;" id="teacher-stats-students">0</h4>
+                </div>
+                <div class="glass-panel stat-card-interactive" style="background: #111; border: 1px solid #333; text-align: center; padding: 15px; cursor: pointer; border-radius: 8px;" onclick="if(window.TeacherDashboard) window.TeacherDashboard.selectStatsCategory('pellegrini')" id="card-stats-pellegrini">
+                  <span style="font-size: 0.75rem; color: #888; text-transform: uppercase;">Pellegrini</span>
+                  <h4 style="font-size: 1.8rem; color: var(--accent-gold); margin-top: 5px;" id="teacher-stats-pellegrini">0</h4>
+                </div>
               </div>
-              <div class="dark-panel" style="text-align: center; padding: 15px; cursor: pointer;">
-                <span style="font-size: 0.75rem; color: #aaa; text-transform: uppercase;">Studenti Totali</span>
-                <h4 style="font-size: 1.8rem; color: var(--accent-gold); margin-top: 5px;">0</h4>
+              
+              <!-- SOTTOMENU PANORAMICA (Gestione Studenti/Classi) -->
+              <div id="panoramica-panels-container">
+                <!-- PANNELLO CLASSI -->
+                <div id="panel-stats-classes" class="panoramica-sub-panel" style="display: block;">
+                  <div class="parchment-panel" style="margin-bottom: 20px;">
+                    <h3 class="panel-title" style="color: var(--accent-crimson); font-family: 'Cinzel', serif; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 20px;"><i class="fa-solid fa-users"></i> Nuovo Fascicolo Classe</h3>
+                    <form id="form-create-class" onsubmit="return false;" style="display: grid; gap: 10px; max-width: 400px;">
+                      <input type="text" class="input-form" placeholder="Codice Classe (es. 1A)" required style="padding: 10px; border: 1px solid #333; background: #fff; border-radius: 5px;">
+                      <input type="text" class="input-form" placeholder="Nome esteso (es. 1A Legge)" required style="padding: 10px; border: 1px solid #333; background: #fff; border-radius: 5px;">
+                      <button type="submit" class="btn btn-primary" style="padding: 10px;">Crea Fascicolo</button>
+                    </form>
+                  </div>
+                </div>
+
+                <!-- PANNELLO STUDENTI -->
+                <div id="panel-stats-students" class="panoramica-sub-panel" style="display: none;">
+                  <div class="parchment-panel" style="margin-bottom: 20px;">
+                    <h3 class="panel-title" style="color: var(--accent-crimson); font-family: 'Cinzel', serif; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 20px;"><i class="fa-solid fa-user-plus"></i> Aggiungi Studente</h3>
+                    <form id="form-create-student" onsubmit="return false;" style="display: grid; gap: 10px; max-width: 400px;">
+                      <input type="text" id="new-student-name" class="input-form" placeholder="Nome e Cognome Studente" required style="padding: 10px; border: 1px solid #333; background: #fff; border-radius: 5px;">
+                      <input type="email" id="new-student-email" class="input-form" placeholder="Email fittizia/reale" required style="padding: 10px; border: 1px solid #333; background: #fff; border-radius: 5px;">
+                      <select id="new-student-class" required style="padding: 10px; border: 1px solid #333; background: #fff; border-radius: 5px;">
+                        <option value="" disabled selected>Seleziona classe...</option>
+                      </select>
+                      <button type="submit" id="btn-save-new-student" class="btn btn-primary" style="padding: 10px;">Aggiungi</button>
+                    </form>
+                  </div>
+                  
+                  <div class="dark-panel">
+                    <h3 style="color: var(--accent-gold); font-family: 'Cinzel', serif; margin-bottom: 1rem;">Registro Iscritti</h3>
+                    <div id="teacher-students-list" style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; min-height: 150px;">
+                      <!-- Popolato via JS -->
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- PANNELLO PELLEGRINI -->
+                <div id="panel-stats-pellegrini" class="panoramica-sub-panel" style="display: none;">
+                   <div class="dark-panel">
+                     <h3 style="color: var(--accent-gold); font-family: 'Cinzel', serif; margin-bottom: 1rem;">Ospiti Esterni (Pellegrini)</h3>
+                     <p style="color: #888;">Nessun pellegrino associato alla tua loggia attualmente.</p>
+                   </div>
+                </div>
               </div>
             </div>
 
-            <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 20px;">
-              <!-- Crea Nuova Classe -->
+            <!-- TAB VALUTAZIONE -->
+            <div id="t-tab-valutazione" class="teacher-tab-content" style="display: none;">
               <div class="parchment-panel">
-                <h3 style="color: var(--accent-crimson); font-family: 'Cinzel', serif; margin-bottom: 1rem;">Nuova Classe</h3>
-                <form id="form-create-class" onsubmit="return false;">
-                  <input type="text" placeholder="Codice Classe (es. 1C)" style="width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 5px; border: 1px solid #ccc;">
-                  <input type="text" placeholder="Nome esteso (es. 1C Inferno)" style="width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 5px; border: 1px solid #ccc;">
-                  <button type="submit" class="btn btn-primary" style="width: 100%;">Crea Classe</button>
-                </form>
+                <h3 style="color: var(--accent-crimson); font-family: 'Cinzel', serif; margin-bottom: 1rem;">Verdetti da Valutare</h3>
+                <p class="text-on-parchment-muted" style="margin-bottom: 1rem;">Seleziona un verdetto inviato dai tuoi studenti per assegnare un voto e correggere l'argomentazione.</p>
+                <div style="background: rgba(255,255,255,0.3); border: 1px dashed #aaa; padding: 20px; text-align: center; border-radius: 8px;">
+                  <p style="color: #666; font-style: italic;">Nessun verdetto in attesa di valutazione.</p>
+                </div>
               </div>
+            </div>
 
-              <!-- Nuovo Studente -->
-              <div class="dark-panel" style="margin-bottom: 24px;">
-                <h3 class="panel-title" style="color: var(--accent-gold); font-family: 'Cinzel', serif; margin-bottom: 1rem;">Nuovo Studente</h3>
-                <form id="form-create-student" onsubmit="return false;" style="display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 15px; align-items: flex-end;">
-                  <div class="form-group" style="margin-bottom: 0;">
-                    <label for="new-student-name" style="color: #aaa; font-size: 0.9rem;">Nome e Cognome</label>
-                    <input type="text" id="new-student-name" class="form-input" required placeholder="Ettore Priamo">
-                  </div>
-                  <div class="form-group" style="margin-bottom: 0;">
-                    <label for="new-student-email" style="color: #aaa; font-size: 0.9rem;">Email</label>
-                    <input type="email" id="new-student-email" class="form-input" required placeholder="ettore@scuola.it">
-                  </div>
-                  <div class="form-group" style="margin-bottom: 0;">
-                    <label for="new-student-class" style="color: #aaa; font-size: 0.9rem;">Classe</label>
-                    <select id="new-student-class" class="form-input" required>
-                      <!-- Popolata dinamicamente -->
-                    </select>
-                  </div>
-                  <button type="submit" class="btn btn-primary" style="height: 44px; margin-bottom: 6px;" id="btn-save-new-student">Aggiungi</button>
-                </form>
-              </div>
-
-              <!-- Lista Classi e Iscritti -->
+            <!-- TAB IMPOSTAZIONI -->
+            <div id="t-tab-impostazioni" class="teacher-tab-content" style="display: none;">
               <div class="dark-panel">
-                <h3 style="color: var(--accent-gold); font-family: 'Cinzel', serif; margin-bottom: 1rem;">Studenti Iscritti</h3>
-                <div style="display: flex; gap: 10px; margin-bottom: 15px;">
-                  <input type="text" placeholder="Cerca studente..." style="padding: 8px; border-radius: 5px; border: none; flex: 1;">
-                  <button class="btn btn-secondary">Cerca</button>
-                </div>
-                <div style="background: rgba(0,0,0,0.5); padding: 10px; border-radius: 5px; min-height: 150px; display: flex; align-items: center; justify-content: center;">
-                  <p style="color: #888; font-style: italic;">Nessuno studente iscritto al momento. (Dati Firebase in arrivo)</p>
-                </div>
+                <h3 style="color: var(--accent-gold); font-family: 'Cinzel', serif; margin-bottom: 1rem;">Impostazioni Loggia</h3>
+                <p style="color: #888; margin-bottom: 20px;">Configura i permessi di visualizzazione e gestione.</p>
+                <button class="btn" style="border: 1px solid #333; background: #2a2a2a; color: #fff;">Esporta Dati Studenti</button>
               </div>
-            </div>
-          </div>
-
-          <!-- TAB VALUTAZIONE -->
-          <div id="t-tab-verdetti" class="teacher-tab-content" style="display: none;">
-            <div class="parchment-panel">
-              <h3 style="color: var(--accent-crimson); font-family: 'Cinzel', serif; margin-bottom: 1rem;">Verdetti da Valutare</h3>
-              <p class="text-on-parchment-muted" style="margin-bottom: 1rem;">Seleziona un verdetto inviato dai tuoi studenti per assegnare un voto e correggere l'argomentazione.</p>
-              <div style="background: rgba(255,255,255,0.3); border: 1px dashed #aaa; padding: 20px; text-align: center; border-radius: 8px;">
-                <p style="color: #666; font-style: italic;">Nessun verdetto in attesa di valutazione.</p>
-              </div>
-            </div>
-          </div>
-
-          <!-- TAB IMPOSTAZIONI -->
-          <div id="t-tab-impostazioni" class="teacher-tab-content" style="display: none;">
-            <div class="dark-panel">
-              <h3 style="color: var(--accent-gold); font-family: 'Cinzel', serif; margin-bottom: 1rem;">Impostazioni Classe</h3>
-              <p style="color: #aaa; margin-bottom: 1rem;">Gestisci le funzionalità attive per le tue classi.</p>
-              <label style="display: flex; align-items: center; gap: 10px; color: #fff; cursor: pointer;">
-                <input type="checkbox" style="width: 20px; height: 20px;"> Sblocca Mappa del Purgatorio (2° Quadrimestre)
-              </label>
             </div>
           </div>
         </section>
@@ -423,31 +424,63 @@
         </section>
 
         <!-- DASHBOARD STUDENTE (Home) -->
+        <!-- DASHBOARD STUDENTE (Profilo Personale) -->
         <section id="view-student-dashboard" class="view animate-fade-in">
-          <div style="text-align: center; margin-bottom: 2rem;">
-            <h2 class="text-gold" style="font-size: 2.5rem; text-shadow: 0 0 20px rgba(212,175,55,0.5); font-family: 'Cinzel', serif;">La Tua Scrivania</h2>
-            <p style="color: #ccc; font-style: italic;">Preparati per il prossimo processo, <span id="student-home-name">Studente</span></p>
-          </div>
-          
-          <div style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; margin-bottom: 2rem;">
-            <!-- XP Card -->
-            <div class="stat-card" style="background: linear-gradient(145deg, #2a2a2a, #1a1a1a); padding: 1.5rem; border-radius: 15px; border: 1px solid var(--border-color); width: 250px; text-align: center;">
-              <i class="fa-solid fa-star text-gold" style="font-size: 2rem; margin-bottom: 10px;"></i>
-              <p style="color: #888; font-size: 0.9rem; text-transform: uppercase;">Punti Esperienza</p>
-              <h3 id="student-home-xp" style="font-size: 2rem; color: #fff; margin: 5px 0;">0</h3>
+          <div class="glass-panel" style="background: rgba(26,22,20,0.9); border: 1px solid var(--border-color); padding: 20px; border-radius: 8px;">
+            <div class="student-header" style="display: grid; grid-template-columns: 100px 1fr auto; gap: 20px; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 20px; margin-bottom: 24px;">
+              <div class="student-avatar-img" id="stud-dashboard-avatar" style="width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--accent-gold); background: #111; display: flex; align-items: center; justify-content: center; font-size: 3rem;">🏛️</div>
+              <div class="student-name-level">
+                <h3 id="stud-dashboard-name" style="font-family: 'Cinzel', serif; font-size: 1.8rem; color: var(--accent-gold); margin:0;">Nome Studente</h3>
+                <p style="color: #aaa; margin: 5px 0;">Livello: <strong id="stud-dashboard-level" style="color: var(--accent-gold);">1</strong></p>
+              </div>
+              <div class="student-currency" style="text-align: right;">
+                <span class="dracme-count" id="stud-dashboard-fiorini" style="font-size: 2.2rem; font-weight: bold; color: var(--accent-gold);">0 <i class="fa-solid fa-coins"></i></span>
+                <span class="dracme-label" style="display:block; font-size: 0.75rem; text-transform: uppercase; color: #888;">Fiorini Posseduti</span>
+              </div>
             </div>
-            <!-- Level Card -->
-            <div class="stat-card" style="background: linear-gradient(145deg, #2a2a2a, #1a1a1a); padding: 1.5rem; border-radius: 15px; border: 1px solid var(--border-color); width: 250px; text-align: center;">
-              <i class="fa-solid fa-medal text-gold" style="font-size: 2rem; margin-bottom: 10px;"></i>
-              <p style="color: #888; font-size: 0.9rem; text-transform: uppercase;">Livello Attuale</p>
-              <h3 id="student-home-level" style="font-size: 2rem; color: #fff; margin: 5px 0;">1</h3>
+
+            <!-- XP Progression Bar -->
+            <div class="progress-container" style="margin-bottom: 20px;">
+              <div class="progress-label" style="display: flex; justify-content: space-between; font-size: 0.9rem; color: #aaa; margin-bottom: 8px;">
+                <span>Esperienza Giuridica (XP)</span>
+                <span id="stud-dashboard-xp-text">0 / 300 XP</span>
+              </div>
+              <div class="progress-bar-bg" style="width: 100%; height: 12px; background: rgba(0,0,0,0.5); border-radius: 6px; overflow: hidden; border: 1px solid #333;">
+                <div class="progress-bar-fill" id="stud-dashboard-xp-fill" style="height: 100%; background: linear-gradient(90deg, var(--accent-crimson), var(--accent-gold)); width: 0%; transition: width 0.5s ease;"></div>
+              </div>
             </div>
           </div>
 
-          <div style="text-align: center; margin-top: 3rem;">
-            <button class="btn btn-primary" onclick="showView('view-map')" style="font-size: 1.2rem; padding: 15px 40px;">
-              <i class="fa-solid fa-map-location-dot"></i> Esplora i Fascicoli (Mappa)
-            </button>
+          <div class="dashboard-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; margin-top: 24px;">
+            <!-- Statistiche Studente -->
+            <div class="glass-panel" style="background: rgba(26,22,20,0.9); border: 1px solid var(--border-color); padding: 20px; border-radius: 8px;">
+              <h3 class="panel-title" style="font-family: 'Cinzel', serif; color: var(--accent-crimson); margin-bottom: 15px;"><i class="fa-solid fa-scale-balanced" style="color: var(--accent-gold);"></i> Statistiche</h3>
+              <div>
+                <div class="stat-row" style="display: flex; justify-content: space-between; padding: 12px 16px; background: rgba(255,255,255,0.03); border: 1px solid #333; border-radius: 8px; margin-bottom: 10px;">
+                  <span class="stat-label">🧠 Logica</span>
+                  <span class="stat-value" id="stud-stat-logica" style="color: var(--accent-gold); font-weight: bold;">10</span>
+                </div>
+                <div class="stat-row" style="display: flex; justify-content: space-between; padding: 12px 16px; background: rgba(255,255,255,0.03); border: 1px solid #333; border-radius: 8px; margin-bottom: 10px;">
+                  <span class="stat-label">🗣️ Retorica</span>
+                  <span class="stat-value" id="stud-stat-retorica" style="color: var(--accent-gold); font-weight: bold;">10</span>
+                </div>
+                <div class="stat-row" style="display: flex; justify-content: space-between; padding: 12px 16px; background: rgba(255,255,255,0.03); border: 1px solid #333; border-radius: 8px; margin-bottom: 10px;">
+                  <span class="stat-label">⚖️ Giurisprudenza</span>
+                  <span class="stat-value" id="stud-stat-giurisprudenza" style="color: var(--accent-gold); font-weight: bold;">10</span>
+                </div>
+                <div class="stat-row" style="display: flex; justify-content: space-between; padding: 12px 16px; background: rgba(255,255,255,0.03); border: 1px solid #333; border-radius: 8px; margin-bottom: 10px;">
+                  <span class="stat-label">🤝 Empatia</span>
+                  <span class="stat-value" id="stud-stat-empatia" style="color: var(--accent-gold); font-weight: bold;">10</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Accesso alla Mappa -->
+            <div class="glass-panel" style="background: rgba(26,22,20,0.9); border: 1px solid var(--border-color); padding: 20px; border-radius: 8px; text-align: center; display: flex; flex-direction: column; justify-content: center;">
+              <h3 class="panel-title" style="font-family: 'Cinzel', serif; color: var(--accent-gold); margin-bottom: 15px;"><i class="fa-solid fa-gavel"></i> Il Tribunale ti attende</h3>
+              <p style="color: #aaa; margin-bottom: 20px;">Esplora i fascicoli disponibili e inizia la tua arringa difensiva o d'accusa.</p>
+              <button class="btn btn-primary" onclick="showView('view-map')" style="font-size: 1.1rem; padding: 15px 30px; width: 100%;">Entra nel Tribunale</button>
+            </div>
           </div>
         </section>
 
