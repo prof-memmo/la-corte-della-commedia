@@ -154,10 +154,7 @@
           </div>
         </section>
           
-          <footer style="display: flex; align-items: center; justify-content: space-between; padding: 2rem; width: 100%; box-sizing: border-box; font-size: 0.75rem; color: var(--text-muted); line-height: 1.5; text-transform: uppercase; letter-spacing: 0.5px;">
-            <p style="text-align: justify; margin: 0; flex: 1;">© 2026 Guglielmo Piersanti. Tutti i contenuti presenti su questo sito sono di proprietà dell'autore e sono protetti tramite deposito e marcatura temporale presso Patamu. I contenuti sono inoltre distribuiti con licenza Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0).</p>
-            <img src="public/assets/patamu_pencil.png" alt="Patamu" style="height: 65px; object-fit: contain; margin-left: 2rem; flex-shrink: 0;">
-          </footer>
+          <!-- Footer rimosso (spostato globale) -->
         </section>
 
         <!-- VISTA PROFILO (LIBRERIA) -->
@@ -239,9 +236,71 @@
             <h2 class="text-gold" style="font-size: 2.5rem; text-shadow: 0 0 20px rgba(212,175,55,0.5); font-family: 'Cinzel', serif;">Loggia dei Giudici</h2>
             <p style="color: #ccc; font-style: italic;">Pannello Docente / Presidente di Corte</p>
           </div>
-          <div class="parchment-panel" style="margin-top: 2rem; border-radius: 15px;">
-            <h3 style="font-family: 'Cinzel', serif; color: var(--accent-crimson);"><img src="assets/Immagini/2.png" style="width: 30px; vertical-align: middle; margin-right: 10px;">Le tue Corti</h3>
-            <p class="text-on-parchment-muted" style="margin-top: 1rem;">La funzione di gestione aule e studenti per i docenti è in fase di costruzione.</p>
+          
+          <div style="display: flex; justify-content: center; gap: 10px; margin-bottom: 2rem;">
+            <button class="btn map-tab active" onclick="switchTeacherTab('panoramica')" id="tab-btn-panoramica" style="background: var(--accent-crimson); color: white; border: 2px solid #fff;">Gestione Classi</button>
+            <button class="btn map-tab" onclick="switchTeacherTab('verdetti')" id="tab-btn-verdetti" style="background: #4a4a4a; color: #888; border: 1px solid #333;">Valutazione Verdetti</button>
+            <button class="btn map-tab" onclick="switchTeacherTab('impostazioni')" id="tab-btn-impostazioni" style="background: #4a4a4a; color: #888; border: 1px solid #333;">Impostazioni</button>
+          </div>
+
+          <!-- TAB PANORAMICA -->
+          <div id="t-tab-panoramica" class="teacher-tab-content" style="display: block;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 24px;">
+              <div class="dark-panel" style="text-align: center; padding: 15px; cursor: pointer; border: 1px solid var(--accent-gold);">
+                <span style="font-size: 0.75rem; color: #aaa; text-transform: uppercase;">Classi Attive</span>
+                <h4 style="font-size: 1.8rem; color: var(--accent-gold); margin-top: 5px;">0</h4>
+              </div>
+              <div class="dark-panel" style="text-align: center; padding: 15px; cursor: pointer;">
+                <span style="font-size: 0.75rem; color: #aaa; text-transform: uppercase;">Studenti Totali</span>
+                <h4 style="font-size: 1.8rem; color: var(--accent-gold); margin-top: 5px;">0</h4>
+              </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 20px;">
+              <!-- Crea Nuova Classe -->
+              <div class="parchment-panel">
+                <h3 style="color: var(--accent-crimson); font-family: 'Cinzel', serif; margin-bottom: 1rem;">Nuova Classe</h3>
+                <form id="form-create-class" onsubmit="return false;">
+                  <input type="text" placeholder="Codice Classe (es. 1C)" style="width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 5px; border: 1px solid #ccc;">
+                  <input type="text" placeholder="Nome esteso (es. 1C Inferno)" style="width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 5px; border: 1px solid #ccc;">
+                  <button type="submit" class="btn btn-primary" style="width: 100%;">Crea Classe</button>
+                </form>
+              </div>
+
+              <!-- Lista Classi e Iscritti -->
+              <div class="dark-panel">
+                <h3 style="color: var(--accent-gold); font-family: 'Cinzel', serif; margin-bottom: 1rem;">Studenti Iscritti</h3>
+                <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                  <input type="text" placeholder="Cerca studente..." style="padding: 8px; border-radius: 5px; border: none; flex: 1;">
+                  <button class="btn btn-secondary">Cerca</button>
+                </div>
+                <div style="background: rgba(0,0,0,0.5); padding: 10px; border-radius: 5px; min-height: 150px; display: flex; align-items: center; justify-content: center;">
+                  <p style="color: #888; font-style: italic;">Nessuno studente iscritto al momento. (Dati Firebase in arrivo)</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB VALUTAZIONE -->
+          <div id="t-tab-verdetti" class="teacher-tab-content" style="display: none;">
+            <div class="parchment-panel">
+              <h3 style="color: var(--accent-crimson); font-family: 'Cinzel', serif; margin-bottom: 1rem;">Verdetti da Valutare</h3>
+              <p class="text-on-parchment-muted" style="margin-bottom: 1rem;">Seleziona un verdetto inviato dai tuoi studenti per assegnare un voto e correggere l'argomentazione.</p>
+              <div style="background: rgba(255,255,255,0.3); border: 1px dashed #aaa; padding: 20px; text-align: center; border-radius: 8px;">
+                <p style="color: #666; font-style: italic;">Nessun verdetto in attesa di valutazione.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB IMPOSTAZIONI -->
+          <div id="t-tab-impostazioni" class="teacher-tab-content" style="display: none;">
+            <div class="dark-panel">
+              <h3 style="color: var(--accent-gold); font-family: 'Cinzel', serif; margin-bottom: 1rem;">Impostazioni Classe</h3>
+              <p style="color: #aaa; margin-bottom: 1rem;">Gestisci le funzionalità attive per le tue classi.</p>
+              <label style="display: flex; align-items: center; gap: 10px; color: #fff; cursor: pointer;">
+                <input type="checkbox" style="width: 20px; height: 20px;"> Sblocca Mappa del Purgatorio (2° Quadrimestre)
+              </label>
+            </div>
           </div>
         </section>
 
@@ -318,6 +377,27 @@
           </div>
         </section>
 
+        <!-- VISTA REGOLAMENTO -->
+        <section id="view-regolamento" class="view animate-fade-in">
+          <div style="text-align: center; margin-bottom: 2rem;">
+            <h2 class="text-gold" style="font-size: 2.5rem; text-shadow: 0 0 20px rgba(212,175,55,0.5); font-family: 'Cinzel', serif;">Regolamento della Corte</h2>
+          </div>
+          
+          <div class="parchment-panel" style="max-width: 800px; margin: 0 auto; padding: 2rem; border-radius: 15px;">
+            <h3 style="color: var(--accent-crimson); font-family: 'Cinzel', serif;">1. Lo Scopo del Viaggio</h3>
+            <p class="text-on-parchment-muted" style="margin-bottom: 1.5rem; line-height: 1.6;">Come giudice, il tuo compito è ascoltare le anime, analizzare le prove e i documenti, ed esprimere un verdetto motivato sulle loro colpe o meriti.</p>
+            
+            <h3 style="color: var(--accent-crimson); font-family: 'Cinzel', serif;">2. Acquisizione dell'Esperienza (XP)</h3>
+            <p class="text-on-parchment-muted" style="margin-bottom: 1.5rem; line-height: 1.6;">Ogni fascicolo risolto correttamente o valutato dal tuo Docente (se sei in una classe) ti farà guadagnare punti Esperienza (XP). Accumulando XP, sbloccherai nuovi titoli e distintivi di saggezza nella tua Libreria.</p>
+            
+            <h3 style="color: var(--accent-crimson); font-family: 'Cinzel', serif;">3. Condotta nella Corte</h3>
+            <p class="text-on-parchment-muted" style="margin-bottom: 1.5rem; line-height: 1.6;">Le argomentazioni fornite nei verdetti devono essere rispettose e scritte in un italiano corretto e pertinente. I docenti hanno la facoltà di respingere o penalizzare verdetti non consoni.</p>
+            
+            <h3 style="color: var(--accent-crimson); font-family: 'Cinzel', serif;">4. Esplorazione</h3>
+            <p class="text-on-parchment-muted" style="margin-bottom: 1.5rem; line-height: 1.6;">I Regni si sbloccano progressivamente. Completa i fascicoli dell'Inferno per poter poi accedere al Purgatorio e, infine, al Paradiso.</p>
+          </div>
+        </section>
+
       </main>
 
       <!-- Bottom Nav (Solo dopo login) -->
@@ -330,7 +410,7 @@
           <i class="fa-solid fa-folder-open" style="font-size: 1.2rem; display: block; margin-bottom: 4px;"></i>
           <span style="font-size: 0.7rem;" id="nav-dashboard-label">Casi</span>
         </div>
-        <div onclick="window.showLegal('regolamento')" style="text-align: center; color: #888; cursor: pointer; flex: 1;">
+        <div onclick="showView('view-regolamento')" style="text-align: center; color: #888; cursor: pointer; flex: 1;">
           <i class="fa-solid fa-gavel" style="font-size: 1.2rem; display: block; margin-bottom: 4px;"></i>
           <span style="font-size: 0.7rem;">Regolamento</span>
         </div>
@@ -341,9 +421,9 @@
       </nav>
 
       <!-- Global Footer -->
-      <footer id="main-footer" style="display: none; padding: 2rem; width: 100%; box-sizing: border-box; text-align: center; font-size: 0.75rem; color: #888; margin-top: 20px; margin-bottom: 70px; line-height: 1.5; text-transform: uppercase; letter-spacing: 0.5px;">
-        <p style="margin: 0 0 1rem 0; text-align: justify;">© 2026 Guglielmo Piersanti. Tutti i contenuti presenti su questo sito sono di proprietà dell'autore e sono protetti tramite deposito e marcatura temporale presso Patamu. I contenuti sono inoltre distribuiti con licenza Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0).</p>
-        <img src="public/assets/patamu_pencil.png" alt="Patamu" style="height: 50px; object-fit: contain; opacity: 0.8;">
+      <footer id="main-footer" style="display: none; align-items: center; justify-content: space-between; padding: 2rem; width: 100%; box-sizing: border-box; font-size: 0.75rem; color: #888; margin-top: 20px; margin-bottom: 70px; line-height: 1.5; text-transform: uppercase; letter-spacing: 0.5px; flex-wrap: wrap; gap: 20px;">
+        <p style="text-align: justify; margin: 0; flex: 1; min-width: 250px;">© 2026 Guglielmo Piersanti. Tutti i contenuti presenti su questo sito sono di proprietà dell'autore e sono protetti tramite deposito e marcatura temporale presso Patamu. I contenuti sono inoltre distribuiti con licenza Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0).</p>
+        <img src="public/assets/patamu_pencil.png" alt="Patamu" style="height: 65px; object-fit: contain; flex-shrink: 0;">
       </footer>
     </div>
 

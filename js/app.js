@@ -479,5 +479,34 @@ document.getElementById('close-legal-btn').addEventListener('click', () => {
     document.getElementById('legal-modal').classList.add('hidden');
 });
 document.getElementById('confirm-legal-btn').addEventListener('click', () => {
-    document.getElementById('legal-modal').classList.add('hidden');
 });
+
+window.switchTeacherTab = function(tabName) {
+    // Nascondi tutti i tab content
+    document.querySelectorAll('.teacher-tab-content').forEach(el => {
+        el.style.display = 'none';
+    });
+    
+    // Ripristina lo stile di tutti i bottoni tab
+    document.querySelectorAll('#view-teacher-dashboard .btn.map-tab').forEach(btn => {
+        btn.classList.remove('active');
+        btn.style.background = '#4a4a4a';
+        btn.style.color = '#888';
+        btn.style.border = '1px solid #333';
+    });
+    
+    // Mostra il tab selezionato
+    const activeTab = document.getElementById('t-tab-' + tabName);
+    if (activeTab) {
+        activeTab.style.display = 'block';
+    }
+    
+    // Evidenzia il bottone corrispondente
+    const activeBtn = document.getElementById('tab-btn-' + tabName);
+    if (activeBtn) {
+        activeBtn.classList.add('active');
+        activeBtn.style.background = 'var(--accent-crimson)';
+        activeBtn.style.color = 'white';
+        activeBtn.style.border = '2px solid #fff';
+    }
+};
