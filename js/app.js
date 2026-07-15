@@ -196,13 +196,17 @@ onAuthStateChanged(auth, async (user) => {
       // Nascondi menu utente e nav bar durante l'onboarding
       if (userMenu) userMenu.style.display = 'none';
       if (bottomNav) bottomNav.style.display = 'none';
-    } else if (userEmail === 'prof.memmo@gmail.com' || role === 'admin') {
-      showView('view-admin-dashboard');
-      loadStudentCases(true); // Carica casi anche per admin
-      MapEngine.init();
-    } else if (role === 'teacher') {
+    } else if (userEmail === 'prof.memmo@gmail.com' || role === 'admin' || role === 'teacher') {
       showView('view-teacher-dashboard');
       if (window.TeacherDashboard) window.TeacherDashboard.init();
+      const btnToAdmin = document.getElementById('btn-to-admin');
+      if (btnToAdmin) {
+          if (userEmail === 'prof.memmo@gmail.com' || role === 'admin') {
+              btnToAdmin.style.display = 'inline-block';
+          } else {
+              btnToAdmin.style.display = 'none';
+          }
+      }
     } else if (role === 'external') {
       showView('view-map');
       MapEngine.init();
@@ -236,11 +240,17 @@ window.goToDashboard = function() {
     const role = profile ? profile.role : 'student';
     const userEmail = state.user.email ? state.user.email.toLowerCase() : '';
     
-    if (userEmail === 'prof.memmo@gmail.com' || role === 'admin') {
-        showView('view-admin-dashboard');
-    } else if (role === 'teacher') {
-        showView('view-teacher-dashboard');
-        if (window.TeacherDashboard) window.TeacherDashboard.init();
+    if (userEmail === 'prof.memmo@gmail.com' || role === 'admin' || role === 'teacher') {
+      showView('view-teacher-dashboard');
+      if (window.TeacherDashboard) window.TeacherDashboard.init();
+      const btnToAdmin = document.getElementById('btn-to-admin');
+      if (btnToAdmin) {
+          if (userEmail === 'prof.memmo@gmail.com' || role === 'admin') {
+              btnToAdmin.style.display = 'inline-block';
+          } else {
+              btnToAdmin.style.display = 'none';
+          }
+      }
     } else if (role === 'external') {
         showView('view-external-dashboard');
     } else {

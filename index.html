@@ -215,6 +215,11 @@
           <div style="text-align: center; margin-bottom: 2rem;">
             <h2 class="text-gold" style="font-size: 2.5rem; text-shadow: 0 0 20px rgba(212,175,55,0.5); font-family: 'Cinzel', serif;">Supremo Tribunale</h2>
             <p style="color: #ccc; font-style: italic;">Pannello di Amministrazione Globale</p>
+            <div style="text-align: center; margin-top: 15px;">
+              <button onclick="showView('view-teacher-dashboard')" class="btn" style="background: var(--accent-gold); color: black; padding: 5px 15px; border-radius: 5px; border: none; cursor: pointer; font-size: 0.8rem;">
+                 <i class="fa-solid fa-gavel"></i> Vai alla Loggia dei Magistrati (Docente)
+              </button>
+            </div>
           </div>
           
           <div style="display: grid; grid-template-columns: 1fr; gap: 2rem; margin-top: 2rem;">
@@ -235,6 +240,11 @@
         <section id="view-teacher-dashboard" class="view animate-fade-in">
           <div class="glass-panel" style="background: rgba(26,22,20,0.9); border: 1px solid var(--border-color); padding: 20px; border-radius: 8px;">
             <h2 class="section-title" style="font-family: 'Cinzel', serif; color: var(--accent-gold); margin-bottom: 20px; text-align: center;"><i class="fa-solid fa-gavel"></i> Loggia dei Magistrati</h2>
+            <div style="text-align: center; margin-bottom: 15px;">
+              <button id="btn-to-admin" onclick="showView('view-admin-dashboard')" class="btn" style="display: none; background: #800020; color: white; padding: 5px 15px; border-radius: 5px; border: 1px solid #ff4d4d; cursor: pointer; font-size: 0.8rem;">
+                 <i class="fa-solid fa-screwdriver-wrench"></i> Vai al Supremo Tribunale (Admin)
+              </button>
+            </div>
             
             <div class="tabs-header" style="display: flex; border-bottom: 1px solid #333; margin-bottom: 20px;">
               <button class="tab-btn active" onclick="if(window.TeacherDashboard) window.TeacherDashboard.switchTab('panoramica')" id="t-btn-panoramica" style="flex: 1; background: transparent; border: none; color: var(--accent-gold); padding: 15px; cursor: pointer; border-bottom: 2px solid var(--accent-gold);">Panoramica</button>
