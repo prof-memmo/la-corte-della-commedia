@@ -16,12 +16,22 @@ export const MapEngine = {
     allCases: [],
     completedCaseIds: [],
 
+    lockedNodes: [],
+    unlockMode: 'auto',
     init: async function() {
         console.log("Inizializzazione MapEngine...");
-        // In un db reale, caricheremmo completati da EroiDB.getUserProfile(uid).completedCases
-        // Per ora simuliamo array vuoto se non c'è.
         if (EroiDB.cache.userProfile) {
             this.completedCaseIds = EroiDB.cache.userProfile.completedCases || [];
+            
+            // Check class locks
+            const classId = EroiDB.cache.userProfile.classId;
+            if (classId && !this.isAdmin()) {
+                const classObj = await EroiDB.getClassByCode(EroiDB.cache.userProfile.classCode || classId) || await EroiDB.getClassById(classId);
+                if (classObj) {
+                    this.lockedNodes = classObj.lockedNodes || [];
+                    this.unlockMode = classObj.unlockMode || 'auto';
+                }
+            }
         } else {
             this.completedCaseIds = JSON.parse(localStorage.getItem('completedCases') || '[]');
         }
@@ -64,11 +74,22 @@ export const MapEngine = {
 
     isCircleUnlocked: function(circleIndex) {
         if (this.isAdmin()) return true;
-        if (circleIndex === 0) return true; // Il Limbo è sempre sbloccato
         
-        // Per sbloccare il cerchio N, il cerchio N-1 deve essere completato
-        const prevCircle = INFERNO_CIRCLES[circleIndex - 1];
-        return this.isCircleCompleted(prevCircle.id);
+        const circleId = INFERNO_CIRCLES[circleIndex].id;
+        const isStudent = EroiDB.cache.userProfile && EroiDB.cache.userProfile.role === 'student';
+        
+        if (isStudent && this.unlockMode === 'manual') {
+            // Modalità MANUALE (controllata dal docente)
+            if (this.lockedNodes && this.lockedNodes.includes(circleId)) {
+                return false;
+            }
+            return true; 
+        } else {
+            // Modalità AUTOMATICA (Duolingo: completi N-1 per sbloccare N)
+            if (circleIndex === 0) return true; // Il Limbo è sempre sbloccato
+            const prevCircle = INFERNO_CIRCLES[circleIndex - 1];
+            return this.isCircleCompleted(prevCircle.id);
+        }
     },
 
     renderInfernoMap: function() {

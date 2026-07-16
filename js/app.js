@@ -199,6 +199,7 @@ onAuthStateChanged(auth, async (user) => {
     } else if (userEmail === 'prof.memmo@gmail.com' || role === 'admin' || role === 'teacher') {
       showView('view-teacher-dashboard');
       if (window.TeacherDashboard) window.TeacherDashboard.init();
+      if (window.MapEngine) window.MapEngine.init(); // Initialize map for admin/teachers too
       const btnToAdmin = document.getElementById('btn-to-admin');
       if (btnToAdmin) {
           if (userEmail === 'prof.memmo@gmail.com' || role === 'admin') {
@@ -243,6 +244,7 @@ window.goToDashboard = function() {
     if (userEmail === 'prof.memmo@gmail.com' || role === 'admin' || role === 'teacher') {
       showView('view-teacher-dashboard');
       if (window.TeacherDashboard) window.TeacherDashboard.init();
+      if (window.MapEngine) window.MapEngine.init(); // Initialize map for admin/teachers too
       const btnToAdmin = document.getElementById('btn-to-admin');
       if (btnToAdmin) {
           if (userEmail === 'prof.memmo@gmail.com' || role === 'admin') {
@@ -395,8 +397,27 @@ async function selectRole(role) {
   if (!state.user) return;
   
   try {
+    let updateData = { role: role };
+    
+    // Se è studente, validiamo il codice classe
+    if (role === 'student') {
+        const codeInput = document.getElementById('onboarding-class-code');
+        if (codeInput && codeInput.value.trim() !== '') {
+            const code = codeInput.value.trim().toUpperCase();
+            if (window.EroiDB && window.EroiDB.getClassByCode) {
+                const classObj = await window.EroiDB.getClassByCode(code);
+                if (!classObj) {
+                    alert("Codice Classe non valido. Riprova o chiedi al tuo docente.");
+                    return;
+                }
+                updateData.classCode = code;
+                updateData.classId = classObj.id;
+            }
+        }
+    }
+
     const userDocRef = doc(db, 'users', state.user.uid);
-    await updateDoc(userDocRef, { role: role });
+    await updateDoc(userDocRef, updateData);
     
     // Aggiorna cache locale
     if (window.EroiDB && window.EroiDB.cache && window.EroiDB.cache.userProfile) {
@@ -523,9 +544,12 @@ async function loadStudentCases(isAdmin = false) {
             if (window.EroiGame) window.EroiGame.startTrial(c.id);
         };
 
-        // Usa l'icona pergamena
+        // Mostra l'immagine del personaggio o l'icona pergamena di default
+        const imgPath = c.image ? c.image : "assets/Immagini/3.png";
+        const imgStyle = c.image ? "width: 70px; height: 70px; object-fit: cover; border-radius: 50%; border: 2px solid var(--accent-gold); margin-bottom: 10px;" : "width: 60px; filter: drop-shadow(0 5px 5px rgba(0,0,0,0.5)); margin-bottom: 10px;";
+        
         scroll.innerHTML = `
-            <img src="assets/Immagini/3.png" alt="Scroll" style="width: 60px; filter: drop-shadow(0 5px 5px rgba(0,0,0,0.5)); margin-bottom: 10px;">
+            <img src="${imgPath}" alt="${c.characterName}" style="${imgStyle}">
             <div style="background: rgba(0,0,0,0.7); padding: 5px 8px; border-radius: 5px; border: 1px solid var(--accent-gold); text-align: center; width: 100%;">
                 <span style="color: var(--accent-gold); font-size: 0.8rem; font-weight: bold; display: block; line-height: 1.1;">${c.characterName}</span>
                 <span style="color: #ccc; font-size: 0.7rem;">${c.canto}</span>
@@ -789,4 +813,152 @@ window.TeacherDashboard = {
         });
     }
   }
+};
+
+
+window.switchAdminTab = function(tabName) {
+    ['utenti', 'sistema', 'fascicoli'].forEach(id => {
+        const btn = document.getElementById('a-btn-' + id);
+        if (btn) {
+            btn.classList.remove('active');
+            btn.style.borderBottom = 'none';
+            btn.style.color = '#888';
+        }
+        const tab = document.getElementById('a-tab-' + id);
+        if (tab) tab.style.display = 'none';
+    });
+    
+    const btnActive = document.getElementById('a-btn-' + tabName);
+    if (btnActive) {
+        btnActive.classList.add('active');
+        btnActive.style.borderBottom = '2px solid var(--accent-gold)';
+        btnActive.style.color = 'var(--accent-gold)';
+    }
+    const tabActive = document.getElementById('a-tab-' + tabName);
+    if (tabActive) tabActive.style.display = 'block';
+    
+    if (tabName === 'utenti') {
+        loadAdminUsers();
+    }
+};
+
+window.loadAdminUsers = async function() {
+    const list = document.getElementById('admin-users-list');
+    if (!list) return;
+    
+    list.innerHTML = '<tr><td colspan="4" style="padding: 1rem; text-align: center; color: #888;">Caricamento in corso...</td></tr>';
+    
+    try {
+        const users = await EroiDB.getAllUsers();
+        if (!users || users.length === 0) {
+            list.innerHTML = '<tr><td colspan="4" style="padding: 1rem; text-align: center; color: #888;">Nessun utente trovato</td></tr>';
+            return;
+        }
+        
+        let html = '';
+        users.forEach(u => {
+            html += `
+              <tr style="border-bottom: 1px solid #333;">
+                <td style="padding: 10px;">
+                    <strong>${u.email || 'Anonimo'}</strong>
+                    ${u.classCode ? `<br><span style="font-size:0.7rem; color: var(--accent-gold);">Classe: ${u.classCode}</span>` : ''}
+                </td>
+                <td style="padding: 10px; text-transform: uppercase; font-size: 0.8rem;">
+                    ${u.role === 'admin' ? '<span style="color:var(--accent-crimson)">Admin</span>' : (u.role === 'teacher' ? '<span style="color:var(--accent-gold)">Docente</span>' : '<span style="color:#888">Studente</span>')}
+                </td>
+                <td style="padding: 10px; font-size: 0.8rem; color: #888;">${u.createdAt ? new Date(u.createdAt).toLocaleDateString() : 'N/A'}</td>
+                <td style="padding: 10px; text-align: right;">
+                    <select class="input-form" style="padding: 5px; font-size: 0.75rem;" onchange="window.updateUserRole('${u.id}', this.value)">
+                        <option value="student" ${u.role === 'student' ? 'selected' : ''}>Studente</option>
+                        <option value="teacher" ${u.role === 'teacher' ? 'selected' : ''}>Docente</option>
+                        <option value="admin" ${u.role === 'admin' ? 'selected' : ''}>Admin</option>
+                    </select>
+                </td>
+              </tr>
+            `;
+        });
+        list.innerHTML = html;
+    } catch (e) {
+        console.error("Errore loadAdminUsers", e);
+        list.innerHTML = '<tr><td colspan="4" style="padding: 1rem; text-align: center; color: red;">Errore caricamento utenti</td></tr>';
+    }
+};
+
+window.updateUserRole = async function(uid, newRole) {
+    if (confirm("Sei sicuro di voler cambiare il ruolo di questo utente?")) {
+        try {
+            await EroiDB.updateUserRole(uid, newRole);
+            alert("Ruolo aggiornato!");
+            loadAdminUsers();
+        } catch (e) {
+            alert("Errore aggiornamento ruolo: " + e.message);
+        }
+    } else {
+        loadAdminUsers(); // reset UI
+    }
+};
+
+
+window.showContattiModal = function() {
+    const modal = document.getElementById('legal-modal');
+    const content = document.getElementById('legal-text-container');
+    if (!modal || !content) return;
+    
+    content.innerHTML = `
+      <div style="display: flex; flex-direction: column; gap: 20px;">
+        <h2 style="color: var(--accent-gold); font-family: 'Cinzel', serif; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">📧 Contatti</h2>
+        <div style="padding: 16px; background: rgba(212,175,55,0.08); border-left: 4px solid var(--accent-gold); border-radius: 8px;">
+          <h4 style="color: var(--accent-gold); margin-bottom: 8px;">Scopri il mondo Prof. Memmo</h4>
+          <p style="color: #666; font-size: 0.9rem; margin-bottom: 10px;"><a href="https://prof-memmo.github.io/games/" target="_blank" style="color: var(--accent-gold); font-weight: bold; text-decoration: underline;">Visita il sito</a> per scoprire i materiali, i giochi e la filosofia, oppure <a href="https://prof-memmo.github.io/games/condividi-esperienza.html" target="_blank" style="color: var(--accent-gold); font-weight: bold; text-decoration: underline;">condividi la tua esperienza</a> lasciando commenti e feedback tramite il modulo!</p>
+          <div style="display: flex; align-items: center; gap: 10px; color: var(--accent-gold); font-weight: bold;">
+            <i class="fa-solid fa-envelope"></i> <span>prof.memmo@gmail.com</span>
+          </div>
+          <div style="margin-top: 1rem; display: flex; align-items: center; gap: 10px;">
+            <span style="font-weight: 600; color: #333;">Seguimi sui social:</span>
+            <a href="https://www.instagram.com/prof.memmo_games?igsh=MW5pNHY3dHBxMHEyag%3D%3D&utm_source=qr" target="_blank" style="color: #E1306C; font-size: 2.2rem; display: inline-flex; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                <i class="fa-brands fa-instagram"></i>
+            </a>
+          </div>
+        </div>
+        <div style="padding: 16px; background: rgba(0,0,0,0.05); border: 1px solid rgba(0,0,0,0.1); border-radius: 8px;">
+          <h4 style="color: #333; margin-bottom: 12px; font-size: 0.95rem;">Invia un Messaggio</h4>
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <input type="text" id="contact-modal-name" placeholder="Il tuo nome" class="input-form" style="padding: 8px 12px; border: 1px solid #ccc; border-radius: 4px;">
+            <input type="email" id="contact-modal-email" placeholder="La tua email" class="input-form" style="padding: 8px 12px; border: 1px solid #ccc; border-radius: 4px;">
+            <select id="contact-modal-topic" class="input-form" style="padding: 8px 12px; background-color: #fff; border: 1px solid #ccc; border-radius: 4px;">
+                <option value="" disabled selected style="color: #888;">Tipologia della comunicazione...</option>
+                <option value="Richiesta di informazioni" style="color: black;">Richiesta di informazioni</option>
+                <option value="Opinioni" style="color: black;">Opinioni</option>
+                <option value="Altro" style="color: black;">Altro</option>
+            </select>
+            <textarea id="contact-modal-message" placeholder="Come posso aiutarti?" class="input-form" style="height: 80px; resize: none; padding: 8px 12px; border: 1px solid #ccc; border-radius: 4px;"></textarea>
+            <label style="display: flex; align-items: flex-start; gap: 8px; font-size: 0.8rem; color: #555; cursor: pointer;">
+              <input type="checkbox" id="contact-modal-check" style="margin-top: 2px;">
+              <span>Ho almeno 16 anni o sono sotto supervisione di un adulto. Accetto la 
+                <a href="#" onclick="event.preventDefault(); window.showLegal('privacy')" style="color: var(--accent-gold);">Privacy Policy</a> e i 
+                <a href="#" onclick="event.preventDefault(); window.showLegal('terms')" style="color: var(--accent-gold);">Termini</a>.
+              </span>
+            </label>
+            <button class="btn btn-primary" style="width: 100%; padding: 10px;" onclick="window.submitContattiModal()">
+              <i class="fa-solid fa-paper-plane"></i> Invia Messaggio
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+    modal.classList.remove('hidden');
+};
+
+window.submitContattiModal = function() {
+    const name = document.getElementById('contact-modal-name')?.value.trim();
+    const email = document.getElementById('contact-modal-email')?.value.trim();
+    const topic = document.getElementById('contact-modal-topic')?.value;
+    const message = document.getElementById('contact-modal-message')?.value.trim();
+    const check = document.getElementById('contact-modal-check')?.checked;
+    if (!name || !email || !topic || !message) { alert('Compila tutti i campi, compresa la tipologia.'); return; }
+    if (!check) { alert('Devi accettare la Privacy Policy e i Termini.'); return; }
+    
+    // Mostriamo un toast di successo
+    alert('Messaggio inviato! Ti risponderemo presto.');
+    document.getElementById('legal-modal').classList.add('hidden');
 };

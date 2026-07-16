@@ -78,7 +78,7 @@ export const EroiGame = {
                     <div id="minigame-container" style="margin-top: 20px;"></div>
                 `;
                 if (window.MinigamesEngine) {
-                    window.MinigamesEngine.loadMinigame(data.id, document.getElementById('minigame-container'));
+                    window.MinigamesEngine.loadMinigame(data, document.getElementById('minigame-container'));
                 }
                 break;
 

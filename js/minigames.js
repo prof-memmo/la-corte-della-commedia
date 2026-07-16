@@ -5,13 +5,14 @@ export const MinigamesEngine = {
         console.log("MinigamesEngine initialized");
     },
     
-    loadMinigame: function(caseId, containerElement) {
+    loadMinigame: function(caseData, containerElement) {
         // Mostriamo un menu per scegliere il minigioco da testare
         containerElement.innerHTML = `
             <div style="text-align: center; margin-bottom: 20px;">
                 <h4 class="text-gold">Scegli il Metodo di Indagine</h4>
                 <div style="display: flex; justify-content: center; gap: 10px; margin-top: 15px; flex-wrap: wrap;">
                     <button class="btn btn-secondary" id="btn-mg-hidden">👁️ Occhio dell'Inquisitore</button>
+                    <button class="btn btn-secondary" id="btn-mg-jigsaw">🧩 Mosaico della Verità</button>
                     <button class="btn btn-secondary" id="btn-mg-sequence">🗝️ Enigma della Serratura</button>
                     <button class="btn btn-secondary" id="btn-mg-crypto">📜 Analisi Criptata</button>
                 </div>
@@ -25,26 +26,26 @@ export const MinigamesEngine = {
         const trialNextBtn = document.getElementById('trial-next-btn');
         if (trialNextBtn) trialNextBtn.disabled = true;
 
-        document.getElementById('btn-mg-hidden').onclick = () => this.loadHiddenObject(document.getElementById('active-minigame-area'), trialNextBtn);
+        document.getElementById('btn-mg-hidden').onclick = () => this.loadHiddenObject(document.getElementById('active-minigame-area'), trialNextBtn, caseData);
+        document.getElementById('btn-mg-jigsaw').onclick = () => this.loadJigsawPuzzle(document.getElementById('active-minigame-area'), trialNextBtn, caseData);
         document.getElementById('btn-mg-sequence').onclick = () => this.loadSequencePuzzle(document.getElementById('active-minigame-area'), trialNextBtn);
         document.getElementById('btn-mg-crypto').onclick = () => this.loadCryptoText(document.getElementById('active-minigame-area'), trialNextBtn);
     },
 
-    loadHiddenObject: function(container, nextBtn) {
+    loadHiddenObject: function(container, nextBtn, caseData) {
         if (nextBtn) nextBtn.disabled = true;
+        
+        const imgSrc = caseData && caseData.image ? caseData.image : 'assets/Immagini/12.png';
         
         container.innerHTML = `
             <div class="minigame-wrapper animate-fade-in" style="background: rgba(0,0,0,0.6); border-radius: 8px; border: 1px solid var(--accent-gold); overflow: hidden; position: relative;">
                 <div style="padding: 10px; background: rgba(0,0,0,0.8); text-align: center;">
                     <h5 class="text-gold" style="margin:0;">L'Occhio dell'Inquisitore</h5>
-                    <p style="margin:5px 0 0 0; font-size: 0.8rem; color: #ccc;">Esamina la scrivania. Trova il "Libro Proibito" e la "Lettera d'Amore" cliccando nei punti giusti. Errori rimanenti: <span id="ho-errors" class="text-crimson">3</span></p>
+                    <p style="margin:5px 0 0 0; font-size: 0.8rem; color: #ccc;">Esamina il quadro. Trova i 3 indizi nascosti (scintille) cliccando nei punti giusti. Errori rimanenti: <span id="ho-errors" class="text-crimson">3</span></p>
                 </div>
                 
-                <div id="ho-image-container" style="position: relative; width: 100%; aspect-ratio: 16/9; background: url('assets/Immagini/12.png') center/cover no-repeat; cursor: crosshair;">
-                    <!-- Hitbox 1: Libro -->
-                    <div class="ho-hitbox" data-clue="Libro Proibito" style="position: absolute; left: 60%; top: 50%; width: 25%; height: 20%; cursor: pointer;"></div>
-                    <!-- Hitbox 2: Lettera (Pergamena a sinistra) -->
-                    <div class="ho-hitbox" data-clue="Lettera d'Amore" style="position: absolute; left: 25%; top: 60%; width: 45%; height: 35%; cursor: pointer;"></div>
+                <div id="ho-image-container" style="position: relative; width: 100%; aspect-ratio: 1/1; background: url('${imgSrc}') center/contain no-repeat; cursor: crosshair;">
+                    <!-- Hitbox generate dinamicamente -->
                 </div>
                 
                 <div style="padding: 10px; background: rgba(0,0,0,0.8);">
@@ -58,15 +59,39 @@ export const MinigamesEngine = {
         let errors = 3;
         const errorDisplay = document.getElementById('ho-errors');
         const collectedList = document.getElementById('ho-collected');
+        const imgContainer = document.getElementById('ho-image-container');
         
+        // Genera 3 hitbox casuali
+        for (let i = 1; i <= 3; i++) {
+            const hb = document.createElement('div');
+            hb.className = 'ho-hitbox';
+            hb.dataset.clue = `Indizio ${i}`;
+            // Posizioni casuali ma non troppo vicine ai bordi
+            const top = 10 + Math.random() * 80;
+            const left = 10 + Math.random() * 80;
+            
+            // Effetto scintilla/glitch leggero per renderli visibili se si presta attenzione
+            hb.style.cssText = `
+                position: absolute; 
+                left: ${left}%; top: ${top}%; 
+                width: 30px; height: 30px; 
+                transform: translate(-50%, -50%);
+                cursor: pointer;
+                border-radius: 50%;
+                background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(212,175,55,0.4) 40%, transparent 70%);
+                animation: pulse 2s infinite alternate;
+            `;
+            imgContainer.appendChild(hb);
+        }
+
         // Gestione Click Sbagliati (sull'immagine intera)
-        document.getElementById('ho-image-container').addEventListener('click', (e) => {
+        imgContainer.addEventListener('click', (e) => {
             if (e.target.id === 'ho-image-container') {
                 errors--;
                 errorDisplay.textContent = errors;
                 if (errors <= 0) {
                     alert("Indagine fallita! Hai perso la lucidità. Riprova.");
-                    this.loadHiddenObject(container, nextBtn);
+                    this.loadHiddenObject(container, nextBtn, caseData);
                 } else {
                     // Feedback visivo di errore (flash rosso)
                     e.target.style.boxShadow = "inset 0 0 50px rgba(255,0,0,0.5)";
@@ -85,9 +110,10 @@ export const MinigamesEngine = {
                 hb.dataset.found = "true";
                 found++;
                 
-                // Evidenzia visivamente l'area
+                // Evidenzia visivamente l'area e ferma l'animazione
+                hb.style.animation = 'none';
                 hb.style.border = "2px solid var(--accent-gold)";
-                hb.style.backgroundColor = "rgba(212,175,55,0.3)";
+                hb.style.backgroundColor = "rgba(212,175,55,0.8)";
                 
                 const li = document.createElement('li');
                 li.innerHTML = `✅ ${hb.dataset.clue}`;
@@ -103,6 +129,111 @@ export const MinigamesEngine = {
                 }
             });
         });
+    },
+
+    loadJigsawPuzzle: function(container, nextBtn, caseData) {
+        if (nextBtn) nextBtn.disabled = true;
+        
+        const imgSrc = caseData && caseData.image ? caseData.image : 'assets/Immagini/12.png';
+        
+        container.innerHTML = `
+            <div class="minigame-wrapper animate-fade-in" style="background: rgba(0,0,0,0.6); border-radius: 8px; border: 1px solid var(--accent-gold); overflow: hidden; padding: 15px;">
+                <div style="text-align: center; margin-bottom: 15px;">
+                    <h5 class="text-gold" style="margin:0;">Mosaico della Verità</h5>
+                    <p style="margin:5px 0 0 0; font-size: 0.8rem; color: #ccc;">Ricostruisci il dipinto. Clicca su due tessere per scambiarle di posizione.</p>
+                </div>
+                
+                <div id="jigsaw-board" style="
+                    display: grid; 
+                    grid-template-columns: repeat(3, 1fr); 
+                    grid-template-rows: repeat(3, 1fr); 
+                    gap: 2px; 
+                    width: 300px; 
+                    height: 300px; 
+                    margin: 0 auto; 
+                    border: 2px solid #444; 
+                    background: #222;
+                "></div>
+            </div>
+        `;
+
+        const board = document.getElementById('jigsaw-board');
+        const size = 3; // 3x3 grid
+        let pieces = [];
+        let selectedPiece = null;
+
+        // Inizializza i pezzi (0 a 8)
+        for (let i = 0; i < size * size; i++) {
+            pieces.push(i);
+        }
+        
+        // Mescola l'array garantendo che non sia già risolto
+        do {
+            pieces.sort(() => Math.random() - 0.5);
+        } while(isSolved());
+
+        function isSolved() {
+            for (let i = 0; i < pieces.length; i++) {
+                if (pieces[i] !== i) return false;
+            }
+            return true;
+        }
+
+        function renderBoard() {
+            board.innerHTML = '';
+            pieces.forEach((pieceIndex, gridIndex) => {
+                const cell = document.createElement('div');
+                const row = Math.floor(pieceIndex / size);
+                const col = pieceIndex % size;
+                
+                cell.style.cssText = `
+                    width: 100%; height: 100%; 
+                    background-image: url('${imgSrc}');
+                    background-size: 300px 300px;
+                    background-position: -${col * 100}px -${row * 100}px;
+                    cursor: pointer;
+                    transition: transform 0.2s, border 0.2s;
+                    box-sizing: border-box;
+                `;
+                
+                if (selectedPiece === gridIndex) {
+                    cell.style.border = "3px solid var(--accent-gold)";
+                    cell.style.transform = "scale(0.95)";
+                } else {
+                    cell.style.border = "1px solid rgba(0,0,0,0.5)";
+                }
+
+                cell.onclick = () => {
+                    if (selectedPiece === null) {
+                        selectedPiece = gridIndex;
+                        renderBoard();
+                    } else {
+                        // Swap
+                        const temp = pieces[selectedPiece];
+                        pieces[selectedPiece] = pieces[gridIndex];
+                        pieces[gridIndex] = temp;
+                        selectedPiece = null;
+                        renderBoard();
+                        
+                        if (isSolved()) {
+                            // Rimuovi i bordi
+                            board.childNodes.forEach(c => c.style.border = 'none');
+                            if (nextBtn) {
+                                nextBtn.disabled = false;
+                                nextBtn.classList.add('glow');
+                            }
+                            setTimeout(() => alert("Il mosaico è completo. La verità è svelata!"), 300);
+                        }
+                    }
+                };
+                
+                board.appendChild(cell);
+            });
+        }
+
+        // Aspettiamo che l'immagine sia caricata prima di renderizzare se necessario, 
+        // ma in questo caso possiamo renderizzare subito
+        renderBoard();
     },
 
     loadSequencePuzzle: function(container, nextBtn) {

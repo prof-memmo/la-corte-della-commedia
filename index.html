@@ -132,10 +132,17 @@
           
           <div style="display: flex; flex-direction: column; gap: 15px; max-width: 600px; margin: 0 auto; padding: 0 1rem;">
               <!-- Studente -->
-              <div class="dark-panel" style="padding: 20px; text-align: center; border: 2px solid #4da8da; cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'" onclick="window.app.selectRole('student')">
-                  <div style="font-size: 3rem; margin-bottom: 10px;">🎓</div>
-                  <h3 style="color: #4da8da; margin: 0;">STUDENTE</h3>
-                  <p style="font-size: 0.85rem; color: #aaa; margin-top: 10px;">Accumula XP, raccogli pergamene e conquista i titoli di saggezza.</p>
+              <div class="dark-panel" style="padding: 20px; text-align: center; border: 2px solid #4da8da; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
+                  <div onclick="document.getElementById('student-code-input-area').style.display='block';" style="cursor: pointer;">
+                      <div style="font-size: 3rem; margin-bottom: 10px;">🎓</div>
+                      <h3 style="color: #4da8da; margin: 0;">STUDENTE</h3>
+                      <p style="font-size: 0.85rem; color: #aaa; margin-top: 10px;">Accumula XP, raccogli pergamene e conquista i titoli di saggezza.</p>
+                  </div>
+                  <div id="student-code-input-area" style="display: none; margin-top: 15px; border-top: 1px solid #333; padding-top: 15px;">
+                      <p style="font-size: 0.85rem; margin-bottom: 10px; color: var(--accent-gold);">Inserisci il Codice Classe fornito dal tuo Docente:</p>
+                      <input type="text" id="onboarding-class-code" class="input-form" placeholder="Es. XYZ123" style="width: 100%; text-transform: uppercase; text-align: center; margin-bottom: 10px; padding: 10px; border-radius: 5px; border: 1px solid #555; background: #222; color: white;">
+                      <button class="btn btn-primary" onclick="window.app.selectRole('student')" style="width: 100%; padding: 10px; background: #4da8da; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">Unisciti alla Classe</button>
+                  </div>
               </div>
 
               <!-- Docente -->
@@ -222,14 +229,157 @@
             </div>
           </div>
           
-          <div style="display: grid; grid-template-columns: 1fr; gap: 2rem; margin-top: 2rem;">
-            <div class="dark-panel" style="background: url('assets/Immagini/4.png') no-repeat center center; background-size: cover; border-radius: 15px; padding: 2rem; position: relative;">
-              <div style="background: rgba(0,0,0,0.85); position: absolute; top:0; left:0; right:0; bottom:0; border-radius: 15px;"></div>
-              <div style="position: relative; z-index: 1;">
-                <h3 class="text-gold" style="font-family: 'Cinzel', serif; border-bottom: 1px solid var(--border-gold); padding-bottom: 10px; margin-bottom: 20px;"><img src="assets/Immagini/1.png" style="width: 30px; vertical-align: middle; margin-right: 10px;">Archivio Segreto dei Fascicoli</h3>
-                <ul id="admin-cases-list" style="list-style: none; padding: 0;">
-                  <li style="padding: 1rem; text-align: center; color: #888;">Caricamento casi in corso...</li>
-                </ul>
+          <div class="tabs-header" style="display: flex; border-bottom: 1px solid #333; margin-top: 2rem; margin-bottom: 2rem;">
+            <button class="tab-btn active" onclick="switchAdminTab('utenti')" id="a-btn-utenti" style="flex: 1; background: transparent; border: none; color: var(--accent-gold); padding: 15px; cursor: pointer; border-bottom: 2px solid var(--accent-gold);">Gestione Utenti</button>
+            <button class="tab-btn" onclick="switchAdminTab('sistema')" id="a-btn-sistema" style="flex: 1; background: transparent; border: none; color: #888; padding: 15px; cursor: pointer;">Pannello Admin Principale</button>
+            <button class="tab-btn" onclick="switchAdminTab('fascicoli')" id="a-btn-fascicoli" style="flex: 1; background: transparent; border: none; color: #888; padding: 15px; cursor: pointer;">Archivio Fascicoli</button>
+          </div>
+          
+          <div id="a-tab-utenti" class="admin-tab-content active" style="display: block;">
+            <div class="dark-panel" style="background: rgba(26,22,20,0.9); border: 1px solid var(--border-color); padding: 20px; border-radius: 8px;">
+                <h3 class="text-gold" style="font-family: 'Cinzel', serif; border-bottom: 1px solid var(--border-gold); padding-bottom: 10px; margin-bottom: 20px;"><i class="fa-solid fa-users"></i> Elenco Iscritti</h3>
+                <div style="overflow-x: auto;">
+                  <table style="width: 100%; text-align: left; border-collapse: collapse; margin-top: 10px; color: white;">
+                    <thead>
+                      <tr style="border-bottom: 1px solid var(--border-color);">
+                        <th style="padding: 10px;">Email / Nome</th>
+                        <th style="padding: 10px;">Ruolo</th>
+                        <th style="padding: 10px;">Data Iscrizione</th>
+                        <th style="padding: 10px; text-align: right;">Azioni</th>
+                      </tr>
+                    </thead>
+                    <tbody id="admin-users-list">
+                      <tr><td colspan="4" style="padding: 1rem; text-align: center; color: #888;">Caricamento utenti in corso...</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+            </div>
+          </div>
+
+          
+          <div id="a-tab-sistema" class="admin-tab-content" style="display: none;">
+            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem;">
+              
+              <!-- Left Column -->
+              <div style="display: flex; flex-direction: column; gap: 2rem;">
+                
+                <!-- Configurazioni di Campagna -->
+                <div class="dark-panel" style="background: rgba(26,22,20,0.9); border: 1px solid var(--border-color); padding: 20px; border-radius: 8px;">
+                  <h3 class="text-gold" style="font-family: 'Cinzel', serif; border-bottom: 1px solid var(--border-gold); padding-bottom: 10px; margin-bottom: 20px; text-transform: uppercase;">Configurazioni di Campagna</h3>
+                  <form id="form-admin-settings" onsubmit="return false;" style="display: flex; flex-direction: column; gap: 15px;">
+                    <div>
+                      <label style="display:block; margin-bottom:5px; color:#aaa; font-size:0.8rem; text-transform:uppercase;">Nome Piattaforma</label>
+                      <input type="text" id="admin-setting-appname" class="input-form" value="La Corte della Commedia" required style="width: 100%; padding: 10px; border-radius: 5px; background: #111; color: white; border: 1px solid #333;">
+                    </div>
+                    <div>
+                      <label style="display:block; margin-bottom:5px; color:#aaa; font-size:0.8rem; text-transform:uppercase;">Copyright Footer</label>
+                      <input type="text" id="admin-setting-copyright" class="input-form" value="© 2026 Prof. Memmo Games & Co. - Tutti i diritti riservati." required style="width: 100%; padding: 10px; border-radius: 5px; background: #111; color: white; border: 1px solid #333;">
+                    </div>
+                    <div>
+                      <label style="display:block; margin-bottom:5px; color:#aaa; font-size:0.8rem; text-transform:uppercase;">Contatti Globali</label>
+                      <input type="text" id="admin-setting-contacts" class="input-form" value="Email: prof.memmo@gmail.com | Supporto: support@profmemmogames.it | Tel: +39 06 1234567" required style="width: 100%; padding: 10px; border-radius: 5px; background: #111; color: white; border: 1px solid #333;">
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 12px; margin-top: 10px;">
+                      <input type="checkbox" id="admin-setting-purgatory" style="width: 20px; height: 20px; cursor: pointer;">
+                      <label for="admin-setting-purgatory" style="margin-bottom: 0; cursor: pointer; font-weight: bold; color: var(--accent-gold); text-transform: uppercase; font-size: 0.85rem;">
+                        Attiva 2° Quadrimestre (Purgatorio e Paradiso)
+                      </label>
+                    </div>
+                    <button type="submit" class="btn" style="width: 100%; margin-top: 10px; background: var(--accent-gold); color: black; font-weight: bold; padding: 12px; border-radius: 5px;" onclick="alert('Configurazioni salvate (Mock)')">Applica Modifiche Globali</button>
+                  </form>
+                </div>
+
+                <!-- Gestione Personale -->
+                <div class="dark-panel" style="background: rgba(26,22,20,0.9); border: 1px solid var(--border-color); padding: 20px; border-radius: 8px;">
+                  <h3 class="text-gold" style="font-family: 'Cinzel', serif; border-bottom: 1px solid var(--border-gold); padding-bottom: 10px; margin-bottom: 20px; text-transform: uppercase;">Gestione Personale (Docenti e Amministratori Secondari)</h3>
+                  <form id="form-create-staff" onsubmit="return false;" style="display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 15px; align-items: flex-end; margin-bottom: 20px;">
+                    <div>
+                      <label style="display:block; margin-bottom:5px; color:#aaa; font-size:0.8rem; text-transform:uppercase;">Nome Completo</label>
+                      <input type="text" id="staff-name" class="input-form" required placeholder="Prof. Franco" style="width: 100%; padding: 10px; border-radius: 5px; background: #111; color: white; border: 1px solid #333;">
+                    </div>
+                    <div>
+                      <label style="display:block; margin-bottom:5px; color:#aaa; font-size:0.8rem; text-transform:uppercase;">Indirizzo Email</label>
+                      <input type="email" id="staff-email" class="input-form" required placeholder="docente@scuola.it" style="width: 100%; padding: 10px; border-radius: 5px; background: #111; color: white; border: 1px solid #333;">
+                    </div>
+                    <div>
+                      <label style="display:block; margin-bottom:5px; color:#aaa; font-size:0.8rem; text-transform:uppercase;">Password Temporanea</label>
+                      <input type="text" id="staff-password" class="input-form" required placeholder="storia456" style="width: 100%; padding: 10px; border-radius: 5px; background: #111; color: white; border: 1px solid #333;">
+                    </div>
+                    <div>
+                      <label style="display:block; margin-bottom:5px; color:#aaa; font-size:0.8rem; text-transform:uppercase;">Ruolo Autorizzato</label>
+                      <select id="staff-role" class="input-form" required style="width: 100%; padding: 10px; border-radius: 5px; background: #111; color: white; border: 1px solid #333;">
+                        <option value="teacher">Docente</option>
+                        <option value="admin">Amministratore Secondario</option>
+                      </select>
+                    </div>
+                    <button type="submit" class="btn" style="background: var(--accent-gold); color: black; font-weight: bold; padding: 12px; border-radius: 5px; grid-column: 1 / -1;" onclick="alert('Staff registrato! (Mock)')">Registra</button>
+                  </form>
+                  
+                  <div style="margin-bottom: 15px;"><input type="text" placeholder="Cerca in questo elenco..." style="width: 100%; padding: 10px 15px; border-radius: 20px; background: rgba(0,0,0,0.5); color: white; border: 1px solid #555; outline: none; font-style: italic;"></div>
+                  <div style="overflow-x: auto; margin-top: 20px;">
+                    <table style="width: 100%; text-align: left; border-collapse: collapse; color: white; font-size: 0.9rem;">
+                      <thead>
+                        <tr style="border-bottom: 1px solid var(--border-gold); text-transform: uppercase; color: var(--accent-gold);">
+                          <th style="padding: 10px;">Nome</th>
+                          <th style="padding: 10px;">Email</th>
+                          <th style="padding: 10px;">Ruolo</th>
+                          <th style="padding: 10px;">Azione</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr style="border-bottom: 1px solid #333;">
+                          <td style="padding: 10px; font-weight: bold;">Prof. Memmo</td>
+                          <td style="padding: 10px;">prof.memmo@gmail.com</td>
+                          <td style="padding: 10px; color: var(--accent-gold); font-weight: bold;">ADMIN</td>
+                          <td style="padding: 10px; font-style: italic; color: #aaa;">Admin Principale</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #333;">
+                          <td style="padding: 10px; font-weight: bold;">Prof.ssa Aurora</td>
+                          <td style="padding: 10px;">docente.aurora@gmail.com</td>
+                          <td style="padding: 10px; color: var(--accent-gold); font-weight: bold;">TEACHER</td>
+                          <td style="padding: 10px;">
+                            <button class="btn" style="background: #e74c3c; color: white; border: none; border-radius: 5px; padding: 5px 10px; font-weight: bold; cursor: pointer; font-size: 0.8rem;" onclick="alert('Rimozione... (Mock)')"><i class="fa-solid fa-trash"></i> RIMUOVI</button>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Right Column -->
+              <div style="display: flex; flex-direction: column; gap: 2rem;">
+                
+                <!-- Backup e Ripristino -->
+                <div class="dark-panel" style="background: rgba(26,22,20,0.9); border: 1px solid var(--border-color); padding: 20px; border-radius: 8px;">
+                  <h3 class="text-gold" style="font-family: 'Cinzel', serif; border-bottom: 1px solid var(--border-gold); padding-bottom: 10px; margin-bottom: 15px; text-transform: uppercase;">Backup, Ripristino & Esportazione</h3>
+                  <p style="color: #aaa; font-size: 0.85rem; margin-bottom: 20px; line-height: 1.4;">
+                    Salva l'intero stato del gioco in locale come file JSON oppure esporta le anagrafiche dei tuoi studenti in foglio di calcolo.
+                  </p>
+                  <div style="display: flex; flex-direction: column; gap: 10px;">
+                    <button class="btn" style="background: transparent; border: 1px solid var(--accent-gold); color: var(--accent-gold); padding: 10px; font-weight: bold; border-radius: 5px;" onclick="alert('Esportazione JSON in corso... (Mock)')"><i class="fa-solid fa-download"></i> Esporta Database JSON</button>
+                    <button class="btn" style="background: transparent; border: 1px solid var(--accent-gold); color: var(--accent-gold); padding: 10px; font-weight: bold; border-radius: 5px;" onclick="alert('Ripristino JSON in corso... (Mock)')"><i class="fa-solid fa-upload"></i> Ripristina Database JSON</button>
+                    <button class="btn" style="background: transparent; border: 1px solid var(--accent-gold); color: var(--accent-gold); padding: 10px; font-weight: bold; border-radius: 5px;" onclick="alert('Esportazione CSV in corso... (Mock)')"><i class="fa-solid fa-file-csv"></i> Esporta Studenti CSV</button>
+                  </div>
+                  <div style="margin-top: 30px; border-top: 1px solid #333; padding-top: 20px;">
+                    <button class="btn" style="background: #e74c3c; color: white; border: none; padding: 12px; font-weight: bold; border-radius: 5px; width: 100%;" onclick="if(confirm('Attenzione! Questa operazione cancellerà tutto il database. Sei sicuro?')) alert('Ripristino ai valori di fabbrica... (Mock)')"><i class="fa-solid fa-triangle-exclamation"></i> Ripristina Valori Fabbrica</button>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+          <div id="a-tab-fascicoli" class="admin-tab-content" style="display: none;">
+            <div style="display: grid; grid-template-columns: 1fr; gap: 2rem;">
+              <div class="dark-panel" style="background: url('assets/Immagini/4.png') no-repeat center center; background-size: cover; border-radius: 15px; padding: 2rem; position: relative;">
+                <div style="background: rgba(0,0,0,0.85); position: absolute; top:0; left:0; right:0; bottom:0; border-radius: 15px;"></div>
+                <div style="position: relative; z-index: 1;">
+                  <h3 class="text-gold" style="font-family: 'Cinzel', serif; border-bottom: 1px solid var(--border-gold); padding-bottom: 10px; margin-bottom: 20px;"><img src="assets/Immagini/1.png" style="width: 30px; vertical-align: middle; margin-right: 10px;">Archivio Segreto dei Fascicoli</h3>
+                  <ul id="admin-cases-list" style="list-style: none; padding: 0;">
+                    <li style="padding: 1rem; text-align: center; color: #888;">Caricamento casi in corso...</li>
+                  </ul>
+                </div>
               </div>
             </div>
           </div>
@@ -248,23 +398,32 @@
             
             <div class="tabs-header" style="display: flex; border-bottom: 1px solid #333; margin-bottom: 20px;">
               <button class="tab-btn active" onclick="if(window.TeacherDashboard) window.TeacherDashboard.switchTab('panoramica')" id="t-btn-panoramica" style="flex: 1; background: transparent; border: none; color: var(--accent-gold); padding: 15px; cursor: pointer; border-bottom: 2px solid var(--accent-gold);">Panoramica</button>
+              <button class="tab-btn" onclick="if(window.TeacherDashboard) window.TeacherDashboard.switchTab('nodi')" id="t-btn-nodi" style="flex: 1; background: transparent; border: none; color: #888; padding: 15px; cursor: pointer;">Nodi</button>
               <button class="tab-btn" onclick="if(window.TeacherDashboard) window.TeacherDashboard.switchTab('valutazione')" id="t-btn-valutazione" style="flex: 1; background: transparent; border: none; color: #888; padding: 15px; cursor: pointer;">Valutazione</button>
               <button class="tab-btn" onclick="if(window.TeacherDashboard) window.TeacherDashboard.switchTab('impostazioni')" id="t-btn-impostazioni" style="flex: 1; background: transparent; border: none; color: #888; padding: 15px; cursor: pointer;"><i class="fa-solid fa-gear"></i></button>
             </div>
 
             <!-- TAB PANORAMICA -->
             <div id="t-tab-panoramica" class="teacher-tab-content active">
-              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 24px;">
-                <div class="glass-panel stat-card-interactive active" style="background: #1a1a1a; border: 1px solid var(--accent-gold); text-align: center; padding: 15px; cursor: pointer; border-radius: 8px;" onclick="if(window.TeacherDashboard) window.TeacherDashboard.selectStatsCategory('classes')" id="card-stats-classes">
-                  <span style="font-size: 0.75rem; color: #888; text-transform: uppercase;">Classi</span>
-                  <h4 style="font-size: 1.8rem; color: var(--accent-gold); margin-top: 5px;" id="teacher-stats-classes">0</h4>
+              <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; margin-bottom: 24px;">
+                <div class="glass-panel stat-card-interactive" style="background: #111; border: 1px solid #333; text-align: center; padding: 15px; cursor: pointer; border-radius: 8px;" onclick="if(window.TeacherDashboard) window.TeacherDashboard.selectStatsCategory('docenti')" id="card-stats-docenti">
+                  <span style="font-size: 0.75rem; color: #888; text-transform: uppercase;">Docenti</span>
+                  <h4 style="font-size: 1.8rem; color: var(--accent-gold); margin-top: 5px;" id="teacher-stats-docenti">2</h4>
                 </div>
                 <div class="glass-panel stat-card-interactive" style="background: #111; border: 1px solid #333; text-align: center; padding: 15px; cursor: pointer; border-radius: 8px;" onclick="if(window.TeacherDashboard) window.TeacherDashboard.selectStatsCategory('students')" id="card-stats-students">
                   <span style="font-size: 0.75rem; color: #888; text-transform: uppercase;">Studenti</span>
-                  <h4 style="font-size: 1.8rem; color: var(--accent-gold); margin-top: 5px;" id="teacher-stats-students">0</h4>
+                  <h4 style="font-size: 1.8rem; color: var(--accent-gold); margin-top: 5px;" id="teacher-stats-students">3</h4>
+                </div>
+                <div class="glass-panel stat-card-interactive active" style="background: #1a1a1a; border: 1px solid var(--accent-gold); text-align: center; padding: 15px; cursor: pointer; border-radius: 8px;" onclick="if(window.TeacherDashboard) window.TeacherDashboard.selectStatsCategory('classes')" id="card-stats-classes">
+                  <span style="font-size: 0.75rem; color: #888; text-transform: uppercase;">Classi</span>
+                  <h4 style="font-size: 1.8rem; color: var(--accent-gold); margin-top: 5px;" id="teacher-stats-classes">2</h4>
+                </div>
+                <div class="glass-panel stat-card-interactive" style="background: #111; border: 1px solid #333; text-align: center; padding: 15px; cursor: pointer; border-radius: 8px;" onclick="if(window.TeacherDashboard) window.TeacherDashboard.selectStatsCategory('scuole')" id="card-stats-scuole">
+                  <span style="font-size: 0.75rem; color: #888; text-transform: uppercase;">Scuole</span>
+                  <h4 style="font-size: 1.8rem; color: var(--accent-gold); margin-top: 5px;" id="teacher-stats-scuole">1</h4>
                 </div>
                 <div class="glass-panel stat-card-interactive" style="background: #111; border: 1px solid #333; text-align: center; padding: 15px; cursor: pointer; border-radius: 8px;" onclick="if(window.TeacherDashboard) window.TeacherDashboard.selectStatsCategory('pellegrini')" id="card-stats-pellegrini">
-                  <span style="font-size: 0.75rem; color: #888; text-transform: uppercase;">Pellegrini</span>
+                  <span style="font-size: 0.75rem; color: #888; text-transform: uppercase;">Forestieri</span>
                   <h4 style="font-size: 1.8rem; color: var(--accent-gold); margin-top: 5px;" id="teacher-stats-pellegrini">0</h4>
                 </div>
               </div>
@@ -315,6 +474,23 @@
               </div>
             </div>
 
+            <!-- TAB NODI -->
+            <div id="t-tab-nodi" class="teacher-tab-content" style="display: none;">
+              <div class="parchment-panel">
+                <h3 class="panel-title" style="color: var(--accent-crimson); font-family: 'Cinzel', serif; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 20px;"><i class="fa-solid fa-map-location-dot"></i> Gestione Nodi Mappa</h3>
+                <p style="margin-bottom: 15px; color: #555; font-size: 0.9rem;">Blocca o sblocca l'accesso ai cerchi dell'Inferno per le tue classi. Il Limbo è sempre sbloccato di default.</p>
+                <div style="margin-bottom: 20px;">
+                  <label for="select-nodi-class" style="display: block; margin-bottom: 5px; color: #333; font-weight: bold;">Seleziona Classe:</label>
+                  <select id="select-nodi-class" class="input-form" style="width: 100%; padding: 10px; border: 1px solid #333; background: #fff; border-radius: 5px;" onchange="if(window.TeacherDashboard) window.TeacherDashboard.renderNodi()">
+                    <option value="" disabled selected>Caricamento classi...</option>
+                  </select>
+                </div>
+                <div id="nodi-list-container" style="display: grid; gap: 10px;">
+                  <!-- Lista dei nodi con toggle inseriti via JS -->
+                </div>
+              </div>
+            </div>
+
             <!-- TAB VALUTAZIONE -->
             <div id="t-tab-valutazione" class="teacher-tab-content" style="display: none;">
               <div class="parchment-panel">
@@ -333,6 +509,17 @@
                 <p style="color: #888; margin-bottom: 20px;">Configura i permessi di visualizzazione e gestione.</p>
                 <button class="btn" style="border: 1px solid #333; background: #2a2a2a; color: #fff;">Esporta Dati Studenti</button>
               </div>
+                <div class="dark-panel" style="margin-top: 30px; background: rgba(255,50,50,0.05); border: 1px solid rgba(255,50,50,0.3);">
+                  <h3 style="color: #ff4d4d; font-family: 'Cinzel', serif; margin-bottom: 10px;"><i class="fa-solid fa-triangle-exclamation"></i> Danger Zone: Archiviazione Annuale</h3>
+                  <p style="color: #ccc; margin-bottom: 15px; font-size: 0.9rem;">Questa opzione archivia tutti gli studenti dell'anno in corso, salvandone una "fotografia". Se necessario, l'operazione potrà essere annullata dall'Archivio Storico.</p>
+                  <button class="btn" style="background: transparent; border: 1px solid #ff4d4d; color: #ff4d4d; padding: 10px 15px; font-weight: bold; border-radius: 5px;"><i class="fa-solid fa-box-archive"></i> ESEGUI ARCHIVIAZIONE ANNO</button>
+                </div>
+
+                <div class="dark-panel" style="margin-top: 20px; background: rgba(255,255,255,0.02); border: 1px solid #333;">
+                  <h3 style="color: var(--accent-gold); font-family: 'Cinzel', serif; margin-bottom: 10px;"><i class="fa-solid fa-clock-rotate-left"></i> Archivio Storico</h3>
+                  <p style="color: #aaa; margin-bottom: 10px; font-size: 0.9rem;">Consulta lo storico degli studenti degli anni passati o ripristina un anno archiviato.</p>
+                  <p style="color: #666; font-style: italic; font-size: 0.85rem;">Caricamento archivio in corso...</p>
+                </div>
             </div>
           </div>
         </section>
@@ -418,18 +605,40 @@
             <h2 class="text-gold" style="font-size: 2.5rem; text-shadow: 0 0 20px rgba(212,175,55,0.5); font-family: 'Cinzel', serif;">Regolamento della Corte</h2>
           </div>
           
-          <div class="parchment-panel" style="max-width: 800px; margin: 0 auto; padding: 2rem; border-radius: 15px;">
+          <div id="reg-studente" class="parchment-panel" style="max-width: 800px; margin: 0 auto 2rem auto; padding: 2rem; border-radius: 15px; display: none;">
+            <h2 style="color: var(--accent-gold); font-family: 'Cinzel', serif; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 20px; text-align: center;">📜 Regolamento Studente</h2>
             <h3 style="color: var(--accent-crimson); font-family: 'Cinzel', serif;">1. Lo Scopo del Viaggio</h3>
             <p class="text-on-parchment-muted" style="margin-bottom: 1.5rem; line-height: 1.6;">Come giudice, il tuo compito è ascoltare le anime, analizzare le prove e i documenti, ed esprimere un verdetto motivato sulle loro colpe o meriti.</p>
             
             <h3 style="color: var(--accent-crimson); font-family: 'Cinzel', serif;">2. Acquisizione dell'Esperienza (XP)</h3>
-            <p class="text-on-parchment-muted" style="margin-bottom: 1.5rem; line-height: 1.6;">Ogni fascicolo risolto correttamente o valutato dal tuo Docente (se sei in una classe) ti farà guadagnare punti Esperienza (XP). Accumulando XP, sbloccherai nuovi titoli e distintivi di saggezza nella tua Libreria.</p>
+            <p class="text-on-parchment-muted" style="margin-bottom: 1.5rem; line-height: 1.6;">Ogni fascicolo risolto e valutato dal tuo Docente ti farà guadagnare punti Esperienza (XP). Accumulando XP, sbloccherai nuovi titoli e distintivi di saggezza nella tua Libreria.</p>
             
             <h3 style="color: var(--accent-crimson); font-family: 'Cinzel', serif;">3. Condotta nella Corte</h3>
             <p class="text-on-parchment-muted" style="margin-bottom: 1.5rem; line-height: 1.6;">Le argomentazioni fornite nei verdetti devono essere rispettose e scritte in un italiano corretto e pertinente. I docenti hanno la facoltà di respingere o penalizzare verdetti non consoni.</p>
             
-            <h3 style="color: var(--accent-crimson); font-family: 'Cinzel', serif;">4. Esplorazione</h3>
-            <p class="text-on-parchment-muted" style="margin-bottom: 1.5rem; line-height: 1.6;">I Regni si sbloccano progressivamente. Completa i fascicoli dell'Inferno per poter poi accedere al Purgatorio e, infine, al Paradiso.</p>
+            <h3 style="color: var(--accent-crimson); font-family: 'Cinzel', serif;">4. Esplorazione (Sblocco Nodi)</h3>
+            <p class="text-on-parchment-muted" style="margin-bottom: 1.5rem; line-height: 1.6;">Il tuo Docente decide se i Regni si sbloccano automaticamente man mano che completi i fascicoli, oppure se sbloccarli manualmente per tutta la classe in base all'andamento delle lezioni.</p>
+          </div>
+
+          <div id="reg-pellegrino" class="parchment-panel" style="max-width: 800px; margin: 0 auto 2rem auto; padding: 2rem; border-radius: 15px; display: none;">
+            <h2 style="color: var(--accent-gold); font-family: 'Cinzel', serif; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 20px; text-align: center;">📜 Regolamento Pellegrino</h2>
+            <h3 style="color: var(--accent-crimson); font-family: 'Cinzel', serif;">1. Viaggio Indipendente</h3>
+            <p class="text-on-parchment-muted" style="margin-bottom: 1.5rem; line-height: 1.6;">Come pellegrino solitario, esplori l'Oltretomba in autonomia. Il tuo percorso è sbloccato automaticamente: completando tutti i casi di un cerchio, avrai accesso al successivo (stile Duolingo).</p>
+            
+            <h3 style="color: var(--accent-crimson); font-family: 'Cinzel', serif;">2. Valutazione</h3>
+            <p class="text-on-parchment-muted" style="margin-bottom: 1.5rem; line-height: 1.6;">I tuoi verdetti saranno valutati in automatico dai saggi della Corte, conferendoti l'XP necessario a sbloccare i tuoi titoli.</p>
+          </div>
+
+          <div id="reg-docente" class="parchment-panel" style="max-width: 800px; margin: 0 auto 2rem auto; padding: 2rem; border-radius: 15px; display: none;">
+            <h2 style="color: var(--accent-gold); font-family: 'Cinzel', serif; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 20px; text-align: center;">📜 Regolamento Docente</h2>
+            <h3 style="color: var(--accent-crimson); font-family: 'Cinzel', serif;">1. La Loggia dei Magistrati</h3>
+            <p class="text-on-parchment-muted" style="margin-bottom: 1.5rem; line-height: 1.6;">Hai il pieno controllo sulle tue classi. Puoi creare nuove classi, ottenere un Codice univoco da condividere e monitorare l'andamento dei tuoi studenti in tempo reale.</p>
+            
+            <h3 style="color: var(--accent-crimson); font-family: 'Cinzel', serif;">2. Valutazione dei Verdetti</h3>
+            <p class="text-on-parchment-muted" style="margin-bottom: 1.5rem; line-height: 1.6;">Sei responsabile di valutare le argomentazioni degli studenti. Puoi approvarle, garantendo loro l'XP corrispondente, oppure respingerle fornendo feedback affinché migliorino il testo.</p>
+
+            <h3 style="color: var(--accent-crimson); font-family: 'Cinzel', serif;">3. Gestione Nodi Mappa</h3>
+            <p class="text-on-parchment-muted" style="margin-bottom: 1.5rem; line-height: 1.6;">Puoi decidere la progressione dei tuoi studenti tramite la tab "Nodi". Puoi impostare uno sblocco Automatico o Manuale per bloccare i cerchi che la classe non è ancora pronta ad affrontare.</p>
           </div>
         </section>
 
