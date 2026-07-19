@@ -197,6 +197,18 @@ onAuthStateChanged(auth, async (user) => {
         if (profile) {
           const xp = profile.xp || 0;
           role = profile.role || 'student';
+          
+          // Auto-upgrade prof.memmo
+          if (user.email && user.email.toLowerCase() === 'prof.memmo@gmail.com' && role !== 'admin') {
+              try {
+                  await window.EroiDB.updateUserRole(user.uid, 'admin');
+                  role = 'admin';
+                  if (window.EroiDB.cache && window.EroiDB.cache.userProfile) {
+                      window.EroiDB.cache.userProfile.role = 'admin';
+                  }
+              } catch(err) { console.error("Impossibile promuovere prof.memmo ad admin", err); }
+          }
+          
           const xpText = `XP: ${xp} / 500`;
           
           const xpSpan = document.getElementById('user-xp');
