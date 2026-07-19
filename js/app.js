@@ -97,8 +97,37 @@ loginEmailBtn.addEventListener('click', async () => {
   loginEmailBtn.disabled = true;
 
   try {
+    // --- MOCK LOGIN PER ACCOUNT DI TEST ---
+    const testAccounts = {
+        "prof.memmo@lacorte.it": { uid: "mock-teacher", email: "prof.memmo@lacorte.it", displayName: "Prof Memmo", role: "teacher" },
+        "studente.test@lacorte.it": { uid: "mock-student", email: "studente.test@lacorte.it", displayName: "Studente Test", role: "student", classId: "TEST-CLASS" },
+        "esterno.test@lacorte.it": { uid: "mock-external", email: "esterno.test@lacorte.it", displayName: "Visitatore", role: "external" }
+    };
+    
+    if (testAccounts[email]) {
+        console.log("Mock login per test account:", email);
+        const user = testAccounts[email];
+        // Trigger manuale dello stato auth
+        state.user = user;
+        window.EroiDB.cache.userProfile = user;
+        
+        welcomeMessage.textContent = `Bentornato, ${user.displayName}`;
+        const userMenu = document.getElementById('user-menu-container');
+        if (userMenu) userMenu.style.display = 'block';
+        const headerName = document.getElementById('header-user-name');
+        if (headerName) headerName.textContent = user.displayName;
+        
+        viewAuth.classList.remove('active');
+        await initializeDashboard(user.email, user.role);
+        
+        loginEmailBtn.textContent = originalText;
+        loginEmailBtn.disabled = false;
+        return; // esci senza usare firebase
+    }
+    // --- FINE MOCK LOGIN ---
+
     try {
-      // Prova il login
+      // Prova il login reale
       await signInWithEmailAndPassword(auth, email, password);
     } catch (err) {
       if (err.code === 'auth/user-not-found' || err.code === 'auth/invalid-credential') {
@@ -139,6 +168,7 @@ logoutBtn.addEventListener('click', () => {
 });
 
 onAuthStateChanged(auth, async (user) => {
+  if (state.user && state.user.uid && state.user.uid.startsWith("mock-")) return; // ignora se è un account mock già loggato
   state.user = user;
   if (user) {
     welcomeMessage.textContent = `Bentornato, Giudice ${user.displayName}`;
@@ -550,7 +580,7 @@ async function loadStudentCases(isAdmin = false) {
         
         scroll.innerHTML = `
             <img src="${imgPath}" alt="${c.characterName}" style="${imgStyle}">
-            <div style="background: rgba(0,0,0,0.7); padding: 5px 8px; border-radius: 5px; border: 1px solid var(--accent-gold); text-align: center; width: 100%;">
+            <div style="text-align: center; width: 100%; margin-top: 5px;">
                 <span style="color: var(--accent-gold); font-size: 0.8rem; font-weight: bold; display: block; line-height: 1.1;">${c.characterName}</span>
                 <span style="color: #ccc; font-size: 0.7rem;">${c.canto}</span>
             </div>
