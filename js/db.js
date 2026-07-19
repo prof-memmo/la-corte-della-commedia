@@ -205,6 +205,7 @@ const EroiDB = {
             const users = [];
             querySnapshot.forEach((doc) => {
                 users.push({ id: doc.id, ...doc.data() });
+            });
             // --- Aggiunta MOCK DATA ---
             const mockUsers = [
                 { id: "mock-teacher", uid: "mock-teacher", email: "prof.memmo@lacorte.it", displayName: "Prof Memmo", role: "teacher" },
@@ -277,6 +278,7 @@ const EroiDB = {
             const classes = [];
             querySnapshot.forEach((doc) => {
                 classes.push(doc.data());
+            });
             // --- MOCK CLASS ---
             if (teacherEmail === "prof.memmo@lacorte.it") {
                 if (!classes.find(c => c.id === "TEST-CLASS")) {
@@ -298,6 +300,7 @@ const EroiDB = {
             const students = [];
             querySnapshot.forEach((doc) => {
                 students.push(doc.data());
+            });
             // --- MOCK STUDENTS ---
             if (classId === "TEST-CLASS") {
                 if (!students.find(s => s.email === "studente.test@lacorte.it")) {
