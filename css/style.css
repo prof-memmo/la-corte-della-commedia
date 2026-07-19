@@ -7,8 +7,8 @@
   
   --text-primary: #f4ecd8;
   --text-secondary: #a89f91;
-  --text-on-parchment: #f4ecd8;
-  --text-on-parchment-muted: #a89f91;
+  --text-on-parchment: #2c241b;
+  --text-on-parchment-muted: #5c4d3c;
 
   --accent-gold: #d4af37;
   --accent-gold-hover: #f1c40f;
@@ -91,12 +91,12 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .parchment-panel {
-  background-color: var(--bg-secondary);
-  color: var(--text-primary);
+  background-color: var(--bg-parchment);
+  color: var(--text-on-parchment);
   border-radius: var(--radius-md);
   padding: 2rem;
   box-shadow: var(--shadow-md);
-  border: 1px solid var(--border-color);
+  border: 1px solid #dcd0b3;
 }
 
 .dark-panel {
