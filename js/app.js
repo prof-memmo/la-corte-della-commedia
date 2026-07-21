@@ -849,7 +849,7 @@ window.TeacherDashboard = {
         students.forEach(s => {
             const tr = document.createElement('tr');
             tr.innerHTML = `
-                <td style="padding: 10px;">${s.displayName || s.name}</td>
+                <td style="padding: 10px;">${s.displayName || s.name} <a href="mailto:${s.email}" title="Scrivi a ${s.displayName || s.name}" style="color:var(--accent-gold); margin-left:6px; text-decoration:none;"><i class="fa-solid fa-envelope"></i></a></td>
                 <td style="padding: 10px; color: #aaa;">${s.email}</td>
                 <td style="padding: 10px;">${c.name}</td>
                 <td style="padding: 10px;">${s.level || 1}</td>
@@ -996,7 +996,7 @@ window.loadAdminUsers = async function() {
             html += `
               <tr style="border-bottom: 1px solid #333;">
                 <td style="padding: 10px;">
-                    <strong>${u.email || 'Anonimo'}</strong>
+                    <strong>${u.email || 'Anonimo'}</strong> <a href="mailto:${u.email}" title="Scrivi a ${u.email}" style="color:var(--accent-gold); margin-left:6px; text-decoration:none;"><i class="fa-solid fa-envelope"></i></a>
                     ${u.classCode ? `<br><span style="font-size:0.7rem; color: var(--accent-gold);">Classe: ${u.classCode}</span>` : ''}
                 </td>
                 <td style="padding: 10px; text-transform: uppercase; font-size: 0.8rem;">
