@@ -948,6 +948,28 @@ window.TeacherDashboard = {
             }
         });
     }
+
+    // Join Collaborator
+    const formJoin = document.getElementById('form-join-collaborator');
+    if (formJoin && !formJoin.hasAttribute('data-bound')) {
+        formJoin.setAttribute('data-bound', 'true');
+        formJoin.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const classId = document.getElementById('join-collaborator-code').value.trim().toUpperCase();
+            if (!classId) return alert("Inserisci il codice fascicolo classe.");
+
+            try {
+                const success = await EroiDB.joinClassAsCollaborator(classId, state.user.email);
+                if (success) {
+                    alert("Sei stato aggiunto come collaboratore alla classe!");
+                    formJoin.reset();
+                    self.renderClasses();
+                }
+            } catch (err) {
+                alert("Errore: " + err.message);
+            }
+        });
+    }
   }
 };
 

@@ -1,5 +1,5 @@
 import { db, doc, getDoc, setDoc } from "./firebase-config.js";
-import { collection, getDocs, query, where, orderBy, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { collection, getDocs, query, where, orderBy, updateDoc, or, arrayUnion } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const MOCK_CASES = [
   { 
@@ -273,7 +273,13 @@ const EroiDB = {
 
     getTeacherClasses: async function(teacherEmail) {
         try {
-            const q = query(collection(db, "classes"), where("teacher", "==", teacherEmail));
+            const q = query(
+                collection(db, "classes"), 
+                or(
+                    where("teacher", "==", teacherEmail),
+                    where("collaborators", "array-contains", teacherEmail)
+                )
+            );
             const querySnapshot = await getDocs(q);
             const classes = [];
             querySnapshot.forEach((doc) => {
@@ -290,6 +296,30 @@ const EroiDB = {
         } catch (e) {
             console.error("Errore getTeacherClasses:", e);
             return [];
+        }
+    },
+
+    joinClassAsCollaborator: async function(classId, teacherEmail) {
+        try {
+            const docRef = doc(db, "classes", classId);
+            const docSnap = await getDoc(docRef);
+            if (!docSnap.exists()) {
+                throw new Error("Classe non trovata.");
+            }
+            const data = docSnap.data();
+            if (data.teacher === teacherEmail) {
+                throw new Error("Sei già il docente principale di questa classe.");
+            }
+            if (data.collaborators && data.collaborators.includes(teacherEmail)) {
+                throw new Error("Sei già un collaboratore di questa classe.");
+            }
+            await updateDoc(docRef, {
+                collaborators: arrayUnion(teacherEmail)
+            });
+            return true;
+        } catch (e) {
+            console.error("Errore joinClassAsCollaborator:", e);
+            throw e;
         }
     },
 
