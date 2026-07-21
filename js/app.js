@@ -871,6 +871,34 @@ window.TeacherDashboard = {
     
     const studentBadge = document.getElementById('teacher-stats-students');
     if (studentBadge) studentBadge.textContent = totalStudents;
+
+    // --- LOGICA COLLABORATORI ---
+    const colleagueEmails = new Set();
+    classes.forEach(c => {
+      if (c.teacher && c.teacher !== state.user.email) colleagueEmails.add(c.teacher);
+      if (c.collaborators) {
+        c.collaborators.forEach(email => {
+          if (email !== state.user.email) colleagueEmails.add(email);
+        });
+      }
+    });
+
+    const docentiBadge = document.getElementById('teacher-stats-docenti');
+    if (docentiBadge) docentiBadge.textContent = colleagueEmails.size;
+
+    const tbodyDocenti = document.querySelector('#teacher-docenti-table tbody');
+    if (tbodyDocenti) {
+        tbodyDocenti.innerHTML = '';
+        if (colleagueEmails.size === 0) {
+            tbodyDocenti.innerHTML = `<tr><td style="padding: 10px; text-align: left; color: #888;"><i>Nessun collega associato.</i></td></tr>`;
+        } else {
+            colleagueEmails.forEach(email => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td style="padding: 10px; color: #ddd;">${email}</td>`;
+                tbodyDocenti.appendChild(tr);
+            });
+        }
+    }
   },
 
   bindEvents: function() {

@@ -431,6 +431,10 @@
             <!-- TAB PANORAMICA -->
             <div id="t-tab-panoramica" class="teacher-tab-content active">
               <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; margin-bottom: 24px;">
+                <div class="glass-panel stat-card-interactive" style="background: #111; border: 1px solid #333; text-align: center; padding: 15px; cursor: pointer; border-radius: 8px;" onclick="if(window.TeacherDashboard) window.TeacherDashboard.selectStatsCategory('docenti')" id="card-stats-docenti">
+                  <span style="font-size: 0.75rem; color: #888; text-transform: uppercase;">Collaboratori</span>
+                  <h4 style="font-size: 1.8rem; color: var(--accent-gold); margin-top: 5px;" id="teacher-stats-docenti">0</h4>
+                </div>
                 <div class="glass-panel stat-card-interactive" style="background: #111; border: 1px solid #333; text-align: center; padding: 15px; cursor: pointer; border-radius: 8px;" onclick="if(window.TeacherDashboard) window.TeacherDashboard.selectStatsCategory('students')" id="card-stats-students">
                   <span style="font-size: 0.75rem; color: #888; text-transform: uppercase;">Studenti</span>
                   <h4 style="font-size: 1.8rem; color: var(--accent-gold); margin-top: 5px;" id="teacher-stats-students">3</h4>
@@ -489,6 +493,24 @@
                 </div>
                 
                 <!-- PANNELLO PELLEGRINI -->
+
+                <!-- PANNELLO DOCENTI -->
+                <div id="panel-stats-docenti" class="panoramica-sub-panel" style="display: none;">
+                   <div class="dark-panel">
+                     <h3 style="color: var(--accent-gold); font-family: 'Cinzel', serif; margin-bottom: 1rem;"><i class="fa-solid fa-user-group"></i> I Miei Colleghi Collaboratori</h3>
+                     <p style="color: #888; margin-bottom: 15px;">Elenco dei docenti che collaborano alle tue classi.</p>
+                     <div class="table-responsive">
+                       <table class="game-table" id="teacher-docenti-table" style="width: 100%; border-collapse: collapse; text-align: left;">
+                         <thead>
+                           <tr style="border-bottom: 1px solid #444; color: var(--accent-gold);">
+                             <th style="padding: 10px;">Email</th>
+                           </tr>
+                         </thead>
+                         <tbody></tbody>
+                       </table>
+                     </div>
+                   </div>
+                </div>
 
                 <!-- PANNELLO SCUOLE -->
                 <div id="panel-stats-scuole" class="panoramica-sub-panel" style="display: none;">
