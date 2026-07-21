@@ -251,7 +251,7 @@ onAuthStateChanged(auth, async (user) => {
           }
       }
     } else if (role === 'external') {
-      showView('view-map');
+      window.goToDashboard();
       MapEngine.init();
     } else {
       window.goToDashboard();
@@ -296,7 +296,38 @@ window.goToDashboard = function() {
           }
       }
     } else if (role === 'external') {
-        showView('view-external-dashboard');
+        showView('view-dashboard');
+        // Popola i dati nella dashboard studente
+        const sName = document.getElementById('stud-dashboard-name');
+        const sLevel = document.getElementById('stud-dashboard-level');
+        const sFiorini = document.getElementById('stud-dashboard-fiorini');
+        const sXpText = document.getElementById('stud-dashboard-xp-text');
+        const sXpFill = document.getElementById('stud-dashboard-xp-fill');
+        
+        const currentXp = profile ? (profile.xp || 0) : 0;
+        const currentLevel = profile ? (profile.level || 1) : 1;
+        const nextXp = currentLevel * 300; // Formula XP finta
+        
+        if (sName) sName.textContent = state.user.displayName || 'Studente';
+        if (sLevel) sLevel.textContent = currentLevel;
+        if (sFiorini) sFiorini.innerHTML = `${profile && profile.fiorini ? profile.fiorini : 0} <i class="fa-solid fa-coins"></i>`;
+        
+        if (sXpText) sXpText.textContent = `${currentXp} / ${nextXp} XP`;
+        if (sXpFill) {
+            const perc = Math.min(100, Math.max(0, (currentXp / nextXp) * 100));
+            sXpFill.style.width = perc + "%";
+        }
+        
+        // Mock Stats Base
+        const logica = document.getElementById('stud-stat-logica');
+        const retorica = document.getElementById('stud-stat-retorica');
+        const giuris = document.getElementById('stud-stat-giurisprudenza');
+        const empatia = document.getElementById('stud-stat-empatia');
+        
+        if (logica) logica.textContent = 10 + (currentLevel * 2);
+        if (retorica) retorica.textContent = 10 + (currentLevel * 2);
+        if (giuris) giuris.textContent = 10 + (currentLevel * 2);
+        if (empatia) empatia.textContent = 10 + (currentLevel * 2);
     } else {
         showView('view-student-dashboard');
         // Popola i dati nella dashboard studente
@@ -423,7 +454,8 @@ function goDashboard() {
     } else if (role === 'teacher') {
       showView('view-teacher-dashboard');
     } else if (role === 'external') {
-      showView('view-external-dashboard');
+      showView('view-dashboard');
+      loadStudentCases(false);
     } else {
       showView('view-dashboard');
       loadStudentCases(false);
@@ -476,8 +508,7 @@ async function selectRole(role) {
     if (role === 'teacher') {
       showView('view-teacher-dashboard');
     } else if (role === 'external') {
-      showView('view-map');
-      MapEngine.init();
+      window.goToDashboard();
     } else {
       showView('view-map');
       MapEngine.init();
@@ -491,6 +522,69 @@ async function selectRole(role) {
 // Esponi per l'uso nell'HTML
 window.showView = showView;
 window.app = {
+  openEditProfileModal: function() {
+    if (!firebase.auth().currentUser) return;
+    const modal = document.getElementById('edit-profile-modal');
+    const nameInput = document.getElementById('edit-profile-name');
+    const schoolGroup = document.getElementById('edit-profile-school-group');
+    const schoolInput = document.getElementById('edit-profile-school');
+    
+    const profile = window.EroiDB && window.EroiDB.cache ? window.EroiDB.cache.userProfile : null;
+    if (!profile) return;
+    
+    const isTeacher = (profile.role === 'teacher' || profile.role === 'admin');
+    
+    if (isTeacher) {
+      schoolGroup.classList.remove('hidden');
+      schoolInput.value = profile.school || ''; 
+    } else {
+      schoolGroup.classList.add('hidden');
+    }
+    
+    nameInput.value = profile.displayName || '';
+    modal.classList.remove('hidden');
+    const dropdown = document.getElementById('user-dropdown');
+    if (dropdown) dropdown.classList.add('hidden');
+  },
+
+  saveProfileData: async function() {
+    const user = firebase.auth().currentUser;
+    if (!user) return;
+    const nameInput = document.getElementById('edit-profile-name').value.trim();
+    const schoolInput = document.getElementById('edit-profile-school').value.trim();
+    
+    if (!nameInput) {
+      alert('Il nome non può essere vuoto.');
+      return;
+    }
+    
+    const profile = window.EroiDB && window.EroiDB.cache ? window.EroiDB.cache.userProfile : null;
+    if (!profile) return;
+    const isTeacher = (profile.role === 'teacher' || profile.role === 'admin');
+    
+    try {
+      const updateData = { displayName: nameInput };
+      if (isTeacher) {
+        updateData.school = schoolInput;
+      }
+      await firebase.firestore().collection('users').doc(user.uid).update(updateData);
+      
+      // Update local cache
+      profile.displayName = nameInput;
+      if (isTeacher) profile.school = schoolInput;
+      
+      document.getElementById('edit-profile-modal').classList.add('hidden');
+      alert('Profilo aggiornato con successo!');
+      
+      // Refresh UI
+      const headerName = document.getElementById('header-user-name');
+      if (headerName) headerName.textContent = nameInput;
+      
+    } catch (err) {
+      console.error(err);
+      alert('Errore durante il salvataggio.');
+    }
+  },
   switchMapTab,
   showView,
   goDashboard,

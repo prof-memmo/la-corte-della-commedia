@@ -29,6 +29,25 @@
         </div>
     </div>
 
+    <!-- Edit Profile Modal -->
+    <div id="edit-profile-modal" class="legal-modal hidden">
+        <div class="legal-modal-content parchment-panel" style="max-width: 450px;">
+            <span class="close-legal" onclick="document.getElementById('edit-profile-modal').classList.add('hidden')">&times;</span>
+            <h2 style="color: var(--accent-gold); margin-bottom: 20px; font-family: 'Cinzel', serif;"><i class="fa-solid fa-user-edit"></i> Modifica Profilo</h2>
+            <form id="form-edit-profile" onsubmit="event.preventDefault(); if(window.app) window.app.saveProfileData();">
+                <div style="margin-bottom: 1.5rem; text-align: left;">
+                    <label style="display: block; font-weight: 800; color: var(--accent-gold); margin-bottom: 0.5rem; font-size: 0.9rem;">Nome e Cognome / Nickname:</label>
+                    <input type="text" id="edit-profile-name" required style="width: 100%; padding: 0.8rem; border-radius: 10px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.6); color: white;">
+                </div>
+                <div style="margin-bottom: 1.5rem; text-align: left;" id="edit-profile-school-group" class="hidden">
+                    <label style="display: block; font-weight: 800; color: var(--accent-gold); margin-bottom: 0.5rem; font-size: 0.9rem;">Scuola:</label>
+                    <input type="text" id="edit-profile-school" style="width: 100%; padding: 0.8rem; border-radius: 10px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.6); color: white;">
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; padding: 1rem; border-radius: 30px; font-weight: 800;">Salva Modifiche</button>
+            </form>
+        </div>
+    </div>
+
     <!-- App Header (Visibile solo dopo il login) -->
     <header class="app-header" id="main-app-header" style="display: none; z-index: 1000; position: relative; justify-content: space-between; align-items: center;">
         <div style="display: flex; align-items: center; gap: 1rem;">
@@ -74,6 +93,7 @@
               </div>
 
               <div class="dropdown-actions" style="display: flex; gap: 5px; flex-wrap: wrap; justify-content: center; margin-top: 5px;">
+                <button class="btn btn-secondary" onclick="window.app.openEditProfileModal()" style="width: 100%; border-radius: 6px; padding: 6px; font-size: 0.75rem; background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.2); color: #ccc; cursor: pointer;"><i class="fa-solid fa-user-edit"></i> Modifica Profilo</button>
                 <button class="btn btn-secondary" onclick="window.showLegal('privacy')" style="flex: 1; min-width: 45%; border-radius: 6px; padding: 6px; font-size: 0.75rem; background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.2); color: #ccc; cursor: pointer;"><i class="fa-solid fa-shield"></i> Privacy</button>
                 <button class="btn btn-secondary" onclick="window.showLegal('terms')" style="flex: 1; min-width: 45%; border-radius: 6px; padding: 6px; font-size: 0.75rem; background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.2); color: #ccc; cursor: pointer;"><i class="fa-solid fa-scroll"></i> Termini</button>
                 <button class="btn btn-secondary" onclick="window.showContattiModal()" style="flex: 1; min-width: 45%; border-radius: 6px; padding: 6px; font-size: 0.75rem; background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.2); color: #ccc; cursor: pointer;"><i class="fa-solid fa-envelope"></i> Contatti</button>
@@ -160,7 +180,7 @@
               <div class="dark-panel" style="padding: 20px; text-align: center; border: 2px solid #ccc; cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'" onclick="window.app.selectRole('external')">
                   <div style="font-size: 3rem; margin-bottom: 10px;">🤝</div>
                   <h3 style="color: #ccc; margin: 0;">PELLEGRINO</h3>
-                  <p style="font-size: 0.85rem; color: #aaa; margin-top: 10px;">Viaggiatore esterno. Esplora liberamente la mappa e le sentenze pubbliche.</p>
+                  <p style="font-size: 0.85rem; color: #aaa; margin-top: 10px;">Viaggiatore esterno. Esplora la mappa passo dopo passo, raccogli le pergamene e sblocca nuovi titoli.</p>
               </div>
           </div>
         </section>
