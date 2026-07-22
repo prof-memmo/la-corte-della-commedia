@@ -255,6 +255,7 @@
           
           <div class="tabs-header" style="display: flex; border-bottom: 1px solid #333; margin-top: 2rem; margin-bottom: 2rem;">
             <button class="tab-btn active" onclick="switchAdminTab('utenti')" id="a-btn-utenti" style="flex: 1; background: transparent; border: none; color: var(--accent-gold); padding: 15px; cursor: pointer; border-bottom: 2px solid var(--accent-gold);">Gestione Utenti</button>
+            <button class="tab-btn" onclick="switchAdminTab('scuole')" id="a-btn-scuole" style="flex: 1; background: transparent; border: none; color: #888; padding: 15px; cursor: pointer;">Scuole</button>
             <button class="tab-btn" onclick="switchAdminTab('sistema')" id="a-btn-sistema" style="flex: 1; background: transparent; border: none; color: #888; padding: 15px; cursor: pointer;">Pannello Admin Principale</button>
             <button class="tab-btn" onclick="switchAdminTab('fascicoli')" id="a-btn-fascicoli" style="flex: 1; background: transparent; border: none; color: #888; padding: 15px; cursor: pointer;">Archivio Fascicoli</button>
           </div>
@@ -274,6 +275,27 @@
                     </thead>
                     <tbody id="admin-users-list">
                       <tr><td colspan="4" style="padding: 1rem; text-align: center; color: #888;">Caricamento utenti in corso...</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+            </div>
+          </div>
+
+          <div id="a-tab-scuole" class="admin-tab-content" style="display: none;">
+            <div class="dark-panel" style="background: rgba(26,22,20,0.9); border: 1px solid var(--border-color); padding: 20px; border-radius: 8px;">
+                <h3 class="text-gold" style="font-family: 'Cinzel', serif; border-bottom: 1px solid var(--border-gold); padding-bottom: 10px; margin-bottom: 20px;"><i class="fa-solid fa-school"></i> Elenco Scuole</h3>
+                <div style="overflow-x: auto;">
+                  <table style="width: 100%; text-align: left; border-collapse: collapse; margin-top: 10px; color: white;">
+                    <thead>
+                      <tr style="border-bottom: 1px solid var(--border-color);">
+                        <th style="padding: 10px;">Nome Scuola</th>
+                        <th style="padding: 10px;">Città</th>
+                        <th style="padding: 10px;">Referente</th>
+                        <th style="padding: 10px;">Azioni</th>
+                      </tr>
+                    </thead>
+                    <tbody id="admin-schools-list">
+                      <tr><td colspan="4" style="padding: 1rem; text-align: center; color: #888;">Caricamento scuole in corso...</td></tr>
                     </tbody>
                   </table>
                 </div>
@@ -443,10 +465,6 @@
                   <span style="font-size: 0.75rem; color: #888; text-transform: uppercase;">Classi</span>
                   <h4 style="font-size: 1.8rem; color: var(--accent-gold); margin-top: 5px;" id="teacher-stats-classes">2</h4>
                 </div>
-                <div class="glass-panel stat-card-interactive" style="background: #111; border: 1px solid #333; text-align: center; padding: 15px; cursor: pointer; border-radius: 8px;" onclick="if(window.TeacherDashboard) window.TeacherDashboard.selectStatsCategory('scuole')" id="card-stats-scuole">
-                  <span style="font-size: 0.75rem; color: #888; text-transform: uppercase;">Scuole</span>
-                  <h4 style="font-size: 1.8rem; color: var(--accent-gold); margin-top: 5px;" id="teacher-stats-scuole">1</h4>
-                </div>
               </div>
               
               <!-- SOTTOMENU PANORAMICA (Gestione Studenti/Classi) -->
@@ -512,13 +530,7 @@
                    </div>
                 </div>
 
-                <!-- PANNELLO SCUOLE -->
-                <div id="panel-stats-scuole" class="panoramica-sub-panel" style="display: none;">
-                   <div class="dark-panel">
-                     <h3 style="color: var(--accent-gold); font-family: 'Cinzel', serif; margin-bottom: 1rem;">Scuole Associate</h3>
-                     <p style="color: #888;">Nessuna scuola esterna associata attualmente.</p>
-                   </div>
-                </div>
+
               </div>
             </div>
 

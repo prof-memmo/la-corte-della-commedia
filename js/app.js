@@ -835,26 +835,28 @@ window.TeacherDashboard = {
     table.style.borderCollapse = 'collapse';
     table.style.textAlign = 'left';
     table.innerHTML = `
-      <tr style="border-bottom: 1px solid var(--border-color); color: var(--accent-gold);">
-        <th style="padding: 10px;">Nome</th>
-        <th style="padding: 10px;">Email</th>
-        <th style="padding: 10px;">Classe</th>
-        <th style="padding: 10px;">Livello</th>
-      </tr>
-    `;
-
-    for (let c of classes) {
-        const students = await EroiDB.getStudentsByClass(c.id);
-        totalStudents += students.length;
-        students.forEach(s => {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td style="padding: 10px;">${s.displayName || s.name} <a href="mailto:${s.email}" title="Scrivi a ${s.displayName || s.name}" style="color:var(--accent-gold); margin-left:6px; text-decoration:none;"><i class="fa-solid fa-envelope"></i></a></td>
-                <td style="padding: 10px; color: #aaa;">${s.email}</td>
-                <td style="padding: 10px;">${c.name}</td>
-                <td style="padding: 10px;">${s.level || 1}</td>
+              <tr style="border-bottom: 1px solid var(--border-color); color: var(--accent-gold);">
+                <th style="padding: 10px;">Nome</th>
+                <th style="padding: 10px;">Email</th>
+                <th style="padding: 10px;">Classe</th>
+                <th style="padding: 10px;">Livello</th>
+                <th style="padding: 10px;"></th>
+              </tr>
             `;
-            table.appendChild(tr);
+
+            for (let c of classes) {
+                const students = await EroiDB.getStudentsByClass(c.id);
+                totalStudents += students.length;
+                students.forEach(s => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td style="padding: 10px;">${s.displayName || s.name}</td>
+                        <td style="padding: 10px; color: #aaa;">${s.email}</td>
+                        <td style="padding: 10px;">${c.name}</td>
+                        <td style="padding: 10px;">${s.level || 1}</td>
+                        <td style="padding: 10px; text-align: right;"><a href="mailto:${s.email}" title="Scrivi a ${s.displayName || s.name}" style="color:var(--accent-gold); text-decoration:none;"><i class="fa-solid fa-envelope"></i></a></td>
+                    `;
+                    table.appendChild(tr);
         });
     }
 
@@ -1003,7 +1005,7 @@ window.TeacherDashboard = {
 
 
 window.switchAdminTab = function(tabName) {
-    ['utenti', 'sistema', 'fascicoli'].forEach(id => {
+    ['utenti', 'scuole', 'sistema', 'fascicoli'].forEach(id => {
         const btn = document.getElementById('a-btn-' + id);
         if (btn) {
             btn.classList.remove('active');
@@ -1025,6 +1027,59 @@ window.switchAdminTab = function(tabName) {
     
     if (tabName === 'utenti') {
         loadAdminUsers();
+    } else if (tabName === 'scuole') {
+        renderAdminSchoolsList();
+    }
+};
+
+window.renderAdminSchoolsList = async function() {
+    const list = document.getElementById('admin-schools-list');
+    if (!list) return;
+    
+    list.innerHTML = '<tr><td colspan="4" style="padding: 1rem; text-align: center; color: #888;">Caricamento scuole in corso...</td></tr>';
+    
+    try {
+        const users = await EroiDB.getAllUsers();
+        const schoolsMap = new Map();
+        
+        users.forEach(u => {
+            if (u.role === 'teacher' && u.school) {
+                const schoolName = u.school.trim();
+                if (!schoolsMap.has(schoolName)) {
+                    schoolsMap.set(schoolName, {
+                        name: schoolName,
+                        city: u.city || 'N/A',
+                        referentName: u.displayName || u.name || 'Sconosciuto',
+                        referentEmail: u.email
+                    });
+                }
+            }
+        });
+
+        if (schoolsMap.size === 0) {
+            list.innerHTML = '<tr><td colspan="4" style="padding: 1rem; text-align: center; color: #888;">Nessuna scuola registrata.</td></tr>';
+            return;
+        }
+
+        let html = '';
+        Array.from(schoolsMap.values()).forEach(s => {
+            html += `
+              <tr style="border-bottom: 1px solid #333;">
+                <td style="padding: 10px; font-weight: bold; color: var(--accent-gold);">${s.name}</td>
+                <td style="padding: 10px; color: #ccc;">${s.city}</td>
+                <td style="padding: 10px;">${s.referentName}</td>
+                <td style="padding: 10px; text-align: right;">
+                    <a href="mailto:${s.referentEmail}" title="Scrivi al referente ${s.referentName}" class="btn" style="background: rgba(255,255,255,0.1); color: var(--accent-gold); padding: 5px 10px; border-radius: 5px; text-decoration: none; display: inline-flex; align-items: center; gap: 5px;">
+                        <i class="fa-solid fa-envelope"></i> Contatta
+                    </a>
+                </td>
+              </tr>
+            `;
+        });
+        list.innerHTML = html;
+    } catch (e) {
+        console.error("Errore renderAdminSchoolsList", e);
+        list.innerHTML = '<tr><td colspan="4" style="padding: 1rem; text-align: center; color: red;">Errore caricamento scuole</td></tr>';
     }
 };
 
@@ -1046,7 +1101,7 @@ window.loadAdminUsers = async function() {
             html += `
               <tr style="border-bottom: 1px solid #333;">
                 <td style="padding: 10px;">
-                    <strong>${u.email || 'Anonimo'}</strong> <a href="mailto:${u.email}" title="Scrivi a ${u.email}" style="color:var(--accent-gold); margin-left:6px; text-decoration:none;"><i class="fa-solid fa-envelope"></i></a>
+                    <strong>${u.email || 'Anonimo'}</strong>
                     ${u.classCode ? `<br><span style="font-size:0.7rem; color: var(--accent-gold);">Classe: ${u.classCode}</span>` : ''}
                 </td>
                 <td style="padding: 10px; text-transform: uppercase; font-size: 0.8rem;">
@@ -1054,6 +1109,7 @@ window.loadAdminUsers = async function() {
                 </td>
                 <td style="padding: 10px; font-size: 0.8rem; color: #888;">${u.createdAt ? new Date(u.createdAt).toLocaleDateString() : 'N/A'}</td>
                 <td style="padding: 10px; text-align: right;">
+                    <a href="mailto:${u.email}" title="Scrivi a ${u.email}" style="color:var(--accent-gold); margin-right:10px; text-decoration:none;"><i class="fa-solid fa-envelope"></i></a>
                     <select class="input-form" style="padding: 5px; font-size: 0.75rem;" onchange="window.updateUserRole('${u.id}', this.value)">
                         <option value="student" ${u.role === 'student' ? 'selected' : ''}>Studente</option>
                         <option value="teacher" ${u.role === 'teacher' ? 'selected' : ''}>Docente</option>
