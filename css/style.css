@@ -43,6 +43,9 @@ body {
   min-height: 100vh;
   line-height: 1.6;
   background-image: radial-gradient(circle at 50% 0%, var(--bg-secondary) 0%, var(--bg-primary) 70%);
+  overscroll-behavior-y: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -291,4 +294,38 @@ h1, h2, h3, h4, h5, h6 {
 .map-tab.active {
   opacity: 1;
   transform: scale(1.05);
+}
+
+/* ==========================================
+   MIGLIORIE APP-FRIENDLY E MOBILE
+   ========================================== */
+@media (max-width: 768px) {
+    /* SPAZIO TITOLO: riduce padding-top della view su schermi ridotti */
+    .view.active {
+        padding-top: 10px !important;
+        padding-bottom: 20px !important;
+        padding-left: 5px !important;
+        padding-right: 5px !important;
+    }
+    
+    /* Su smartphone non usiamo "card", ma un layout piatto fluido come le app native */
+    .parchment-panel, .dark-panel {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        padding: 10px 5px !important;
+        margin-bottom: 15px !important;
+    }
+    
+    .app-content {
+        padding: 10px 5px !important;
+    }
+    
+    #mobile-bottom-nav div, #mobile-bottom-nav span {
+        text-transform: lowercase !important;
+        white-space: nowrap !important;
+        font-size: 0.58rem !important;
+    }
 }
