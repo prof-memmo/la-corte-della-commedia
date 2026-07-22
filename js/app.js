@@ -836,29 +836,56 @@ window.TeacherDashboard = {
     table.style.textAlign = 'left';
     table.innerHTML = `
               <tr style="border-bottom: 1px solid var(--border-color); color: var(--accent-gold);">
-                <th style="padding: 10px;">Nome</th>
-                <th style="padding: 10px;">Email</th>
-                <th style="padding: 10px;">Classe</th>
-                <th style="padding: 10px;">Livello</th>
+                <th style="cursor:pointer; padding: 10px;" onclick="window.sortTeacherStudents('name')"><div style="display: flex; align-items: center; white-space: nowrap;">Nome <i class="fa-solid fa-sort" style="margin-left:5px; font-size:0.8em; color:#888;"></i></div></th>
+                <th style="cursor:pointer; padding: 10px;" onclick="window.sortTeacherStudents('email')"><div style="display: flex; align-items: center; white-space: nowrap;">Email <i class="fa-solid fa-sort" style="margin-left:5px; font-size:0.8em; color:#888;"></i></div></th>
+                <th style="cursor:pointer; padding: 10px;" onclick="window.sortTeacherStudents('class')"><div style="display: flex; align-items: center; white-space: nowrap;">Classe <i class="fa-solid fa-sort" style="margin-left:5px; font-size:0.8em; color:#888;"></i></div></th>
+                <th style="cursor:pointer; padding: 10px;" onclick="window.sortTeacherStudents('level')"><div style="display: flex; align-items: center; white-space: nowrap;">Livello <i class="fa-solid fa-sort" style="margin-left:5px; font-size:0.8em; color:#888;"></i></div></th>
+                <th style="cursor:pointer; padding: 10px;" onclick="window.sortTeacherStudents('date')"><div style="display: flex; align-items: center; white-space: nowrap;">Data Iscrizione <i class="fa-solid fa-sort" style="margin-left:5px; font-size:0.8em; color:#888;"></i></div></th>
                 <th style="padding: 10px;"></th>
               </tr>
             `;
 
-            for (let c of classes) {
-                const students = await EroiDB.getStudentsByClass(c.id);
-                totalStudents += students.length;
-                students.forEach(s => {
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `
-                        <td style="padding: 10px;">${s.displayName || s.name}</td>
-                        <td style="padding: 10px; color: #aaa;">${s.email}</td>
-                        <td style="padding: 10px;">${c.name}</td>
-                        <td style="padding: 10px;">${s.level || 1}</td>
-                        <td style="padding: 10px; text-align: right;"><a href="mailto:${s.email}" title="Scrivi a ${s.displayName || s.name}" style="color:var(--accent-gold); text-decoration:none;"><i class="fa-solid fa-envelope"></i></a></td>
-                    `;
-                    table.appendChild(tr);
+        let allStudents = [];
+        for (let c of classes) {
+            const students = await EroiDB.getStudentsByClass(c.id);
+            students.forEach(s => {
+                s.className = c.name;
+                allStudents.push(s);
+            });
+        }
+        totalStudents = allStudents.length;
+
+        // Sort
+        const state = window.teacherStudentsSort || { col: 'date', asc: false };
+        allStudents.sort((a, b) => {
+            let valA, valB;
+            if (state.col === 'name') { valA = (a.displayName || a.name || '').toLowerCase(); valB = (b.displayName || b.name || '').toLowerCase(); }
+            else if (state.col === 'email') { valA = (a.email || '').toLowerCase(); valB = (b.email || '').toLowerCase(); }
+            else if (state.col === 'class') { valA = (a.className || '').toLowerCase(); valB = (b.className || '').toLowerCase(); }
+            else if (state.col === 'level') { valA = a.level || 0; valB = b.level || 0; }
+            else if (state.col === 'date') { 
+                valA = a.createdAt ? new Date(a.createdAt).getTime() : 0; 
+                valB = b.createdAt ? new Date(b.createdAt).getTime() : 0; 
+            }
+            else { valA = (a.displayName || a.name || '').toLowerCase(); valB = (b.displayName || b.name || '').toLowerCase(); }
+            
+            if (valA < valB) return state.asc ? -1 : 1;
+            if (valA > valB) return state.asc ? 1 : -1;
+            return 0;
         });
-    }
+
+        allStudents.forEach(s => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td style="padding: 10px;">${s.displayName || s.name}</td>
+                <td style="padding: 10px; color: #aaa;">${s.email}</td>
+                <td style="padding: 10px;">${s.className}</td>
+                <td style="padding: 10px;">${s.level || 1}</td>
+                <td style="padding: 10px; color: #888; font-size: 0.8rem;">${s.createdAt ? new Date(s.createdAt).toLocaleDateString() : 'N/A'}</td>
+                <td style="padding: 10px; text-align: right;"><a href="mailto:${s.email}" title="Scrivi a ${s.displayName || s.name}" style="color:var(--accent-gold); text-decoration:none;"><i class="fa-solid fa-envelope"></i></a></td>
+            `;
+            table.appendChild(tr);
+        });
 
     if (totalStudents > 0) {
         listContainer.style.background = 'transparent';
@@ -1083,6 +1110,28 @@ window.renderAdminSchoolsList = async function() {
     }
 };
 
+window.sortAdminUsers = function(col) {
+    if (!window.adminUsersSort) window.adminUsersSort = { col: 'date', asc: false };
+    if (window.adminUsersSort.col === col) {
+        window.adminUsersSort.asc = !window.adminUsersSort.asc;
+    } else {
+        window.adminUsersSort.col = col;
+        window.adminUsersSort.asc = true;
+    }
+    window.loadAdminUsers();
+};
+
+window.sortTeacherStudents = function(col) {
+    if (!window.teacherStudentsSort) window.teacherStudentsSort = { col: 'date', asc: false };
+    if (window.teacherStudentsSort.col === col) {
+        window.teacherStudentsSort.asc = !window.teacherStudentsSort.asc;
+    } else {
+        window.teacherStudentsSort.col = col;
+        window.teacherStudentsSort.asc = true;
+    }
+    if (window.TeacherDashboard) window.TeacherDashboard.renderClasses();
+};
+
 window.loadAdminUsers = async function() {
     const list = document.getElementById('admin-users-list');
     if (!list) return;
@@ -1097,6 +1146,22 @@ window.loadAdminUsers = async function() {
         }
         
         let html = '';
+        const state = window.adminUsersSort || { col: 'date', asc: false };
+        users.sort((a, b) => {
+            let valA, valB;
+            if (state.col === 'email') { valA = (a.email || '').toLowerCase(); valB = (b.email || '').toLowerCase(); }
+            else if (state.col === 'role') { valA = (a.role || '').toLowerCase(); valB = (b.role || '').toLowerCase(); }
+            else if (state.col === 'date') { 
+                valA = a.createdAt ? new Date(a.createdAt).getTime() : 0; 
+                valB = b.createdAt ? new Date(b.createdAt).getTime() : 0; 
+            }
+            else { valA = (a.email || '').toLowerCase(); valB = (b.email || '').toLowerCase(); }
+            
+            if (valA < valB) return state.asc ? -1 : 1;
+            if (valA > valB) return state.asc ? 1 : -1;
+            return 0;
+        });
+
         users.forEach(u => {
             html += `
               <tr style="border-bottom: 1px solid #333;">
