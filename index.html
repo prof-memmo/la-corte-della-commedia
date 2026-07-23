@@ -783,20 +783,20 @@
       </main>
 
       <!-- Bottom Nav (Solo dopo login) -->
-      <nav id="mobile-bottom-nav" style="display: none; position: fixed; bottom: 0; left: 0; width: 100%; background: #1a1614; border-top: 1px solid var(--border-color); display: flex; justify-content: space-around; padding: 10px 0; z-index: 999;">
-        <div onclick="showView('view-map')" style="text-align: center; color: var(--accent-gold); cursor: pointer; flex: 1;">
+      <nav id="mobile-bottom-nav" style="display: none; position: fixed; bottom: 0; left: 0; width: 100%; background: #1a1614; border-top: 1px solid var(--border-color); display: flex; justify-content: flex-start; padding: 10px 15px; z-index: 999; overflow-x: auto; flex-wrap: nowrap; gap: 15px; scrollbar-width: none; -webkit-overflow-scrolling: touch;">
+        <div onclick="showView('view-map')" style="text-align: center; color: var(--accent-gold); cursor: pointer; flex: 0 0 auto; min-width: 85px;">
           <i class="fa-solid fa-map-location-dot" style="font-size: 1.2rem; display: block; margin-bottom: 4px;"></i>
           <span style="font-size: 0.7rem;">Mappa</span>
         </div>
-        <div onclick="goToDashboard()" style="text-align: center; color: #888; cursor: pointer; flex: 1;">
+        <div onclick="goToDashboard()" style="text-align: center; color: #888; cursor: pointer; flex: 0 0 auto; min-width: 85px;">
           <i class="fa-solid fa-folder-open" style="font-size: 1.2rem; display: block; margin-bottom: 4px;"></i>
           <span style="font-size: 0.7rem;" id="nav-dashboard-label">Casi</span>
         </div>
-        <div onclick="showView('view-regolamento')" style="text-align: center; color: #888; cursor: pointer; flex: 1;">
+        <div onclick="showView('view-regolamento')" style="text-align: center; color: #888; cursor: pointer; flex: 0 0 auto; min-width: 85px;">
           <i class="fa-solid fa-gavel" style="font-size: 1.2rem; display: block; margin-bottom: 4px;"></i>
           <span style="font-size: 0.7rem;">Regolamento</span>
         </div>
-        <div onclick="showView('view-archivio')" style="text-align: center; color: #888; cursor: pointer; flex: 1;">
+        <div onclick="showView('view-archivio')" style="text-align: center; color: #888; cursor: pointer; flex: 0 0 auto; min-width: 85px;">
           <i class="fa-solid fa-book" style="font-size: 1.2rem; display: block; margin-bottom: 4px;"></i>
           <span style="font-size: 0.7rem;">Archivio</span>
         </div>
