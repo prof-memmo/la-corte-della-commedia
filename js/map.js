@@ -37,6 +37,20 @@ export const MapEngine = {
         }
 
         this.allCases = await EroiDB.getCasesByCampaign('inferno');
+        
+        // Inietta il caso mock per il Secondo Cerchio
+        const mockTrial = {
+            id: 'trial_01_paolo_francesca',
+            cerchio: 'Lussuriosi',
+            campaignId: 'inferno',
+            characterName: 'Paolo e Francesca',
+            canto: 'Inferno - Canto V',
+            image: 'assets/Immagini/4.png' // Icona pergamena
+        };
+        if (!this.allCases.find(c => c.id === mockTrial.id)) {
+            this.allCases.push(mockTrial);
+        }
+
         this.renderInfernoMap();
     },
 
@@ -304,7 +318,9 @@ export const MapEngine = {
             `;
 
             li.querySelector('button').addEventListener('click', () => {
-                if (window.EroiGame) {
+                if (window.commediaApp && window.commediaApp.trialsEngine) {
+                    window.commediaApp.trialsEngine.startTrial(c.id);
+                } else if (window.EroiGame) {
                     window.EroiGame.startTrial(c.id);
                 }
             });

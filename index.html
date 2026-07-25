@@ -773,10 +773,46 @@
           <div class="parchment-panel">
             <h3 style="color: var(--accent-crimson); font-family: 'Cinzel', serif; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 20px;">I Tuoi Processi Conclusi</h3>
             
-            <!-- Lista mockata per ora -->
-            <div style="background: rgba(255,255,255,0.3); border: 1px dashed #aaa; padding: 20px; text-align: center; border-radius: 8px;">
+            <!-- Lista popolata da JS -->
+            <div id="archivio-list-container" style="background: rgba(255,255,255,0.3); border: 1px dashed #aaa; padding: 20px; text-align: center; border-radius: 8px;">
               <p style="color: #666; font-style: italic;">Nessun caso completato finora.</p>
             </div>
+          </div>
+        </section>
+
+        <!-- AULA DEL TRIBUNALE (Processo Attivo) -->
+        <section id="view-active-trial" class="view animate-fade-in" style="display: none; padding-top: 10px; height: 100%; display: flex; flex-direction: column;">
+          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(212,175,55,0.2); padding-bottom: 10px; margin-bottom: 20px;">
+            <h3 id="trial-title" class="text-gold" style="font-family: 'Cinzel', serif; margin: 0; font-size: 1.5rem;">Titolo Processo</h3>
+            <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.8rem; flex-shrink: 0;" id="btn-abort-trial" onclick="showView('view-map')">
+              <i class="fa-solid fa-xmark"></i> Abbandona
+            </button>
+          </div>
+          
+          <div id="trial-questions-list" style="flex: 1; overflow-y: auto; min-height: 0; padding-right: 5px; padding-bottom: 20px;">
+            <!-- Domande inserite dinamicamente -->
+          </div>
+
+          <!-- Area d'aiuto durante il processo -->
+          <div class="trial-actions-row" style="display: flex; gap: 15px; align-items: center; margin-top: auto; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.05); flex-wrap: wrap;">
+            <button class="btn btn-secondary" style="padding: 10px 16px; font-size: 0.9rem;" id="btn-buy-hint" onclick="window.commediaApp.buyHint()">
+              <i class="fa-solid fa-lightbulb"></i> Compra Indizio (15 <i class="fa-solid fa-coins"></i>)
+            </button>
+            <button class="btn btn-primary" style="padding: 10px 24px; flex-grow: 1; font-weight: bold;" id="btn-submit-trial" onclick="window.commediaApp.submitTrial()">
+              <i class="fa-solid fa-gavel"></i> Emetti Sentenza
+            </button>
+          </div>
+        </section>
+
+        <!-- DOSSIER DOCENTE -->
+        <section id="view-teacher-dossier" class="view animate-fade-in" style="display: none; padding-top: 10px; height: 100%; display: flex; flex-direction: column;">
+          <div style="text-align: center; margin-bottom: 2rem;">
+            <h2 class="text-gold" style="font-size: 2.5rem; text-shadow: 0 0 20px rgba(212,175,55,0.5); font-family: 'Cinzel', serif;">Dossier del Giudice Supremo</h2>
+            <p style="color: #ccc; font-style: italic;">Materiali e risposte esatte per la LIM (Visibile solo ai docenti).</p>
+          </div>
+          
+          <div id="teacher-dossier-list" style="flex: 1; overflow-y: auto; padding-right: 5px; display: flex; flex-direction: column; gap: 15px;">
+            <!-- Popolato da JS -->
           </div>
         </section>
 
@@ -800,6 +836,10 @@
           <i class="fa-solid fa-book" style="font-size: 1.2rem; display: block; margin-bottom: 4px;"></i>
           <span style="font-size: 0.7rem;">Archivio</span>
         </div>
+        <div id="nav-item-dossier" onclick="showView('view-teacher-dossier')" style="display: none; text-align: center; color: var(--accent-crimson); cursor: pointer; flex: 0 0 auto; min-width: 85px;">
+          <i class="fa-solid fa-chalkboard-user" style="font-size: 1.2rem; display: block; margin-bottom: 4px;"></i>
+          <span style="font-size: 0.7rem;">LIM</span>
+        </div>
       </nav>
 
       <!-- Global Footer -->
@@ -815,6 +855,8 @@
     <script src="js/music.js"></script>
     <script type="module" src="js/game.js"></script>
     <script type="module" src="js/minigames.js"></script>
+    <script src="js/mockData.js"></script>
+    <script type="module" src="js/trials.js"></script>
     <script type="module" src="js/app.js"></script>
   </body>
 </html>

@@ -1,7 +1,8 @@
-import { auth, db, googleProvider, signInWithPopup, signInWithRedirect, getRedirectResult, signOut, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile, doc, getDoc, setDoc } from './firebase-config.js';
+import { auth, db, googleProvider, signInWithPopup, signInWithRedirect, getRedirectResult, signOut, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile, doc, getDoc, setDoc, updateDoc } from './firebase-config.js';
 import EroiDB from "./db.js";
 import { EroiGame } from "./game.js";
 import { MapEngine } from "./map.js";
+import { CommediaTrials } from "./trials.js";
 
 // Stato dell'applicazione
 const state = {
@@ -170,6 +171,8 @@ logoutBtn.addEventListener('click', () => {
 onAuthStateChanged(auth, async (user) => {
   if (state.user && state.user.uid && state.user.uid.startsWith("mock-")) return; // ignora se è un account mock già loggato
   state.user = user;
+  window.app.user = user;
+  
   if (user) {
     welcomeMessage.textContent = `Bentornato, Giudice ${user.displayName}`;
     
@@ -216,6 +219,8 @@ onAuthStateChanged(auth, async (user) => {
           
           const dropdownXp = document.getElementById('dropdown-user-xp');
           if (dropdownXp) dropdownXp.textContent = `${xp} XP`;
+          
+          window.app.profile = profile;
         }
       }
     } catch (e) {
@@ -240,6 +245,15 @@ onAuthStateChanged(auth, async (user) => {
       if (bottomNav) bottomNav.style.display = 'none';
     } else if (userEmail === 'prof.memmo@gmail.com' || role === 'admin' || role === 'teacher') {
       showView('view-teacher-dashboard');
+      
+      // Mostra il bottone LIM nella bottom bar per i docenti
+      const dossierNav = document.getElementById('nav-item-dossier');
+      if (dossierNav) dossierNav.style.display = 'block';
+      
+      if (window.commediaApp && window.commediaApp.trialsEngine) {
+          window.commediaApp.trialsEngine.populateTeacherDossier();
+      }
+      
       if (window.TeacherDashboard) window.TeacherDashboard.init();
       if (window.MapEngine) window.MapEngine.init(); // Initialize map for admin/teachers too
       const btnToAdmin = document.getElementById('btn-to-admin');
@@ -591,6 +605,33 @@ window.app = {
   selectRole
 };
 
+// Inizializza il motore dei processi e l'app helper
+const trialsEngine = new CommediaTrials(window.app);
+window.commediaApp = {
+    trialsEngine,
+    buyHint: () => trialsEngine.buyHint(),
+    submitTrial: () => trialsEngine.submitTrial()
+};
+
+// Configura anche l'accesso diretto per trialsEngine.app se necessario
+window.app.profile = null;
+window.app.user = null;
+window.app.updateUI = function() {
+    window.goToDashboard(); // Aggiorna barra exp e fiorini
+};
+window.app.refreshArchivio = function() {
+    loadStudentCases(false); // Ricarica l'archivio/libreria
+};
+window.commediaDb = {
+    updateUserProfile: async (uid, data) => {
+        const userDocRef = doc(db, 'users', uid);
+        await updateDoc(userDocRef, data);
+        if (window.EroiDB && window.EroiDB.cache && window.EroiDB.cache.userProfile) {
+            Object.assign(window.EroiDB.cache.userProfile, data);
+        }
+    }
+};
+
 async function loadStudentCases(isAdmin = false) {
   if (isAdmin) {
       const listEl = document.getElementById('admin-cases-list');
@@ -610,7 +651,11 @@ async function loadStudentCases(isAdmin = false) {
           a.innerHTML = `📕 ${activeCamp.name} - ${c.characterName} (Clicca per avviare)`;
           a.onclick = (e) => {
             e.preventDefault();
-            if (window.EroiGame) window.EroiGame.startTrial(c.id);
+            if (window.commediaApp && window.commediaApp.trialsEngine) {
+                window.commediaApp.trialsEngine.startTrial(c.id);
+            } else if (window.EroiGame) {
+                window.EroiGame.startTrial(c.id);
+            }
           };
           li.appendChild(a);
           listEl.appendChild(li);
@@ -677,7 +722,11 @@ async function loadStudentCases(isAdmin = false) {
         scroll.onmouseover = () => scroll.style.transform = 'scale(1.05)';
         scroll.onmouseout = () => scroll.style.transform = 'scale(1)';
         scroll.onclick = () => {
-            if (window.EroiGame) window.EroiGame.startTrial(c.id);
+            if (window.commediaApp && window.commediaApp.trialsEngine) {
+                window.commediaApp.trialsEngine.startTrial(c.id);
+            } else if (window.EroiGame) {
+                window.EroiGame.startTrial(c.id);
+            }
         };
 
         // Mostra l'immagine del personaggio o l'icona pergamena di default
