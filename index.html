@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
   <!-- Icone per Safari e Dispositivi Mobili -->
-  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon-commedia.png?v=5">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon-commedia.png?v=6">
   <link rel="icon" type="image/png" sizes="32x32" href="favicon-commedia.png?v=2">
 </head>
   <body>
@@ -820,23 +820,23 @@
 
       <!-- Bottom Nav (Solo dopo login) -->
       <nav id="mobile-bottom-nav" style="display: none; position: fixed; bottom: 0; left: 0; width: 100%; background: #1a1614; border-top: 1px solid var(--border-color); display: flex; justify-content: flex-start; padding: 10px 15px; z-index: 999; overflow-x: auto; flex-wrap: nowrap; gap: 15px; scrollbar-width: none; -webkit-overflow-scrolling: touch;">
-        <div onclick="showView('view-map')" style="text-align: center; color: var(--accent-gold); cursor: pointer; flex: 0 0 auto; min-width: 85px;">
+        <div onclick="showView('view-map')" style="text-align: center; color: var(--accent-gold); cursor: pointer; flex: 0 0 calc(28% - 10px); max-width: 100px;">
           <i class="fa-solid fa-map-location-dot" style="font-size: 1.2rem; display: block; margin-bottom: 4px;"></i>
           <span style="font-size: 0.7rem;">Mappa</span>
         </div>
-        <div onclick="goToDashboard()" style="text-align: center; color: #888; cursor: pointer; flex: 0 0 auto; min-width: 85px;">
+        <div onclick="goToDashboard()" style="text-align: center; color: #888; cursor: pointer; flex: 0 0 calc(28% - 10px); max-width: 100px;">
           <i class="fa-solid fa-folder-open" style="font-size: 1.2rem; display: block; margin-bottom: 4px;"></i>
           <span style="font-size: 0.7rem;" id="nav-dashboard-label">Casi</span>
         </div>
-        <div onclick="showView('view-regolamento')" style="text-align: center; color: #888; cursor: pointer; flex: 0 0 auto; min-width: 85px;">
+        <div onclick="showView('view-regolamento')" style="text-align: center; color: #888; cursor: pointer; flex: 0 0 calc(28% - 10px); max-width: 100px;">
           <i class="fa-solid fa-gavel" style="font-size: 1.2rem; display: block; margin-bottom: 4px;"></i>
           <span style="font-size: 0.7rem;">Regolamento</span>
         </div>
-        <div onclick="showView('view-archivio')" style="text-align: center; color: #888; cursor: pointer; flex: 0 0 auto; min-width: 85px;">
+        <div onclick="showView('view-archivio')" style="text-align: center; color: #888; cursor: pointer; flex: 0 0 calc(28% - 10px); max-width: 100px;">
           <i class="fa-solid fa-book" style="font-size: 1.2rem; display: block; margin-bottom: 4px;"></i>
           <span style="font-size: 0.7rem;">Archivio</span>
         </div>
-        <div id="nav-item-dossier" onclick="showView('view-teacher-dossier')" style="display: none; text-align: center; color: var(--accent-crimson); cursor: pointer; flex: 0 0 auto; min-width: 85px;">
+        <div id="nav-item-dossier" onclick="showView('view-teacher-dossier')" style="display: none; text-align: center; color: var(--accent-crimson); cursor: pointer; flex: 0 0 calc(28% - 10px); max-width: 100px;">
           <i class="fa-solid fa-chalkboard-user" style="font-size: 1.2rem; display: block; margin-bottom: 4px;"></i>
           <span style="font-size: 0.7rem;">LIM</span>
         </div>
