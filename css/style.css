@@ -336,6 +336,10 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Tooltips per la Navbar */
 @media screen and (min-width: 1024px) {
+    #mobile-bottom-nav {
+        overflow: visible !important;
+    }
+
     .nav-item-tooltip::after {
         content: attr(data-tooltip);
         position: absolute;
