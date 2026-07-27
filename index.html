@@ -438,9 +438,6 @@
           <div class="glass-panel" style="background: rgba(26,22,20,0.9); border: 1px solid var(--border-color); padding: 20px; border-radius: 8px;">
             <h2 class="section-title" style="font-family: 'Cinzel', serif; color: var(--accent-gold); margin-bottom: 20px; text-align: center;"><i class="fa-solid fa-gavel"></i> Loggia dei Magistrati</h2>
             <div style="text-align: center; margin-bottom: 15px;">
-              <button id="btn-to-admin" onclick="showView('view-admin-dashboard')" class="btn" style="display: none; background: #800020; color: white; padding: 5px 15px; border-radius: 5px; border: 1px solid #ff4d4d; cursor: pointer; font-size: 0.8rem;">
-                 <i class="fa-solid fa-screwdriver-wrench"></i> Vai al Supremo Tribunale (Admin)
-              </button>
             </div>
             
             <div class="tabs-header" style="display: flex; border-bottom: 1px solid #333; margin-bottom: 20px;">
@@ -807,10 +804,6 @@
         <!-- DOSSIER DOCENTE -->
         <section id="view-teacher-dossier" class="view flex-view animate-fade-in" style="padding-top: 10px; height: 100%; flex-direction: column;">
           <div style="text-align: center; margin-bottom: 2rem;">
-            <h2 class="text-gold" style="font-size: 2.5rem; text-shadow: 0 0 20px rgba(212,175,55,0.5); font-family: 'Cinzel', serif;">Dossier del Giudice Supremo</h2>
-            <p style="color: #ccc; font-style: italic;">Materiali e risposte esatte per la LIM (Visibile solo ai docenti).</p>
-          </div>
-          
           <div id="teacher-dossier-list" style="flex: 1; overflow-y: auto; padding-right: 5px; display: flex; flex-direction: column; gap: 15px;">
             <!-- Popolato da JS -->
           </div>
@@ -819,37 +812,34 @@
       </main>
 
       <!-- Bottom Nav (Solo dopo login) -->
-      <nav id="mobile-bottom-nav" style="display: none; position: fixed; bottom: 0; left: 0; width: 100%; background: #1a1614; border-top: 1px solid var(--border-color); justify-content: flex-start; padding: 10px 15px; z-index: 999; overflow-x: auto; flex-wrap: nowrap; gap: 15px; scrollbar-width: none; -webkit-overflow-scrolling: touch;">
-        <div onclick="showView('view-map')" data-tooltip="Mappa" style="text-align: center; color: var(--accent-gold); cursor: pointer; flex: 0 0 calc(28% - 10px); max-width: 100px; position: relative;" class="nav-item-tooltip">
-          <i class="fa-solid fa-map-location-dot" style="font-size: 1.2rem; display: block; margin-bottom: 4px;"></i>
-          <span style="font-size: 0.7rem;">Mappa</span>
+      <nav id="mobile-bottom-nav" style="display: none; position: fixed; bottom: 0; left: 0; width: 100%; background: #1a1614; border-top: 1px solid var(--border-color); justify-content: space-evenly; padding: 15px 10px; z-index: 999; overflow-x: auto; flex-wrap: nowrap; gap: 5px; scrollbar-width: none; -webkit-overflow-scrolling: touch;">
+        <div onclick="showView('view-map')" data-tooltip="Mappa" style="text-align: center; color: var(--accent-gold); cursor: pointer; flex: 1; min-width: 50px; position: relative;" class="nav-item-tooltip">
+          <i class="fa-solid fa-map-location-dot" style="font-size: 1.5rem; display: block; margin: 0 auto;"></i>
         </div>
-        <div onclick="openMiniguida()" data-tooltip="Come Giocare" style="text-align: center; color: #888; cursor: pointer; flex: 0 0 calc(28% - 10px); max-width: 100px; position: relative;" class="nav-item-tooltip">
-          <i class="fa-solid fa-circle-question" style="font-size: 1.2rem; display: block; margin-bottom: 4px;"></i>
-          <span style="font-size: 0.7rem;">Miniguida</span>
+        <div onclick="openMiniguida()" data-tooltip="Miniguida" style="text-align: center; color: #888; cursor: pointer; flex: 1; min-width: 50px; position: relative;" class="nav-item-tooltip">
+          <i class="fa-solid fa-circle-question" style="font-size: 1.5rem; display: block; margin: 0 auto;"></i>
         </div>
-        <div onclick="goToDashboard()" data-tooltip="I Tuoi Casi" style="text-align: center; color: #888; cursor: pointer; flex: 0 0 calc(28% - 10px); max-width: 100px; position: relative;" class="nav-item-tooltip">
-          <i class="fa-solid fa-folder-open" style="font-size: 1.2rem; display: block; margin-bottom: 4px;"></i>
-          <span style="font-size: 0.7rem;" id="nav-dashboard-label">Casi</span>
+        <div id="nav-item-loggia" onclick="goToDashboard(false)" data-tooltip="Loggia" style="text-align: center; color: #888; cursor: pointer; flex: 1; min-width: 50px; position: relative;" class="nav-item-tooltip">
+          <i class="fa-solid fa-folder-open" style="font-size: 1.5rem; display: block; margin: 0 auto;"></i>
         </div>
-        <div onclick="showView('view-regolamento')" data-tooltip="Regolamento" style="text-align: center; color: #888; cursor: pointer; flex: 0 0 calc(28% - 10px); max-width: 100px; position: relative;" class="nav-item-tooltip">
-          <i class="fa-solid fa-gavel" style="font-size: 1.2rem; display: block; margin-bottom: 4px;"></i>
-          <span style="font-size: 0.7rem;">Regolamento</span>
+        <div onclick="showView('view-regolamento')" data-tooltip="Regolamento" style="text-align: center; color: #888; cursor: pointer; flex: 1; min-width: 50px; position: relative;" class="nav-item-tooltip">
+          <i class="fa-solid fa-gavel" style="font-size: 1.5rem; display: block; margin: 0 auto;"></i>
         </div>
-        <div onclick="showView('view-archivio')" data-tooltip="Archivio" style="text-align: center; color: #888; cursor: pointer; flex: 0 0 calc(28% - 10px); max-width: 100px; position: relative;" class="nav-item-tooltip">
-          <i class="fa-solid fa-book" style="font-size: 1.2rem; display: block; margin-bottom: 4px;"></i>
-          <span style="font-size: 0.7rem;">Archivio</span>
+        <div onclick="showView('view-archivio')" data-tooltip="Archivio" style="text-align: center; color: #888; cursor: pointer; flex: 1; min-width: 50px; position: relative;" class="nav-item-tooltip">
+          <i class="fa-solid fa-book" style="font-size: 1.5rem; display: block; margin: 0 auto;"></i>
         </div>
-        <div id="nav-item-dossier" onclick="showView('view-teacher-dossier')" data-tooltip="Pannello LIM" style="display: none; text-align: center; color: var(--accent-crimson); cursor: pointer; flex: 0 0 calc(28% - 10px); max-width: 100px; position: relative;" class="nav-item-tooltip">
-          <i class="fa-solid fa-chalkboard-user" style="font-size: 1.2rem; display: block; margin-bottom: 4px;"></i>
-          <span style="font-size: 0.7rem;">LIM</span>
+        <div id="nav-item-dossier" onclick="showView('view-teacher-dossier')" data-tooltip="LIM" style="display: none; text-align: center; color: var(--accent-crimson); cursor: pointer; flex: 1; min-width: 50px; position: relative;" class="nav-item-tooltip">
+          <i class="fa-solid fa-chalkboard-user" style="font-size: 1.5rem; display: block; margin: 0 auto;"></i>
+        </div>
+        <div id="nav-item-admin" onclick="goToDashboard(true)" data-tooltip="Admin" style="display: none; text-align: center; color: #800020; cursor: pointer; flex: 1; min-width: 50px; position: relative;" class="nav-item-tooltip">
+          <i class="fa-solid fa-screwdriver-wrench" style="font-size: 1.5rem; display: block; margin: 0 auto;"></i>
         </div>
       </nav>
 
       <!-- Global Footer -->
-      <footer id="main-footer" style="display: none; align-items: center; justify-content: space-between; padding: 2rem; width: 100%; box-sizing: border-box; font-size: 0.75rem; color: #888; margin-top: 20px; margin-bottom: 70px; line-height: 1.5; text-transform: uppercase; letter-spacing: 0.5px; flex-wrap: wrap; gap: 20px;">
-        <p style="text-align: justify; margin: 0; flex: 1; min-width: 250px;">© 2026 Guglielmo Piersanti. Tutti i contenuti presenti su questo sito sono di proprietà dell'autore e sono protetti tramite deposito e marcatura temporale presso Patamu. I contenuti sono inoltre distribuiti con licenza Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0).</p>
+      <footer id="main-footer" style="display: none; align-items: center; justify-content: center; padding: 2rem; width: 100%; box-sizing: border-box; font-size: 0.75rem; color: #888; margin-top: 20px; margin-bottom: 70px; line-height: 1.5; text-transform: uppercase; letter-spacing: 0.5px; flex-wrap: nowrap; gap: 20px;">
         <img src="public/assets/patamu_pencil.png" alt="Patamu" style="height: 65px; object-fit: contain; flex-shrink: 0;">
+        <p style="text-align: left; margin: 0; flex: 1; max-width: 800px;">© 2026 Guglielmo Piersanti. Tutti i contenuti presenti su questo sito sono di proprietà dell'autore e sono protetti tramite deposito e marcatura temporale presso Patamu. I contenuti sono inoltre distribuiti con licenza Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0).</p>
       </footer>
     </div>
 

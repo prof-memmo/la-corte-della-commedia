@@ -250,20 +250,21 @@ onAuthStateChanged(auth, async (user) => {
       const dossierNav = document.getElementById('nav-item-dossier');
       if (dossierNav) dossierNav.style.display = 'block';
       
+      const adminNav = document.getElementById('nav-item-admin');
+      if (adminNav) {
+          if (userEmail === 'prof.memmo@gmail.com' || role === 'admin') {
+              adminNav.style.display = 'block';
+          } else {
+              adminNav.style.display = 'none';
+          }
+      }
+      
       if (window.commediaApp && window.commediaApp.trialsEngine) {
           window.commediaApp.trialsEngine.populateTeacherDossier();
       }
       
       if (window.TeacherDashboard) window.TeacherDashboard.init();
       if (window.MapEngine) window.MapEngine.init(); // Initialize map for admin/teachers too
-      const btnToAdmin = document.getElementById('btn-to-admin');
-      if (btnToAdmin) {
-          if (userEmail === 'prof.memmo@gmail.com' || role === 'admin') {
-              btnToAdmin.style.display = 'inline-block';
-          } else {
-              btnToAdmin.style.display = 'none';
-          }
-      }
     } else if (role === 'external') {
       window.goToDashboard();
       MapEngine.init();
@@ -288,7 +289,7 @@ onAuthStateChanged(auth, async (user) => {
 });
 
 // Funzione globale per la Dashboard
-window.goToDashboard = function() {
+window.goToDashboard = function(isAdmin = false) {
     if (!state.user) {
         showView('view-login');
         return;
@@ -298,17 +299,13 @@ window.goToDashboard = function() {
     const userEmail = state.user.email ? state.user.email.toLowerCase() : '';
     
     if (userEmail === 'prof.memmo@gmail.com' || role === 'admin' || role === 'teacher') {
-      showView('view-teacher-dashboard');
-      if (window.TeacherDashboard) window.TeacherDashboard.init();
-      if (window.MapEngine) window.MapEngine.init(); // Initialize map for admin/teachers too
-      const btnToAdmin = document.getElementById('btn-to-admin');
-      if (btnToAdmin) {
-          if (userEmail === 'prof.memmo@gmail.com' || role === 'admin') {
-              btnToAdmin.style.display = 'inline-block';
-          } else {
-              btnToAdmin.style.display = 'none';
-          }
+      if (isAdmin && (userEmail === 'prof.memmo@gmail.com' || role === 'admin')) {
+        showView('view-admin-dashboard');
+      } else {
+        showView('view-teacher-dashboard');
+        if (window.TeacherDashboard) window.TeacherDashboard.init();
       }
+      if (window.MapEngine) window.MapEngine.init(); // Initialize map for admin/teachers too
     } else if (role === 'external') {
         showView('view-dashboard');
         // Popola i dati nella dashboard studente
@@ -701,6 +698,19 @@ async function loadStudentCases(isAdmin = false) {
     document.getElementById('profile-name').textContent = title;
 
     // Aggiorna Badge
+    if (xp >= 100) {
+        document.getElementById('nav-item-dossier').style.display = 'block';
+        if (userEmail === 'prof.memmo@gmail.com' || profile.role === 'admin') {
+            document.getElementById('nav-item-admin').style.display = 'block';
+        } else {
+            const adminNav = document.getElementById('nav-item-admin');
+            if (adminNav) adminNav.style.display = 'none';
+        }
+    } else {
+        document.getElementById('nav-item-dossier').style.display = 'none';
+        const adminNav = document.getElementById('nav-item-admin');
+        if (adminNav) adminNav.style.display = 'none';
+    }
     if (xp >= 100) document.getElementById('badge-lettore').style.opacity = '1';
     if (xp >= 300) document.getElementById('badge-fonti').style.opacity = '1';
     if (xp >= 500) document.getElementById('badge-conoscitore').style.opacity = '1';
