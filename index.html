@@ -173,7 +173,7 @@
               <div class="dark-panel" style="padding: 20px; text-align: center; border: 2px solid var(--accent-gold); cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'" onclick="window.app.selectRole('teacher')">
                   <div style="font-size: 3rem; margin-bottom: 10px;">👨‍🏫</div>
                   <h3 style="color: var(--accent-gold); margin: 0;">DOCENTE</h3>
-                  <p style="font-size: 0.85rem; color: #aaa; margin-top: 10px;">Accedi alla Loggia dei Giudici per guidare i tuoi allievi e valutare i loro verdetti.</p>
+                  <p style="font-size: 0.85rem; color: #aaa; margin-top: 10px;">Accedi al Pannello Docente per guidare i tuoi allievi e valutare i loro verdetti.</p>
               </div>
 
               <!-- Pellegrino -->
@@ -244,11 +244,10 @@
         <!-- VISTA ADMIN -->
         <section id="view-admin-dashboard" class="view animate-fade-in">
           <div style="text-align: center; margin-bottom: 2rem;">
-            <h2 class="text-gold" style="font-size: 2.5rem; text-shadow: 0 0 20px rgba(212,175,55,0.5); font-family: 'Cinzel', serif;">Supremo Tribunale</h2>
-            <p style="color: #ccc; font-style: italic;">Pannello di Amministrazione Globale</p>
+            <h2 class="text-gold" style="font-size: 2.5rem; text-shadow: 0 0 20px rgba(212,175,55,0.5); font-family: 'Cinzel', serif;">Pannello Admin</h2>
             <div style="text-align: center; margin-top: 15px;">
               <button onclick="showView('view-teacher-dashboard')" class="btn" style="background: var(--accent-gold); color: black; padding: 5px 15px; border-radius: 5px; border: none; cursor: pointer; font-size: 0.8rem;">
-                 <i class="fa-solid fa-gavel"></i> Vai alla Loggia dei Magistrati (Docente)
+                 <i class="fa-solid fa-gavel"></i> Vai al Pannello Docente
               </button>
             </div>
           </div>
@@ -436,7 +435,7 @@
         <!-- DASHBOARD DOCENTE (Solo per Prof e Admin) -->
         <section id="view-teacher-dashboard" class="view animate-fade-in">
           <div class="glass-panel" style="background: rgba(26,22,20,0.9); border: 1px solid var(--border-color); padding: 20px; border-radius: 8px;">
-            <h2 class="section-title" style="font-family: 'Cinzel', serif; color: var(--accent-gold); margin-bottom: 20px; text-align: center;"><i class="fa-solid fa-gavel"></i> Loggia dei Magistrati</h2>
+            <h2 class="section-title" style="font-family: 'Cinzel', serif; color: var(--accent-gold); margin-bottom: 20px; text-align: center;"><i class="fa-solid fa-gavel"></i> Pannello Docente</h2>
             <div style="text-align: center; margin-bottom: 15px;">
             </div>
             
@@ -562,7 +561,7 @@
             <!-- TAB IMPOSTAZIONI -->
             <div id="t-tab-impostazioni" class="teacher-tab-content" style="display: none;">
               <div class="dark-panel">
-                <h3 style="color: var(--accent-gold); font-family: 'Cinzel', serif; margin-bottom: 1rem;">Impostazioni Loggia</h3>
+                <h3 style="color: var(--accent-gold); font-family: 'Cinzel', serif; margin-bottom: 1rem;">Impostazioni Pannello</h3>
                 <p style="color: #888; margin-bottom: 20px;">Configura i permessi di visualizzazione e gestione.</p>
                 <button class="btn" style="border: 1px solid #333; background: #2a2a2a; color: #fff;">Esporta Dati Studenti</button>
               </div>
@@ -688,7 +687,7 @@
 
           <div id="reg-docente" class="parchment-panel" style="max-width: 800px; margin: 0 auto 2rem auto; padding: 2rem; border-radius: 15px; display: none;">
             <h2 style="color: var(--accent-gold); font-family: 'Cinzel', serif; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 20px; text-align: center;">📜 Regolamento Docente</h2>
-            <h3 style="color: var(--accent-crimson); font-family: 'Cinzel', serif;">1. La Loggia dei Magistrati</h3>
+            <h3 style="color: var(--accent-crimson); font-family: 'Cinzel', serif;">1. Il Pannello Docente</h3>
             <p class="text-on-parchment-muted" style="margin-bottom: 1.5rem; line-height: 1.6;">Hai il pieno controllo sulle tue classi. Puoi creare nuove classi, ottenere un Codice univoco da condividere e monitorare l'andamento dei tuoi studenti in tempo reale.</p>
             
             <h3 style="color: var(--accent-crimson); font-family: 'Cinzel', serif;">2. Valutazione dei Verdetti</h3>
@@ -819,13 +818,13 @@
         </div>
         <div onclick="openMiniguida()" data-tooltip="Miniguida" style="text-align: center; color: #888; cursor: pointer; flex: 1; min-width: 50px; position: relative;" class="nav-item-tooltip">
           <i class="fa-solid fa-circle-question" style="font-size: 1.2rem; display: block; margin: 0 auto;"></i>
-          <span style="font-size: 0.65rem; display: block; margin-top: 4px;">Miniguida</span>
+          <span style="font-size: 0.65rem; display: block; margin-top: 4px;">Guida</span>
         </div>
-        <div id="nav-item-loggia" onclick="goToDashboard(false)" data-tooltip="Loggia" style="text-align: center; color: #888; cursor: pointer; flex: 1; min-width: 50px; position: relative;" class="nav-item-tooltip">
+        <div id="nav-item-loggia" onclick="goToDashboard(false)" data-tooltip="Docente" style="text-align: center; color: #888; cursor: pointer; flex: 1; min-width: 50px; position: relative;" class="nav-item-tooltip">
           <i class="fa-solid fa-folder-open" style="font-size: 1.2rem; display: block; margin: 0 auto;"></i>
-          <span style="font-size: 0.65rem; display: block; margin-top: 4px;">Loggia</span>
+          <span style="font-size: 0.65rem; display: block; margin-top: 4px;">Docente</span>
         </div>
-        <div onclick="showView('view-regolamento')" data-tooltip="Regolamento" style="text-align: center; color: #888; cursor: pointer; flex: 1; min-width: 50px; position: relative;" class="nav-item-tooltip">
+        <div onclick="showView('view-regolamento')" data-tooltip="Regole" style="text-align: center; color: #888; cursor: pointer; flex: 1; min-width: 50px; position: relative;" class="nav-item-tooltip">
           <i class="fa-solid fa-gavel" style="font-size: 1.2rem; display: block; margin: 0 auto;"></i>
           <span style="font-size: 0.65rem; display: block; margin-top: 4px;">Regole</span>
         </div>
