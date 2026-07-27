@@ -254,8 +254,8 @@
           
           <div class="tabs-header" style="display: flex; border-bottom: 1px solid #333; margin-top: 2rem; margin-bottom: 2rem;">
             <button class="tab-btn active" onclick="switchAdminTab('utenti')" id="a-btn-utenti" style="flex: 1; background: transparent; border: none; color: var(--accent-gold); padding: 15px; cursor: pointer; border-bottom: 2px solid var(--accent-gold);">Gestione Utenti</button>
-            <button class="tab-btn" onclick="switchAdminTab('sistema')" id="a-btn-sistema" style="flex: 1; background: transparent; border: none; color: #888; padding: 15px; cursor: pointer;">Pannello Admin Principale</button>
             <button class="tab-btn" onclick="switchAdminTab('fascicoli')" id="a-btn-fascicoli" style="flex: 1; background: transparent; border: none; color: #888; padding: 15px; cursor: pointer;">Archivio Fascicoli</button>
+            <button class="tab-btn" onclick="switchAdminTab('sistema')" id="a-btn-sistema" style="flex: 1; background: transparent; border: none; color: #888; padding: 15px; cursor: pointer;">Impostazioni</button>
           </div>
           
           <div id="a-tab-utenti" class="admin-tab-content active" style="display: block;">
@@ -342,11 +342,8 @@
                       <label style="display:block; margin-bottom:5px; color:#aaa; font-size:0.8rem; text-transform:uppercase;">Contatti Globali</label>
                       <input type="text" id="admin-setting-contacts" class="input-form" value="Email: prof.memmo@gmail.com | Supporto: support@profmemmogames.it | Tel: +39 06 1234567" required style="width: 100%; padding: 10px; border-radius: 5px; background: #111; color: white; border: 1px solid #333;">
                     </div>
-                    <div style="display: flex; align-items: center; gap: 12px; margin-top: 10px;">
-                      <input type="checkbox" id="admin-setting-purgatory" style="width: 20px; height: 20px; cursor: pointer;">
-                      <label for="admin-setting-purgatory" style="margin-bottom: 0; cursor: pointer; font-weight: bold; color: var(--accent-gold); text-transform: uppercase; font-size: 0.85rem;">
-                        Attiva 2° Quadrimestre (Purgatorio e Paradiso)
-                      </label>
+                    <div style="display: none; align-items: center; gap: 12px; margin-top: 10px;">
+                      <!-- Placeholder for future global settings -->
                     </div>
                     <button type="submit" class="btn" style="width: 100%; margin-top: 10px; background: var(--accent-gold); color: black; font-weight: bold; padding: 12px; border-radius: 5px;" onclick="alert('Configurazioni salvate (Mock)')">Applica Modifiche Globali</button>
                   </form>
@@ -396,14 +393,7 @@
                           <td style="padding: 10px; color: var(--accent-gold); font-weight: bold;">ADMIN</td>
                           <td style="padding: 10px; font-style: italic; color: #aaa;">Admin Principale</td>
                         </tr>
-                        <tr style="border-bottom: 1px solid #333;">
-                          <td style="padding: 10px; font-weight: bold;">Prof.ssa Aurora</td>
-                          <td style="padding: 10px;">docente.aurora@gmail.com</td>
-                          <td style="padding: 10px; color: var(--accent-gold); font-weight: bold;">TEACHER</td>
-                          <td style="padding: 10px;">
-                            <button class="btn" style="background: #e74c3c; color: white; border: none; border-radius: 5px; padding: 5px 10px; font-weight: bold; cursor: pointer; font-size: 0.8rem;" onclick="alert('Rimozione... (Mock)')"><i class="fa-solid fa-trash"></i> RIMUOVI</button>
-                          </td>
-                        </tr>
+                        <!-- Altri admin andranno qui -->
                       </tbody>
                     </table>
                   </div>
