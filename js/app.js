@@ -190,7 +190,7 @@ onAuthStateChanged(auth, async (user) => {
     const bottomNav = document.getElementById('mobile-bottom-nav');
     if (bottomNav) bottomNav.style.display = 'flex';
     const mainFooter = document.getElementById('main-footer');
-    if (mainFooter) mainFooter.style.display = 'block';
+    if (mainFooter) mainFooter.style.display = 'flex';
     
     // Leggi Profilo dal database tramite EroiDB
     let role = 'student';
