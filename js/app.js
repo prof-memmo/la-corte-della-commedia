@@ -1287,8 +1287,19 @@ window.loadAdminUsers = async function() {
 window.filterAdminUsers = function(filterType) {
     window.adminUsersFilter = filterType;
     
+    // Mostra nascondi i contenitori
+    const usersWrapper = document.getElementById('admin-users-table-wrapper');
+    const schoolsWrapper = document.getElementById('admin-schools-table-wrapper');
+    if (filterType === 'schools') {
+        if (usersWrapper) usersWrapper.style.display = 'none';
+        if (schoolsWrapper) schoolsWrapper.style.display = 'block';
+    } else {
+        if (usersWrapper) usersWrapper.style.display = 'block';
+        if (schoolsWrapper) schoolsWrapper.style.display = 'none';
+    }
+    
     // Aggiorna gli stili delle card
-    const cards = ['all', 'teacher', 'student', 'external'];
+    const cards = ['all', 'teacher', 'student', 'external', 'schools'];
     cards.forEach(c => {
         const el = document.getElementById('stat-card-' + c);
         if (el) {
