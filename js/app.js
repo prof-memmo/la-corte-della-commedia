@@ -15,6 +15,24 @@ const state = {
 function showView(viewId) {
   document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
   document.getElementById(viewId).classList.add('active');
+  
+  if (viewId === 'view-regolamento') {
+    let currentRole = 'student';
+    if (window.EroiDB && window.EroiDB.cache && window.EroiDB.cache.userProfile) {
+        currentRole = window.EroiDB.cache.userProfile.role || 'student';
+    }
+    const isStudent = (currentRole === 'student' || currentRole === 'admin');
+    const isTeacher = (currentRole === 'teacher' || currentRole === 'admin');
+    const isExternal = (currentRole === 'external' || currentRole === 'admin');
+    
+    const regStudente = document.getElementById('reg-studente');
+    const regDocente = document.getElementById('reg-docente');
+    const regPellegrino = document.getElementById('reg-pellegrino');
+    
+    if (regStudente) regStudente.style.display = isStudent ? 'block' : 'none';
+    if (regDocente) regDocente.style.display = isTeacher ? 'block' : 'none';
+    if (regPellegrino) regPellegrino.style.display = isExternal ? 'block' : 'none';
+  }
 }
 
 // Elementi DOM
