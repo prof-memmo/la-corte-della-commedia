@@ -1197,16 +1197,49 @@ window.loadAdminUsers = async function() {
     
     list.innerHTML = '<tr><td colspan="4" style="padding: 1rem; text-align: center; color: #888;">Caricamento in corso...</td></tr>';
     
+    // Initialize global filter state if not exists
+    if (!window.adminUsersFilter) window.adminUsersFilter = 'all';
+    
     try {
         const users = await EroiDB.getAllUsers();
+        window.adminUsersList = users || [];
+        
         if (!users || users.length === 0) {
             list.innerHTML = '<tr><td colspan="4" style="padding: 1rem; text-align: center; color: #888;">Nessun utente trovato</td></tr>';
             return;
         }
         
+        // Update stats counters
+        let countTeacher = 0, countStudent = 0, countExternal = 0;
+        let uniqueSchools = new Set();
+        
+        users.forEach(u => {
+            if (u.role === 'teacher') countTeacher++;
+            else if (u.role === 'student') countStudent++;
+            else if (u.role === 'external') countExternal++;
+            if (u.school) uniqueSchools.add(u.school.toLowerCase());
+        });
+        
+        const elAll = document.getElementById('stat-count-all');
+        if (elAll) elAll.textContent = users.length;
+        const elTeacher = document.getElementById('stat-count-teacher');
+        if (elTeacher) elTeacher.textContent = countTeacher;
+        const elStudent = document.getElementById('stat-count-student');
+        if (elStudent) elStudent.textContent = countStudent;
+        const elExternal = document.getElementById('stat-count-external');
+        if (elExternal) elExternal.textContent = countExternal;
+        const elSchools = document.getElementById('stat-count-schools');
+        if (elSchools) elSchools.textContent = uniqueSchools.size;
+        
+        // Filter users
+        let filteredUsers = users;
+        if (window.adminUsersFilter !== 'all') {
+            filteredUsers = users.filter(u => u.role === window.adminUsersFilter);
+        }
+        
         let html = '';
         const state = window.adminUsersSort || { col: 'date', asc: false };
-        users.sort((a, b) => {
+        filteredUsers.sort((a, b) => {
             let valA, valB;
             if (state.col === 'email') { valA = (a.email || '').toLowerCase(); valB = (b.email || '').toLowerCase(); }
             else if (state.col === 'role') { valA = (a.role || '').toLowerCase(); valB = (b.role || '').toLowerCase(); }
@@ -1221,7 +1254,7 @@ window.loadAdminUsers = async function() {
             return 0;
         });
 
-        users.forEach(u => {
+        filteredUsers.forEach(u => {
             html += `
               <tr style="border-bottom: 1px solid #333;">
                 <td style="padding: 10px;">
@@ -1229,7 +1262,7 @@ window.loadAdminUsers = async function() {
                     ${u.classCode ? `<br><span style="font-size:0.7rem; color: var(--accent-gold);">Classe: ${u.classCode}</span>` : ''}
                 </td>
                 <td style="padding: 10px; text-transform: uppercase; font-size: 0.8rem;">
-                    ${u.role === 'admin' ? '<span style="color:var(--accent-crimson)">Admin</span>' : (u.role === 'teacher' ? '<span style="color:var(--accent-gold)">Docente</span>' : '<span style="color:#888">Studente</span>')}
+                    ${u.role === 'admin' ? '<span style="color:var(--accent-crimson)">Admin</span>' : (u.role === 'teacher' ? '<span style="color:var(--accent-gold)">Docente</span>' : (u.role === 'external' ? '<span style="color:#9b59b6">Forestiero</span>' : '<span style="color:#888">Studente</span>'))}
                 </td>
                 <td style="padding: 10px; font-size: 0.8rem; color: #888;">${u.createdAt ? new Date(u.createdAt).toLocaleDateString() : 'N/A'}</td>
                 <td style="padding: 10px; text-align: right;">
@@ -1237,6 +1270,7 @@ window.loadAdminUsers = async function() {
                     <select class="input-form" style="padding: 5px; font-size: 0.75rem;" onchange="window.updateUserRole('${u.id}', this.value)">
                         <option value="student" ${u.role === 'student' ? 'selected' : ''}>Studente</option>
                         <option value="teacher" ${u.role === 'teacher' ? 'selected' : ''}>Docente</option>
+                        <option value="external" ${u.role === 'external' ? 'selected' : ''}>Forestiero</option>
                         <option value="admin" ${u.role === 'admin' ? 'selected' : ''}>Admin</option>
                     </select>
                 </td>
@@ -1248,6 +1282,26 @@ window.loadAdminUsers = async function() {
         console.error("Errore loadAdminUsers", e);
         list.innerHTML = '<tr><td colspan="4" style="padding: 1rem; text-align: center; color: red;">Errore caricamento utenti</td></tr>';
     }
+};
+
+window.filterAdminUsers = function(filterType) {
+    window.adminUsersFilter = filterType;
+    
+    // Aggiorna gli stili delle card
+    const cards = ['all', 'teacher', 'student', 'external'];
+    cards.forEach(c => {
+        const el = document.getElementById('stat-card-' + c);
+        if (el) {
+            if (c === filterType) {
+                el.style.border = '3px solid #5C67F2';
+            } else {
+                el.style.border = '3px solid transparent';
+            }
+        }
+    });
+    
+    // Ricarica la lista per applicare il filtro e l'ordinamento
+    window.loadAdminUsers();
 };
 
 window.updateUserRole = async function(uid, newRole) {
