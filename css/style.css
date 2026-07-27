@@ -55,6 +55,17 @@ h1, h2, h3, h4, h5, h6 {
   margin-bottom: 1rem;
 }
 
+.mobile-nav-item i {
+  margin-bottom: 2px;
+}
+
+/* Nascondi testo navbar su PC */
+@media (min-width: 769px) {
+  .mobile-nav-item span {
+    display: none !important;
+  }
+}
+
 .app-container {
   display: flex;
   flex-direction: column;
