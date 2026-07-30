@@ -405,44 +405,51 @@ const LEGAL_TEXTS = {
     privacy: `
         <h2>🔒 Privacy Policy</h2>
         <h3>1. Titolare del trattamento</h3>
-        <p>Il titolare del trattamento è Guglielmo Piersanti, contattabile all'indirizzo email: prof.memmo@gmail.com</p>
-        <h3>2. Finalità del sito</h3>
-        <p>"La Corte della Commedia" è un'applicazione web didattica, utilizzata a scopo educativo e ludico e senza fini di lucro per l'apprendimento della lingua italiana.</p>
+        <p>Il titolare del trattamento è Guglielmo Piersanti, contattabile all'indirizzo email: <a href="mailto:prof.memmo@gmail.com" style="color:var(--accent-gold);">prof.memmo@gmail.com</a></p>
+        <h3>2. Finalità dell'app</h3>
+        <p>"La Corte della Commedia" è un'app didattica, utilizzata a scopo educativo e ludico e senza fini di lucro.</p>
         <h3>3. Dati raccolti</h3>
-        <p>Il sito può raccogliere i seguenti dati: nome utente (scelto dall'utente); informazioni di utilizzo relative alle attività; messaggi inviati tramite il modulo di contatto; dati tecnici minimi per il funzionamento.</p>
+        <p>L'app può raccogliere i seguenti dati personali: indirizzo e-mail; informazioni di utilizzo relative ai giochi online (punteggi, attività didattiche ecc.); messaggio inviato tramite modulo di contatto; dati tecnici forniti automaticamente dalla piattaforma (es. tipo di dispositivo, dati di log)</p>
         <h3>4. Finalità del trattamento</h3>
-        <p>I dati vengono trattati esclusivamente per consentire l'accesso alle funzionalità della Corte, gestire l'esperienza didattica personalizzata, e migliorare il servizio.</p>
+        <p>I dati vengono trattati esclusivamente per consentire l'accesso all'app e alle sue funzionalità, gestire l'esperienza didattica e le classifiche interne, migliorare il funzionamento del servizio, rispondere alle richieste inviate tramite il modulo di contatto, fornire assistenza o informazioni richieste dall'utente. Non vengono utilizzati per scopi commerciali o pubblicitari.</p>
         <h3>5. Base giuridica</h3>
-        <p>Il trattamento dei dati si basa sul consenso fornito dall'utente al momento del primo accesso.</p>
+        <p>Il trattamento dei dati si basa sull'utilizzo dell'app e sul consenso dell'utente.</p>
         <h3>6. Conservazione dei dati</h3>
-        <h3>11. Modifiche alla Policy</h3>
-        <p>Questa informativa può essere aggiornata per riflettere nuove funzionalità didattiche. Le modifiche rilevanti verranno segnalate agli utenti.</p>
-        <h3>12. Riferimenti normativi</h3>
-        <p>Questa informativa è redatta in conformità ai principi del GDPR.</p>
+        <p>I dati sono trattati in modo lecito e sicuro. Non vengono venduti né ceduti a terzi. Sono mantenuti solo per il tempo necessario al funzionamento didattico dell'app o su richiesta o in maniera autonoma tramite il profilo utente, salvo obblighi di legge. Vengono utilizzati servizi terzi per l'archiviazione dei dati (Firebase).</p>
+        <h3>8. Diritti dell'utente</h3>
+        <p>L'utente può richiedere in qualsiasi momento: accesso ai propri dati, rettifica o cancellazione, limitazione del trattamento, revoca del consenso. Per esercitare questi diritti, è possibile contattare il titolare all'indirizzo email sopra indicato.</p>
+        <h3>9. Cookie</h3>
+        <p>Il sito non utilizza cookie di profilazione.</p>
+        <h3>9. Utenti minori</h3>
+        <p>L'app è destinata a un uso didattico. Per l'utilizzo da parte di minori, è responsabilità di un adulto assicurare le autorizzazioni necessarie. I genitori o tutori possono richiedere la cancellazione dei dati contattando il titolare.</p>
+        <h3>10. Modifiche alla Policy</h3>
+        <p>La presente informativa può essere aggiornata. Gli utenti verranno informati in caso di modifiche rilevanti.</p>
+        <h3>11. Riferimenti normativi</h3>
+        <p>Questa informativa è redatta in conformità al GDPR.</p>
     `,
     terms: `
         <h2>📜 Termini e Condizioni</h2>
-        <p>Ultimo aggiornamento: 02/05/26</p>
+        <p><strong>Ultimo aggiornamento: 31/04/26</strong></p>
         <h3>1. Titolare del sito</h3>
-        <p>Il presente sito web "La Corte della Commedia" è gestito da: Guglielmo Piersanti. Email di contatto: prof.memmo@gmail.com</p>
+        <p>Il presente sito web è gestito da: Guglielmo Piersanti. Email di contatto: <a href="mailto:prof.memmo@gmail.com" style="color:var(--accent-gold);">prof.memmo@gmail.com</a></p>
         <h3>2. Accettazione dei termini</h3>
-        <p>L'accesso alla Corte implica l'accettazione dei presenti Termini e Condizioni. Se non si accettano tali condizioni, si invita a non utilizzare il sito.</p>
+        <p>L'accesso e l'utilizzo del sito implicano l'accettazione dei presenti Termini e Condizioni. Se non si accettano tali condizioni, si invita a non utilizzare il sito.</p>
         <h3>3. Descrizione del servizio</h3>
-        <p>Il sito offre esercizi interattivi, simulazioni di processi e contenuti per la scuola secondaria. Gli utenti possono: svolgere missioni, monitorare i propri progressi e contattare il gestore per supporto o collaborazione.</p>
+        <p>Il sito ha finalità informative ed educative. Gli utenti possono: Consultare i contenuti disponibili e usufruire della piattaforma di gioco. Contattare il gestore tramite modulo di contatto.</p>
         <h3>4. Utilizzo del sito</h3>
-        <p>L'utente si impegna a utilizzare il sito in modo corretto, evitando comportamenti che possano danneggiare la piattaforma o gli altri utenti. È vietato l'invio di messaggi offensivi o spam tramite il modulo di contatto.</p>
+        <p>L'utente si impegna a utilizzare il sito in modo lecito e corretto, evitando di: Inviare messaggi offensivi, illeciti o spam; Tentare di compromettere la sicurezza del sito; Utilizzare il sito per scopi fraudolenti.</p>
         <h3>5. Modulo di contatto</h3>
-        <p>L'utente è responsabile dei dati inviati tramite il modulo. Il titolare si riserva il diritto di non rispondere a messaggi non pertinenti o inappropriati.</p>
+        <p>L'utente è responsabile dei dati e dei contenuti inviati tramite il modulo di contatto. È vietato: Inserire dati falsi o di terzi senza autorizzazione; Inviare contenuti illeciti o non pertinenti.</p>
         <h3>6. Proprietà intellettuale</h3>
-        <p>I testi e i materiali didattici originali contenuti nel sito sono di proprietà del titolare, protetti tramite deposito Patamu. Distribuiti con licenza CC BY-NC-ND 4.0. È vietata la riproduzione per scopi commerciali senza autorizzazione.</p>
+        <p>Tutti i contenuti del sito (testi, materiali, ecc.) sono di proprietà del titolare, salvo diversa indicazione. È vietata la copia, distribuzione o utilizzo senza autorizzazione.</p>
         <h3>7. Limitazione di responsabilità</h3>
-        <p>Il sito è fornito a scopo didattico gratuito. Il titolare non è responsabile per eventuali problemi tecnici temporanei o per l'uso improprio delle informazioni contenute. L'obiettivo è fornire uno strumento di supporto all'apprendimento il più accurato possibile.</p>
+        <p>Il sito è fornito "così com'è". Il titolare non garantisce l'assenza di errori o interruzioni, la completezza o accuratezza dei contenuti. Il titolare non è responsabile per: Danni derivanti dall'utilizzo del sito; Problemi tecnici o interruzioni del servizio; Contenuti inviati dagli utenti tramite modulo di contatto.</p>
         <h3>8. Link esterni</h3>
-        <p>Eventuali link a siti esterni sono forniti per approfondimento didattico; il titolare non è responsabile del contenuto di tali siti.</p>
+        <p>Il sito può contenere link a siti esterni. Il titolare non è responsabile del contenuto o delle politiche di tali siti.</p>
         <h3>9. Modifiche</h3>
-        <p>Il titolare può modificare i presenti Termini in base all'evoluzione del progetto didattico.</p>
+        <p>Il titolare si riserva il diritto di modificare i presenti Termini in qualsiasi momento. Le modifiche saranno pubblicate su questa pagina.</p>
         <h3>10. Legge applicabile</h3>
-        <p>I presenti Termini sono regolati dalla normativa italiana.</p>
+        <p>I presenti Termini sono regolati dalla normativa italiana e dal GDPR.</p>
     `,
     regolamento: `
         <h2>⚖️ Regolamento della Corte</h2>
