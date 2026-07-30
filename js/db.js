@@ -1724,6 +1724,23 @@ const EroiDB = {
         }
     },
 
+    getUserSentences: async function(uid) {
+        try {
+            const sentencesQuery = query(collection(db, "sentences"), where("uid", "==", uid));
+            const querySnapshot = await getDocs(sentencesQuery);
+            const verdicts = [];
+            querySnapshot.forEach((doc) => {
+                verdicts.push(doc.data());
+            });
+            // sort by timestamp descending locally since we didn't setup composite indexes
+            verdicts.sort((a,b) => (b.timestamp?.seconds || 0) - (a.timestamp?.seconds || 0));
+            return verdicts;
+        } catch (e) {
+            console.error("Errore recupero user sentences:", e);
+            return [];
+        }
+    },
+
     getRawVerdicts: async function(caseId, classCode = null) {
         try {
             let sentencesQuery = query(collection(db, "sentences"), where("caseId", "==", caseId));

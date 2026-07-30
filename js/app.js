@@ -1373,3 +1373,56 @@ window.submitContattiModal = function() {
     alert('Messaggio inviato! Ti risponderemo presto.');
     document.getElementById('legal-modal').classList.add('hidden');
 };
+
+async function renderArchivio() {
+    const container = document.getElementById('archivio-list-container');
+    if (!container) return;
+    
+    container.innerHTML = '<div style="text-align: center; color: #666; font-style: italic; padding: 40px;"><i class="fa-solid fa-spinner fa-spin"></i> Caricamento dei tuoi verdetti...</div>';
+    
+    if (!window.EroiDB || !window.EroiDB.cache || !window.EroiDB.cache.userProfile) {
+        container.innerHTML = '<div style="color: red; text-align: center; padding: 20px;">Devi effettuare il login per vedere il tuo archivio.</div>';
+        return;
+    }
+    
+
+    if (window.EroiDB.cache.cases.length === 0) {
+        await window.EroiDB.getCasesByCampaign('inferno');
+        await window.EroiDB.getCasesByCampaign('purgatorio');
+        await window.EroiDB.getCasesByCampaign('paradiso');
+    }
+    const uid = window.EroiDB.cache.userProfile.uid || window.firebase.auth().currentUser?.uid;
+    if (!uid) {
+        container.innerHTML = '<div style="color: red; text-align: center; padding: 20px;">Sessione utente non valida.</div>';
+        return;
+    }
+    
+    const verdicts = await window.EroiDB.getUserSentences(uid);
+    
+    if (verdicts.length === 0) {
+        container.innerHTML = '<div style="text-align: center; color: #555; padding: 40px; background: rgba(255,255,255,0.8); border-radius: 8px; border: 1px dashed #999;">Ancora nessuna sentenza emessa. Inizia a giocare un caso per riempire il tuo archivio!</div>';
+        return;
+    }
+    
+    let html = '';
+    verdicts.forEach(v => {
+        const badgeColor = v.verdict === 'conferma' ? 'var(--accent-gold)' : (v.verdict === 'assoluzione' ? '#00cc66' : (v.verdict === 'riduzione' ? '#4da8da' : 'var(--danger-color)'));
+        html += `
+        <div style="background: rgba(255, 255, 255, 0.9); padding: 20px; border-radius: 10px; border-left: 6px solid ${badgeColor}; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin-bottom: 15px; text-align: left;">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #ddd; padding-bottom: 10px; margin-bottom: 15px;">
+                <h4 style="margin: 0; font-family: 'Cinzel', serif; font-size: 1.3rem; color: #222;">
+                    Caso: ${window.EroiDB.cache.cases.find(c => c.id === v.caseId)?.characterName || v.caseId}
+                </h4>
+                <span style="background: ${badgeColor}; color: ${v.verdict==='conferma'?'#000':'#fff'}; padding: 5px 12px; border-radius: 20px; font-size: 0.9rem; font-weight: bold; text-transform: uppercase;">
+                    ${v.verdict}
+                </span>
+            </div>
+            <p style="margin: 0; color: #333; font-style: italic; line-height: 1.5; font-size: 1.05rem;">
+                <i class="fa-solid fa-quote-left" style="color: #ccc; margin-right: 8px;"></i>${v.motivation || 'Nessuna motivazione inserita.'}<i class="fa-solid fa-quote-right" style="color: #ccc; margin-left: 8px;"></i>
+            </p>
+        </div>
+        `;
+    });
+    
+    container.innerHTML = html;
+}
