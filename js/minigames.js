@@ -456,6 +456,7 @@ export const MinigamesEngine = {
                         feedbackDiv.style.background = 'rgba(0, 150, 0, 0.2)';
                         feedbackDiv.style.borderLeft = '4px solid #0f0';
                         feedbackDiv.innerHTML = `<strong>Corretto!</strong> ${q.explanation}`;
+                        if (window.AudioEngine) window.AudioEngine.playSuccess();
                         
                         setTimeout(() => {
                             currentQuestionIndex++;
@@ -468,6 +469,7 @@ export const MinigamesEngine = {
                         feedbackDiv.style.background = 'rgba(150, 0, 0, 0.2)';
                         feedbackDiv.style.borderLeft = '4px solid #f00';
                         feedbackDiv.innerHTML = `<strong>Sbagliato.</strong> L'analisi logica è fallita. Ricarico l'esame...`;
+                        if (window.AudioEngine) window.AudioEngine.playError();
                         
                         setTimeout(() => {
                             // Penalità: ricarica dall'inizio per essere cattivi o della stessa domanda. Il piano diceva "non permette di proseguire a meno di non ritentare ragionando meglio". Facciamolo ripartire dall'inizio.
@@ -524,6 +526,7 @@ export const MinigamesEngine = {
                 feedback.textContent = "Sigillo apposto correttamente!";
                 feedback.style.color = "#006600";
                 feedback.style.display = "block";
+                if (window.AudioEngine) window.AudioEngine.playSuccess();
                 input.disabled = true;
                 checkBtn.disabled = true;
                 
@@ -535,6 +538,7 @@ export const MinigamesEngine = {
                 feedback.textContent = "La parola è errata. Il sigillo non prende forma.";
                 feedback.style.color = "#6a040f";
                 feedback.style.display = "block";
+                if (window.AudioEngine) window.AudioEngine.playError();
                 
                 // Shake effect
                 input.style.animation = 'none';

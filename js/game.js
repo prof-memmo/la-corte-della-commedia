@@ -26,6 +26,7 @@ export const EroiGame = {
     
     nextPhase: function() {
         if (this.state.currentPhase < 10) {
+            if (window.AudioEngine) window.AudioEngine.playClick();
             this.state.currentPhase++;
             this.renderPhase();
         }
@@ -33,6 +34,7 @@ export const EroiGame = {
 
     prevPhase: function() {
         if (this.state.currentPhase > 1) {
+            if (window.AudioEngine) window.AudioEngine.playClick();
             this.state.currentPhase--;
             this.renderPhase();
         }
@@ -276,6 +278,7 @@ export const EroiGame = {
                 if (showVideoBtn) {
                     const playBtn = document.getElementById('play-video-btn');
                     playBtn.onclick = () => {
+                        if (window.AudioEngine) window.AudioEngine.playGavel();
                         const overlay = document.getElementById('fullscreen-video-overlay');
                         const video = document.getElementById('finale-video');
                         
