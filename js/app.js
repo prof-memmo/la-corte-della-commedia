@@ -461,7 +461,10 @@ function switchMapTab(tabName) {
   document.querySelectorAll('.map-tab').forEach(btn => btn.classList.remove('active'));
   document.querySelectorAll('.map-container').forEach(map => map.style.display = 'none');
   
-  // Find clicked button
+  // Find clicked button manually if event isn't reliable
+  document.querySelectorAll('.map-tab').forEach(btn => {
+      if(btn.textContent.toLowerCase() === tabName) btn.classList.add('active');
+  });
   if (window.event && window.event.currentTarget) {
       window.event.currentTarget.classList.add('active');
   }
@@ -469,6 +472,24 @@ function switchMapTab(tabName) {
   const mapElement = document.getElementById('map-' + tabName);
   if (mapElement) {
       mapElement.style.display = 'block';
+  }
+  
+  // Change background depending on campaign
+  const body = document.body;
+  if(tabName === 'inferno') {
+      body.style.background = 'url("assets/Immagini/bg_inferno.jpg") center/cover fixed';
+      body.style.backgroundColor = '#1a1a2e';
+  } else if (tabName === 'purgatorio') {
+      body.style.background = 'url("assets/Immagini/bg_purgatorio.jpg") center/cover fixed';
+      body.style.backgroundColor = '#2c3e50';
+  } else if (tabName === 'paradiso') {
+      body.style.background = 'url("assets/Immagini/bg_paradiso.jpg") center/cover fixed';
+      body.style.backgroundColor = '#f0f8ff';
+  }
+
+  // Tell MapEngine to render the appropriate map
+  if (window.MapEngine) {
+      window.MapEngine.renderMap(tabName);
   }
 }
 

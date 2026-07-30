@@ -388,6 +388,170 @@ export const MinigamesEngine = {
             }
         });
     }
+
+    ,
+
+    loadCrossExamination: function(container, nextBtn, caseData) {
+        if (nextBtn) nextBtn.disabled = true;
+        
+        if (!caseData || !caseData.phases || !caseData.phases.crossExamination) {
+            container.innerHTML = `<p class="text-crimson">Errore: Dati dell'esame incrociato non trovati.</p>`;
+            if (nextBtn) nextBtn.disabled = false;
+            return;
+        }
+
+        const questions = caseData.phases.crossExamination;
+        let currentQuestionIndex = 0;
+
+        const renderQuestion = () => {
+            if (currentQuestionIndex >= questions.length) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 30px; background: rgba(0,255,0,0.1); border-radius: 10px; border: 1px solid var(--accent-gold);">
+                        <h4 style="color: var(--accent-gold); font-size: 1.5rem;">Esame Incrociato Superato!</h4>
+                        <p style="font-size: 1.1rem;">Hai dimostrato di possedere la logica necessaria per giudicare questo caso.</p>
+                        <p style="font-size: 2rem; margin-top: 10px;">⚖️</p>
+                    </div>
+                `;
+                if (nextBtn) {
+                    nextBtn.disabled = false;
+                    nextBtn.classList.add('glow');
+                }
+                return;
+            }
+
+            const q = questions[currentQuestionIndex];
+            
+            let optionsHtml = '';
+            q.options.forEach((opt, idx) => {
+                optionsHtml += `<button class="btn ce-option-btn" style="display: block; width: 100%; text-align: left; margin-bottom: 10px; white-space: normal; height: auto;" data-idx="${idx}">${opt}</button>`;
+            });
+
+            container.innerHTML = `
+                <div class="animate-fade-in" style="background: rgba(0,0,0,0.6); border-radius: 8px; border: 1px solid #555; padding: 20px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 15px; color: var(--accent-gold); font-weight: bold;">
+                        <span>Esame Incrociato</span>
+                        <span>Domanda ${currentQuestionIndex + 1} di ${questions.length}</span>
+                    </div>
+                    <h5 style="font-size: 1.2rem; margin-bottom: 20px; line-height: 1.5; color: #fff;">${q.question}</h5>
+                    <div id="ce-options-container">
+                        ${optionsHtml}
+                    </div>
+                    <div id="ce-feedback" style="margin-top: 20px; padding: 15px; border-radius: 5px; display: none; font-size: 1.1rem; line-height: 1.5;"></div>
+                </div>
+            `;
+
+            const optionBtns = container.querySelectorAll('.ce-option-btn');
+            const feedbackDiv = document.getElementById('ce-feedback');
+
+            optionBtns.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    // Disable all buttons
+                    optionBtns.forEach(b => b.disabled = true);
+                    
+                    const selectedIdx = parseInt(e.target.dataset.idx);
+                    if (selectedIdx === q.correctIndex) {
+                        e.target.style.background = 'rgba(0, 150, 0, 0.5)';
+                        e.target.style.borderColor = '#0f0';
+                        feedbackDiv.style.display = 'block';
+                        feedbackDiv.style.background = 'rgba(0, 150, 0, 0.2)';
+                        feedbackDiv.style.borderLeft = '4px solid #0f0';
+                        feedbackDiv.innerHTML = `<strong>Corretto!</strong> ${q.explanation}`;
+                        
+                        setTimeout(() => {
+                            currentQuestionIndex++;
+                            renderQuestion();
+                        }, 4000);
+                    } else {
+                        e.target.style.background = 'rgba(150, 0, 0, 0.5)';
+                        e.target.style.borderColor = '#f00';
+                        feedbackDiv.style.display = 'block';
+                        feedbackDiv.style.background = 'rgba(150, 0, 0, 0.2)';
+                        feedbackDiv.style.borderLeft = '4px solid #f00';
+                        feedbackDiv.innerHTML = `<strong>Sbagliato.</strong> L'analisi logica è fallita. Ricarico l'esame...`;
+                        
+                        setTimeout(() => {
+                            // Penalità: ricarica dall'inizio per essere cattivi o della stessa domanda. Il piano diceva "non permette di proseguire a meno di non ritentare ragionando meglio". Facciamolo ripartire dall'inizio.
+                            currentQuestionIndex = 0;
+                            renderQuestion();
+                        }, 3000);
+                    }
+                });
+            });
+        };
+
+        renderQuestion();
+    },
+
+    loadSealPuzzle: function(container, nextBtn, caseData) {
+        if (nextBtn) nextBtn.disabled = true;
+        
+        if (!caseData || !caseData.phases || !caseData.phases.sealPuzzle) {
+            container.innerHTML = `<p class="text-crimson">Errore: Dati del sigillo non trovati.</p>`;
+            if (nextBtn) nextBtn.disabled = false;
+            return;
+        }
+
+        const sealData = caseData.phases.sealPuzzle;
+        
+        container.innerHTML = `
+            <div class="animate-fade-in" style="background: url('assets/Immagini/parchment_bg.png') center/cover; border-radius: 10px; padding: 30px; box-shadow: inset 0 0 40px rgba(0,0,0,0.8); color: #222; font-family: 'Times New Roman', serif;">
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <img src="assets/Immagini/3.png" style="width: 80px; opacity: 0.8;">
+                    <h3 style="color: #6a040f; margin-top: 10px; font-family: 'Cinzel', serif;">Il Sigillo della Sentenza</h3>
+                    <p style="font-style: italic; font-size: 1.1rem; color: #444;">Per archiviare la tua decisione e apporre il sigillo di ceralacca, devi dimostrare di aver colto l'essenza del caso.</p>
+                </div>
+                
+                <div style="background: rgba(255,255,255,0.4); padding: 20px; border-radius: 5px; border: 1px dashed #6a040f; margin-bottom: 20px;">
+                    <p style="font-size: 1.25rem; font-weight: bold; text-align: center; margin: 0; color: #333;">${sealData.riddle}</p>
+                </div>
+
+                <div style="text-align: center;">
+                    <input type="text" id="seal-input" class="form-input" placeholder="Digita la parola chiave..." style="font-size: 1.5rem; text-align: center; text-transform: uppercase; width: 80%; max-width: 300px; margin-bottom: 15px; border: 2px solid #6a040f; background: rgba(255,255,255,0.8); color: #000;">
+                    <br>
+                    <button id="seal-check-btn" class="btn" style="background-color: #6a040f; color: #fff;">Apponi il Sigillo</button>
+                    <p id="seal-feedback" style="margin-top: 15px; font-weight: bold; display: none;"></p>
+                </div>
+            </div>
+        `;
+
+        const input = document.getElementById('seal-input');
+        const checkBtn = document.getElementById('seal-check-btn');
+        const feedback = document.getElementById('seal-feedback');
+
+        checkBtn.onclick = () => {
+            const userVal = input.value.trim().toUpperCase();
+            if (userVal === sealData.answer.toUpperCase()) {
+                feedback.textContent = "Sigillo apposto correttamente!";
+                feedback.style.color = "#006600";
+                feedback.style.display = "block";
+                input.disabled = true;
+                checkBtn.disabled = true;
+                
+                if (nextBtn) {
+                    nextBtn.disabled = false;
+                    nextBtn.classList.add('glow');
+                }
+            } else {
+                feedback.textContent = "La parola è errata. Il sigillo non prende forma.";
+                feedback.style.color = "#6a040f";
+                feedback.style.display = "block";
+                
+                // Shake effect
+                input.style.animation = 'none';
+                input.offsetHeight; // trigger reflow
+                input.style.animation = 'shake 0.5s';
+                
+                setTimeout(() => { feedback.style.display = 'none'; }, 3000);
+            }
+        };
+
+        input.addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                checkBtn.click();
+            }
+        });
+    }
 };
 
 window.MinigamesEngine = MinigamesEngine;

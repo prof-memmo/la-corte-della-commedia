@@ -644,24 +644,10 @@
           </div>
 
           <!-- Mappa Purgatorio -->
-          <div id="map-purgatorio" class="map-container" style="display: none; text-align: center; padding: 5rem 3rem; min-height: 400px; position: relative;">
-            <img src="assets/Immagini/6.png" style="position: absolute; top: 10%; right: 10%; width: 150px; height: 150px; object-fit: cover; border-radius: 50%; opacity: 0.8; box-shadow: 0 0 20px #000; border: 2px solid #fff;">
-            <div style="background: rgba(0,0,0,0.7); padding: 2rem; border-radius: 10px; display: inline-block; position: relative; z-index: 1;">
-                <i class="fa-solid fa-mountain" style="font-size: 4rem; color: #aaa; margin-bottom: 1rem;"></i>
-                <h3 class="text-gold">La Montagna del Purgatorio è ancora avvolta dalla nebbia...</h3>
-                <p style="color: #ddd;">Completa prima il viaggio nell'Inferno per sbloccare l'accesso.</p>
-            </div>
-          </div>
+          <div id="map-purgatorio" class="map-container" style="display: none; position: relative; max-width: 800px; margin: 0 auto; padding: 3rem 1rem;"></div>
 
           <!-- Mappa Paradiso -->
-          <div id="map-paradiso" class="map-container" style="display: none; text-align: center; padding: 5rem 3rem; min-height: 400px; position: relative;">
-            <img src="assets/Immagini/8.png" style="position: absolute; bottom: 10%; left: 10%; width: 150px; height: 150px; object-fit: cover; border-radius: 50%; opacity: 0.8; box-shadow: 0 0 20px #000; border: 2px solid #fff;">
-            <div style="background: rgba(0,0,0,0.7); padding: 2rem; border-radius: 10px; display: inline-block; position: relative; z-index: 1;">
-                <i class="fa-solid fa-sun" style="font-size: 4rem; color: #aaa; margin-bottom: 1rem;"></i>
-                <h3 class="text-gold">Le sfere celesti non sono ancora allineate...</h3>
-                <p style="color: #ddd;">Completa prima il viaggio nel Purgatorio per sbloccare l'accesso.</p>
-            </div>
-          </div>
+          <div id="map-paradiso" class="map-container" style="display: none; position: relative; max-width: 800px; margin: 0 auto; padding: 3rem 1rem;"></div>
         </section>
 
         <!-- VISTA REGOLAMENTO -->
@@ -673,17 +659,19 @@
           <!-- REGOLAMENTO COMUNE A TUTTI -->
           <div id="reg-comune" class="parchment-panel" style="max-width: 800px; margin: 0 auto 2rem auto; padding: 2rem; border-radius: 15px; display: block;">
             <h2 style="color: var(--accent-gold); font-family: 'Cinzel', serif; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 20px; text-align: center;">Il Procedimento Giudiziario</h2>
-            <p class="text-on-parchment-muted" style="margin-bottom: 1.5rem; line-height: 1.6;">Ogni caso affrontato nella Corte rappresenta un procedimento giudiziario (Campagna &rarr; Fascicolo &rarr; Missioni &rarr; Prove &rarr; Verdetto &rarr; Archivio) ed è strutturato in <strong>8 fasi fondamentali</strong>:</p>
+            <p class="text-on-parchment-muted" style="margin-bottom: 1.5rem; line-height: 1.6;">Ogni caso affrontato nella Corte rappresenta un procedimento giudiziario (Campagna &rarr; Fascicolo &rarr; Missioni &rarr; Prove &rarr; Verdetto &rarr; Archivio) ed è strutturato in <strong>10 fasi fondamentali</strong>:</p>
 
             <ul style="list-style-type: none; padding-left: 0; margin-bottom: 1.5rem;" class="text-on-parchment-muted">
               <li style="margin-bottom: 1rem;"><strong style="color: var(--accent-crimson);">1. Apertura del fascicolo:</strong> Analisi iniziale del ritratto, del peccato e degli obiettivi.</li>
               <li style="margin-bottom: 1rem;"><strong style="color: var(--accent-crimson);">2. Ricostruzione dei fatti:</strong> Comprensione narrativa della vicenda tramite timeline e testi storici.</li>
-              <li style="margin-bottom: 1rem;"><strong style="color: var(--accent-crimson);">3. Raccolta delle prove:</strong> Superamento di minigiochi (puzzle, quiz, memory, ecc.) per sbloccare indizi e accumulare XP.</li>
+              <li style="margin-bottom: 1rem;"><strong style="color: var(--accent-crimson);">3. Raccolta delle prove:</strong> Superamento di minigiochi (puzzle, indagini visive) per sbloccare indizi e accumulare XP.</li>
               <li style="margin-bottom: 1rem;"><strong style="color: var(--accent-crimson);">4. L'Accusa:</strong> Presentazione degli argomenti di Dante basati sui versi originali e sul contrappasso.</li>
-              <li style="margin-bottom: 1rem;"><strong style="color: var(--accent-crimson);">5. La Difesa:</strong> Ricerca di interpretazioni alternative, attenuanti e motivazioni del personaggio per sviluppare pensiero critico (senza mai contraddire l'autore).</li>
-              <li style="margin-bottom: 1rem;"><strong style="color: var(--accent-crimson);">6. Dante Oggi:</strong> Collegamento pratico del peccato con casi della vita contemporanea (es. cyberbullismo, fake news) per stimolare l'argomentazione.</li>
-              <li style="margin-bottom: 1rem;"><strong style="color: var(--accent-crimson);">7. Il Verdetto:</strong> Scelta finale (Conferma, Riduzione, Aggravante, Assoluzione) e stesura della motivazione.</li>
-              <li style="margin-bottom: 1rem;"><strong style="color: var(--accent-crimson);">8. La Sentenza:</strong> Generazione della pergamena finale con il risultato, XP e badge, che verrà conservata nel tuo Archivio.</li>
+              <li style="margin-bottom: 1rem;"><strong style="color: var(--accent-crimson);">5. La Difesa:</strong> Ricerca di interpretazioni alternative, attenuanti e motivazioni per sviluppare pensiero critico.</li>
+              <li style="margin-bottom: 1rem;"><strong style="color: var(--accent-crimson);">6. Esame Incrociato:</strong> <span style="color: var(--accent-gold); font-weight:bold;">[Minigioco Avanzato]</span> Analisi logica e deduttiva delle argomentazioni ascoltate (un errore richiede un nuovo ragionamento).</li>
+              <li style="margin-bottom: 1rem;"><strong style="color: var(--accent-crimson);">7. Dante Oggi:</strong> Collegamento pratico del peccato con casi della vita contemporanea.</li>
+              <li style="margin-bottom: 1rem;"><strong style="color: var(--accent-crimson);">8. Il Verdetto:</strong> Scelta finale (Conferma, Riduzione, Aggravante, Assoluzione) e stesura della motivazione.</li>
+              <li style="margin-bottom: 1rem;"><strong style="color: var(--accent-crimson);">9. Il Sigillo:</strong> <span style="color: var(--accent-gold); font-weight:bold;">[Minigioco Avanzato]</span> Risoluzione autonoma di un enigma storico-logico per validare definitivamente la sentenza.</li>
+              <li style="margin-bottom: 1rem;"><strong style="color: var(--accent-crimson);">10. La Sentenza:</strong> Generazione della pergamena finale con il risultato, XP e badge, che verrà conservata nell'Archivio.</li>
             </ul>
 
             <h3 style="color: var(--accent-crimson); font-family: 'Cinzel', serif; margin-top: 2rem;">La Giuria e la Progressione</h3>
@@ -971,5 +959,12 @@
             document.getElementById('miniguida-next-btn').innerText = currentMiniguidaStep === totalMiniguidaSteps - 1 ? 'GIOCA!' : 'AVANTI';
         }
     </script>
+
+    <!-- Video Overlay for Finale -->
+    <div id="fullscreen-video-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: black; z-index: 9999; justify-content: center; align-items: center; flex-direction: column;">
+        <video id="finale-video" style="width: 100%; height: 100%; object-fit: contain;" controls disablePictureInPicture controlsList="nodownload"></video>
+        <button id="close-video-btn" class="btn" style="position: absolute; top: 20px; right: 20px; z-index: 10000; background: rgba(0,0,0,0.5); border: 2px solid white; color: white;">Salta/Chiudi ✖</button>
+    </div>
+
 </body>
 </html>

@@ -1,6 +1,7 @@
 import EroiDB from "./db.js";
 
 const INFERNO_CIRCLES = [
+    { id: "Antinferno", name: "Antinferno: Ignavi" },
     { id: "Limbo", name: "1° Cerchio: Limbo" },
     { id: "Lussuriosi", name: "2° Cerchio: Lussuriosi" },
     { id: "Golosi", name: "3° Cerchio: Golosi" },
@@ -12,18 +13,44 @@ const INFERNO_CIRCLES = [
     { id: "Traditori", name: "9° Cerchio: Traditori (Cocito)" }
 ];
 
+const PURGATORIO_TERRACES = [
+    { id: "Antipurgatorio", name: "Antipurgatorio" },
+    { id: "Superbi", name: "1ª Cornice: Superbi" },
+    { id: "Invidiosi", name: "2ª Cornice: Invidiosi" },
+    { id: "Iracondi_Purg", name: "3ª Cornice: Iracondi" },
+    { id: "Accidiosi", name: "4ª Cornice: Accidiosi" },
+    { id: "Avari_Purg", name: "5ª Cornice: Avari e Prodighi" },
+    { id: "Golosi_Purg", name: "6ª Cornice: Golosi" },
+    { id: "Lussuriosi_Purg", name: "7ª Cornice: Lussuriosi" },
+    { id: "ParadisoTerrestre", name: "Paradiso Terrestre" }
+];
+
+const PARADISO_HEAVENS = [
+    { id: "Luna", name: "1° Cielo: Luna (Spiriti Inadempienti)" },
+    { id: "Mercurio", name: "2° Cielo: Mercurio (Spiriti Attivi)" },
+    { id: "Venere", name: "3° Cielo: Venere (Spiriti Amanti)" },
+    { id: "Sole", name: "4° Cielo: Sole (Spiriti Sapienti)" },
+    { id: "Marte", name: "5° Cielo: Marte (Spiriti Combattenti)" },
+    { id: "Giove", name: "6° Cielo: Giove (Spiriti Giusti)" },
+    { id: "Saturno", name: "7° Cielo: Saturno (Spiriti Contemplativi)" },
+    { id: "StelleFisse", name: "8° Cielo: Stelle Fisse" },
+    { id: "PrimoMobile", name: "9° Cielo: Primo Mobile" },
+    { id: "Empireo", name: "10° Cielo: Empireo" }
+];
+
+
 export const MapEngine = {
     allCases: [],
     completedCaseIds: [],
 
     lockedNodes: [],
     unlockMode: 'auto',
+        currentCampaign: 'inferno',
     init: async function() {
         console.log("Inizializzazione MapEngine...");
         if (EroiDB.cache.userProfile) {
             this.completedCaseIds = EroiDB.cache.userProfile.completedCases || [];
             
-            // Check class locks
             const classId = EroiDB.cache.userProfile.classId;
             if (classId && !this.isAdmin()) {
                 const classObj = await EroiDB.getClassByCode(EroiDB.cache.userProfile.classCode || classId) || await EroiDB.getClassById(classId);
@@ -36,36 +63,23 @@ export const MapEngine = {
             this.completedCaseIds = JSON.parse(localStorage.getItem('completedCases') || '[]');
         }
 
-        this.allCases = await EroiDB.getCasesByCampaign('inferno');
+        // Carichiamo TUTTI i casi per calcolare i progressi
+        this.allCases = await EroiDB.getCasesByCampaign('all'); 
         
-        // Inietta il caso mock per il Secondo Cerchio
-        const mockTrial = {
-            id: 'trial_01_paolo_francesca',
-            cerchio: 'Lussuriosi',
-            campaignId: 'inferno',
-            characterName: 'Paolo e Francesca',
-            canto: 'Inferno - Canto V',
-            image: 'assets/Immagini/4.png' // Icona pergamena
-        };
-        if (!this.allCases.find(c => c.id === mockTrial.id)) {
-            this.allCases.push(mockTrial);
-        }
-
-        this.renderInfernoMap();
+        this.renderMap('inferno');
     },
 
     markCaseCompleted: function(caseId) {
         if (!this.completedCaseIds.includes(caseId)) {
             this.completedCaseIds.push(caseId);
-            // Salva su localStorage o db mock
             localStorage.setItem('completedCases', JSON.stringify(this.completedCaseIds));
             if (EroiDB.cache.userProfile) {
                 EroiDB.cache.userProfile.completedCases = this.completedCaseIds;
-                // in un app vera updateDoc in firebase
             }
         }
-        this.renderInfernoMap();
+        this.renderMap(this.currentCampaign);
     },
+
 
     isCircleCompleted: function(circleId) {
         // Un cerchio è completato se TUTTI i suoi casi sono in completedCaseIds
@@ -86,33 +100,49 @@ export const MapEngine = {
         return EroiDB.cache.userProfile.role === 'admin' || email === 'prof.memmo@gmail.com';
     },
 
-    isCircleUnlocked: function(circleIndex) {
+    
+    isCircleUnlocked: function(circleIndex, campaignId) {
         if (this.isAdmin()) return true;
         
-        const circleId = INFERNO_CIRCLES[circleIndex].id;
+        let nodesArray = INFERNO_CIRCLES;
+        if (campaignId === 'purgatorio') nodesArray = PURGATORIO_TERRACES;
+        if (campaignId === 'paradiso') nodesArray = PARADISO_HEAVENS;
+        
+        const circleId = nodesArray[circleIndex].id;
         const isStudent = EroiDB.cache.userProfile && EroiDB.cache.userProfile.role === 'student';
         
         if (isStudent && this.unlockMode === 'manual') {
-            // Modalità MANUALE (controllata dal docente)
             if (this.lockedNodes && this.lockedNodes.includes(circleId)) {
                 return false;
             }
             return true; 
         } else {
-            // Modalità AUTOMATICA (Duolingo: completi N-1 per sbloccare N)
-            if (circleIndex === 0) return true; // Il Limbo è sempre sbloccato
-            const prevCircle = INFERNO_CIRCLES[circleIndex - 1];
+            if (circleIndex === 0) return true; 
+            const prevCircle = nodesArray[circleIndex - 1];
             return this.isCircleCompleted(prevCircle.id);
         }
     },
 
-    renderInfernoMap: function() {
-        const container = document.getElementById('map-inferno');
+
+    
+    renderMap: function(campaignId) {
+        this.currentCampaign = campaignId;
+        const container = document.getElementById(`map-${campaignId}`);
         if (!container) return;
         
         container.innerHTML = '';
         
-        // Layer SVG per la linea di connessione (stile Duolingo)
+        let nodesArray = INFERNO_CIRCLES;
+        let decorImage = 'assets/Immagini/10.png'; // inferno decor
+        if (campaignId === 'purgatorio') {
+            nodesArray = PURGATORIO_TERRACES;
+            decorImage = 'assets/Immagini/6.png';
+        }
+        if (campaignId === 'paradiso') {
+            nodesArray = PARADISO_HEAVENS;
+            decorImage = 'assets/Immagini/7.png';
+        }
+
         const svgLayer = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
         svgLayer.style.position = 'absolute';
         svgLayer.style.top = '0';
@@ -123,7 +153,6 @@ export const MapEngine = {
         svgLayer.style.pointerEvents = 'none';
         container.appendChild(svgLayer);
 
-        // Layer per i nodi HTML
         const nodesLayer = document.createElement('div');
         nodesLayer.style.position = 'relative';
         nodesLayer.style.zIndex = '1';
@@ -132,9 +161,8 @@ export const MapEngine = {
         nodesLayer.style.alignItems = 'center';
         container.appendChild(nodesLayer);
         
-        // Elemento Decorativo (Duolingo Style)
         const decorImg = document.createElement('img');
-        decorImg.src = 'assets/Immagini/10.png';
+        decorImg.src = decorImage;
         decorImg.style.position = 'absolute';
         decorImg.style.top = '15%';
         decorImg.style.right = '5%';
@@ -148,27 +176,14 @@ export const MapEngine = {
         decorImg.style.opacity = '0.8';
         container.appendChild(decorImg);
         
-        const decorImg2 = document.createElement('img');
-        decorImg2.src = 'assets/Immagini/10.png';
-        decorImg2.style.position = 'absolute';
-        decorImg2.style.bottom = '15%';
-        decorImg2.style.left = '5%';
-        decorImg2.style.width = '100px';
-        decorImg2.style.height = '100px';
-        decorImg2.style.objectFit = 'cover';
-        decorImg2.style.borderRadius = '50%';
-        decorImg2.style.boxShadow = '0 0 20px rgba(0,0,0,0.8)';
-        decorImg2.style.border = '2px solid var(--border-color)';
-        decorImg2.style.zIndex = '0';
-        decorImg2.style.opacity = '0.6';
-        container.appendChild(decorImg2);
-        
         const renderedNodes = [];
 
-        INFERNO_CIRCLES.forEach((circle, index) => {
-            const unlocked = this.isCircleUnlocked(index);
+        nodesArray.forEach((circle, index) => {
+            const unlocked = this.isCircleUnlocked(index, campaignId);
             const completed = this.isCircleCompleted(circle.id);
-            const casesInCircle = this.allCases.filter(c => c.cerchio === circle.id);
+            
+            // Fila solo i casi per la campagna corrente e per il cerchio corrente
+            const casesInCircle = this.allCases.filter(c => c.campaignId === campaignId && c.cerchio === circle.id);
             const numCases = casesInCircle.length;
 
             const node = document.createElement('div');
@@ -179,7 +194,7 @@ export const MapEngine = {
             if (unlocked) {
                 btn.className = `circle-btn ${completed ? 'completed' : 'unlocked'}`;
                 btn.onclick = () => {
-                    this.openCircleDashboard(circle.id, casesInCircle);
+                    this.openCircleDashboard(circle.id, casesInCircle, campaignId);
                 };
             } else {
                 btn.className = 'circle-btn locked';
@@ -190,7 +205,7 @@ export const MapEngine = {
 
             let icon = unlocked ? (completed ? '<i class="fa-solid fa-check"></i>' : '<i class="fa-solid fa-door-open"></i>') : '<i class="fa-solid fa-lock"></i>';
             if (numCases === 0 && unlocked && !completed) {
-               icon = '<i class="fa-solid fa-ghost"></i>'; // Nessun caso presente
+               icon = '<i class="fa-solid fa-ghost"></i>'; 
             }
 
             btn.innerHTML = `
@@ -198,7 +213,6 @@ export const MapEngine = {
                 <span class="icon">${icon}</span>
             `;
 
-            // Testo sotto al bottone per info
             const infoText = document.createElement('div');
             infoText.style.fontSize = '0.8rem';
             infoText.style.color = '#888';
@@ -211,26 +225,22 @@ export const MapEngine = {
             renderedNodes.push({ node, completed });
         });
 
-        // Disegna il percorso SVG sfalsato una volta renderizzati i nodi
         setTimeout(() => {
             let pathD = "";
             let completedPathD = "";
-
-            const cRect = container.getBoundingClientRect();
             
             for (let i = 0; i < renderedNodes.length - 1; i++) {
                 const n1 = renderedNodes[i].node;
                 const n2 = renderedNodes[i+1].node;
                 
-                // Usa offsetTop/offsetLeft relativi al container per non dipendere dallo scroll
                 const btn1 = n1.querySelector('.circle-btn');
                 const btn2 = n2.querySelector('.circle-btn');
                 
-                // Coordinate centro del bottone (n1)
+                if (!btn1 || !btn2) continue;
+
                 const x1 = n1.offsetLeft + btn1.offsetLeft + (btn1.offsetWidth / 2);
                 const y1 = n1.offsetTop + btn1.offsetTop + (btn1.offsetHeight / 2);
                 
-                // Coordinate centro del bottone (n2)
                 const x2 = n2.offsetLeft + btn2.offsetLeft + (btn2.offsetWidth / 2);
                 const y2 = n2.offsetTop + btn2.offsetTop + (btn2.offsetHeight / 2);
 
@@ -246,13 +256,11 @@ export const MapEngine = {
                 if (renderedNodes[i].completed && renderedNodes[i+1].completed) {
                     completedPathD += curveStr;
                 } else if (renderedNodes[i].completed) {
-                    // Traccia fino a metà o fino al prossimo non completato
                     completedPathD += `C ${x1} ${yMid}, ${x2} ${yMid}, ${x2} ${y2} `;
                 }
             }
             
             if (pathD) {
-                // Sfondo (linea scura/disattivata)
                 const bgPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
                 bgPath.setAttribute('d', pathD);
                 bgPath.setAttribute('fill', 'none');
@@ -260,22 +268,19 @@ export const MapEngine = {
                 bgPath.setAttribute('stroke-width', '12');
                 bgPath.setAttribute('stroke-linecap', 'round');
                 svgLayer.appendChild(bgPath);
-                
-                // Primo piano (linea dorata/verde completata)
-                if (completedPathD) {
-                    const fgPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-                    fgPath.setAttribute('d', completedPathD);
-                    fgPath.setAttribute('fill', 'none');
-                    fgPath.setAttribute('stroke', '#d4af37'); // oro
-                    fgPath.setAttribute('stroke-width', '12');
-                    fgPath.setAttribute('stroke-linecap', 'round');
-                    svgLayer.appendChild(fgPath);
-                }
+
+                const fgPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                fgPath.setAttribute('d', completedPathD);
+                fgPath.setAttribute('fill', 'none');
+                fgPath.setAttribute('stroke', 'var(--accent-gold)');
+                fgPath.setAttribute('stroke-width', '12');
+                fgPath.setAttribute('stroke-linecap', 'round');
+                svgLayer.appendChild(fgPath);
             }
-        }, 50);
+        }, 300);
     },
 
-    openCircleDashboard: function(circleId, cases) {
+    openCircleDashboard: function(circleId, cases, campaignId) {
         // Nascondi la mappa
         document.getElementById('view-map').classList.remove('active');
         
