@@ -968,14 +968,7 @@
     </div>
 
 
-    <script>
-        function toggleAudio(btn) {
-            if (window.AudioEngine) {
-                const isMuted = window.AudioEngine.toggleMute();
-                btn.innerHTML = isMuted ? '<i class="fa-solid fa-volume-xmark"></i>' : '<i class="fa-solid fa-volume-high"></i>';
-            }
-        }
-        
+        <script>
         window.addEventListener('load', () => {
             if (window.AudioEngine) {
                 window.AudioEngine.init();
