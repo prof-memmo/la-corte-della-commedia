@@ -906,125 +906,66 @@ window.TeacherDashboard = {
   },
 
   renderClasses: async function() {
-    if (!state.user) return;
-    const classes = await EroiDB.getTeacherClasses(state.user.email);
-    
-    // Popola select classe
-    const selectStudentClass = document.getElementById('new-student-class');
-    if (selectStudentClass) {
-        selectStudentClass.innerHTML = classes.length ? '' : '<option disabled>Crea prima una classe</option>';
-        classes.forEach(c => {
-            const opt = document.createElement('option');
-            opt.value = c.id;
-            opt.textContent = c.name + " (" + c.id + ")";
-            selectStudentClass.appendChild(opt);
-        });
+    // Populate the select dropdown for cases
+    if (window.EroiDB && window.EroiDB.cache.cases.length === 0) {
+        await window.EroiDB.getCasesByCampaign('inferno');
+        await window.EroiDB.getCasesByCampaign('purgatorio');
+        await window.EroiDB.getCasesByCampaign('paradiso');
     }
-
-    // Popola lista iscritti globale
-    const listContainer = document.getElementById('teacher-students-list');
-    if (!listContainer) return;
+    const caseSelect = document.getElementById('teacher-case-select');
+    if (caseSelect && window.EroiDB) {
+        let options = '<option value="">-- Seleziona un Caso --</option>';
+        window.EroiDB.cache.cases.forEach(c => {
+            options += `<option value="${c.id}">${c.characterName} (${c.campaignId.toUpperCase()})</option>`;
+        });
+        caseSelect.innerHTML = options;
+    }
+  },
+  
+  loadCaseVerdicts: async function(caseId) {
+    const listEl = document.getElementById('teacher-verdicts-list');
+    if (!caseId) {
+        listEl.innerHTML = '<p style="color: #666; font-style: italic; text-align: center;">Nessun caso selezionato.</p>';
+        return;
+    }
     
-    listContainer.innerHTML = ''; 
-    let totalStudents = 0;
+    listEl.innerHTML = '<p style="color: #666; text-align: center;">Caricamento verdetti in corso...</p>';
     
-    const table = document.createElement('table');
-    table.style.width = '100%';
-    table.style.borderCollapse = 'collapse';
-    table.style.textAlign = 'left';
-    table.innerHTML = `
-              <tr style="border-bottom: 1px solid var(--border-color); color: var(--accent-gold);">
-                <th style="cursor:pointer; padding: 10px;" onclick="window.sortTeacherStudents('name')"><div style="display: flex; align-items: center; white-space: nowrap;">Nome <i class="fa-solid fa-sort" style="margin-left:5px; font-size:0.8em; color:#888;"></i></div></th>
-                <th style="cursor:pointer; padding: 10px;" onclick="window.sortTeacherStudents('email')"><div style="display: flex; align-items: center; white-space: nowrap;">Email <i class="fa-solid fa-sort" style="margin-left:5px; font-size:0.8em; color:#888;"></i></div></th>
-                <th style="cursor:pointer; padding: 10px;" onclick="window.sortTeacherStudents('class')"><div style="display: flex; align-items: center; white-space: nowrap;">Classe <i class="fa-solid fa-sort" style="margin-left:5px; font-size:0.8em; color:#888;"></i></div></th>
-                <th style="cursor:pointer; padding: 10px;" onclick="window.sortTeacherStudents('level')"><div style="display: flex; align-items: center; white-space: nowrap;">Livello <i class="fa-solid fa-sort" style="margin-left:5px; font-size:0.8em; color:#888;"></i></div></th>
-                <th style="cursor:pointer; padding: 10px;" onclick="window.sortTeacherStudents('date')"><div style="display: flex; align-items: center; white-space: nowrap;">Data Iscrizione <i class="fa-solid fa-sort" style="margin-left:5px; font-size:0.8em; color:#888;"></i></div></th>
-                <th style="padding: 10px;"></th>
-              </tr>
-            `;
-
-        let allStudents = [];
-        for (let c of classes) {
-            const students = await EroiDB.getStudentsByClass(c.id);
-            students.forEach(s => {
-                s.className = c.name;
-                allStudents.push(s);
-            });
-        }
-        totalStudents = allStudents.length;
-
-        // Sort
-        const state = window.teacherStudentsSort || { col: 'date', asc: false };
-        allStudents.sort((a, b) => {
-            let valA, valB;
-            if (state.col === 'name') { valA = (a.displayName || a.name || '').toLowerCase(); valB = (b.displayName || b.name || '').toLowerCase(); }
-            else if (state.col === 'email') { valA = (a.email || '').toLowerCase(); valB = (b.email || '').toLowerCase(); }
-            else if (state.col === 'class') { valA = (a.className || '').toLowerCase(); valB = (b.className || '').toLowerCase(); }
-            else if (state.col === 'level') { valA = a.level || 0; valB = b.level || 0; }
-            else if (state.col === 'date') { 
-                valA = a.createdAt ? new Date(a.createdAt).getTime() : 0; 
-                valB = b.createdAt ? new Date(b.createdAt).getTime() : 0; 
+    try {
+        let classCode = null;
+        // Optionally filter by the teacher's classCode if set
+        
+        let sentencesQuery = window.firebase.firestore().collection("sentences").where("caseId", "==", caseId);
+        // We use window.firebase if imported, but we should import query, getDocs etc. 
+        // Actually since we don't have direct access to getDocs in app.js without importing, we can add a helper in db.js or just do it here if we assume firebase-config is loaded.
+        // It's safer to add a helper in EroiDB.
+        if (window.EroiDB && window.EroiDB.getRawVerdicts) {
+            const verdicts = await window.EroiDB.getRawVerdicts(caseId, classCode);
+            if (verdicts.length === 0) {
+                listEl.innerHTML = '<p style="color: #666; font-style: italic; text-align: center;">Nessun verdetto registrato per questo caso.</p>';
+                return;
             }
-            else { valA = (a.displayName || a.name || '').toLowerCase(); valB = (b.displayName || b.name || '').toLowerCase(); }
             
-            if (valA < valB) return state.asc ? -1 : 1;
-            if (valA > valB) return state.asc ? 1 : -1;
-            return 0;
-        });
-
-        allStudents.forEach(s => {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td style="padding: 10px;">${s.displayName || s.name}</td>
-                <td style="padding: 10px; color: #aaa;">${s.email}</td>
-                <td style="padding: 10px;">${s.className}</td>
-                <td style="padding: 10px;">${s.level || 1}</td>
-                <td style="padding: 10px; color: #888; font-size: 0.8rem;">${s.createdAt ? new Date(s.createdAt).toLocaleDateString() : 'N/A'}</td>
-                <td style="padding: 10px; text-align: right;"><a href="mailto:${s.email}" title="Scrivi a ${s.displayName || s.name}" style="color:var(--accent-gold); text-decoration:none;"><i class="fa-solid fa-envelope"></i></a></td>
-            `;
-            table.appendChild(tr);
-        });
-
-    if (totalStudents > 0) {
-        listContainer.style.background = 'transparent';
-        listContainer.appendChild(table);
-    } else {
-        listContainer.innerHTML = '<p style="color: #888; font-style: italic; text-align: center;">Nessuno studente iscritto al momento.</p>';
-    }
-
-    // Aggiorna contatori
-    const classBadge = document.getElementById('teacher-stats-classes');
-    if (classBadge) classBadge.textContent = classes.length;
-    
-    const studentBadge = document.getElementById('teacher-stats-students');
-    if (studentBadge) studentBadge.textContent = totalStudents;
-
-    // --- LOGICA COLLABORATORI ---
-    const colleagueEmails = new Set();
-    classes.forEach(c => {
-      if (c.teacher && c.teacher !== state.user.email) colleagueEmails.add(c.teacher);
-      if (c.collaborators) {
-        c.collaborators.forEach(email => {
-          if (email !== state.user.email) colleagueEmails.add(email);
-        });
-      }
-    });
-
-    const docentiBadge = document.getElementById('teacher-stats-docenti');
-    if (docentiBadge) docentiBadge.textContent = colleagueEmails.size;
-
-    const tbodyDocenti = document.querySelector('#teacher-docenti-table tbody');
-    if (tbodyDocenti) {
-        tbodyDocenti.innerHTML = '';
-        if (colleagueEmails.size === 0) {
-            tbodyDocenti.innerHTML = `<tr><td style="padding: 10px; text-align: left; color: #888;"><i>Nessun collega associato.</i></td></tr>`;
-        } else {
-            colleagueEmails.forEach(email => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `<td style="padding: 10px; color: #ddd;">${email}</td>`;
-                tbodyDocenti.appendChild(tr);
+            let html = '';
+            verdicts.forEach(v => {
+                const badgeColor = v.verdict === 'conferma' ? 'var(--accent-gold)' : (v.verdict === 'assoluzione' ? '#00cc66' : (v.verdict === 'riduzione' ? '#4da8da' : 'var(--danger-color)'));
+                html += `
+                <div style="background: #fff; padding: 15px; border-radius: 8px; margin-bottom: 10px; border-left: 5px solid ${badgeColor}; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                        <strong style="color: #222; font-size: 1.1rem;">${v.displayName}</strong>
+                        <span style="background: ${badgeColor}; color: ${v.verdict==='conferma'?'#000':'#fff'}; padding: 3px 8px; border-radius: 12px; font-size: 0.8rem; font-weight: bold; text-transform: uppercase;">${v.verdict}</span>
+                    </div>
+                    <p style="color: #444; font-style: italic; margin: 0; font-size: 0.95rem;">"${v.motivation || 'Nessuna motivazione inserita.'}"</p>
+                </div>
+                `;
             });
+            listEl.innerHTML = html;
+        } else {
+            listEl.innerHTML = '<p style="color: red; text-align: center;">Errore: funzione getRawVerdicts non trovata.</p>';
         }
+    } catch (e) {
+        console.error(e);
+        listEl.innerHTML = '<p style="color: red; text-align: center;">Errore durante il caricamento dei verdetti.</p>';
     }
   },
 

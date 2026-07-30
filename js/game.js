@@ -24,7 +24,36 @@ export const EroiGame = {
         this.renderPhase();
     },
     
-    nextPhase: function() {
+    nextPhase: async function() {
+        if (this.state.currentPhase === 8) {
+            const verdictSelect = document.getElementById('verdict-select');
+            const verdictMotivation = document.getElementById('verdict-motivation');
+            
+            if (verdictSelect && verdictSelect.value === "") {
+                alert("Per favore, pronuncia un verdetto prima di procedere al Sigillo.");
+                return;
+            }
+            
+            // Salva nel cloud
+            if (window.EroiDB && window.EroiDB.cache && window.EroiDB.cache.userProfile) {
+                const user = window.EroiDB.cache.userProfile;
+                const sentenceData = {
+                    uid: user.uid,
+                    displayName: user.displayName || "Studente Anonimo",
+                    classCode: user.classCode || "Nessuna",
+                    caseId: this.state.currentCaseId,
+                    verdict: verdictSelect.value,
+                    motivation: verdictMotivation.value,
+                    timestamp: new Date()
+                };
+                try {
+                    await window.EroiDB.saveSentence(sentenceData);
+                } catch (e) {
+                    console.error("Errore salvataggio verdetto", e);
+                }
+            }
+        }
+        
         if (this.state.currentPhase < 10) {
             if (window.AudioEngine) window.AudioEngine.playClick();
             this.state.currentPhase++;
@@ -217,101 +246,123 @@ export const EroiGame = {
                 break;
 
             case 10: // Fase 10: Riepilogo e Video
-                const role = (window.EroiDB && window.EroiDB.cache.userProfile) ? window.EroiDB.cache.userProfile.role : 'external';
-                
-                // Generazione di percentuali simulate (devono fare 100)
-                let pctConferma = Math.floor(Math.random() * 40) + 30; // 30-70
-                let pctAssoluzione = Math.floor(Math.random() * (100 - pctConferma - 10)) + 5;
-                let pctRiduzione = Math.floor(Math.random() * (100 - pctConferma - pctAssoluzione - 5)) + 5;
-                let pctAggravo = 100 - pctConferma - pctAssoluzione - pctRiduzione;
-                
-                const showVideoBtn = (role === 'teacher' || role === 'admin' || role === 'external');
-                
-                let actionBtnHtml = '';
-                if (showVideoBtn) {
-                    actionBtnHtml = `<button id="play-video-btn" class="btn glow" style="background: var(--accent-gold); color: #1a1a2e; margin-top: 30px; font-size: 1.3rem; padding: 15px 30px;">Torna alla Libreria</button>`;
-                } else {
-                    actionBtnHtml = `
-                        <div style="background: rgba(0,0,0,0.5); padding: 15px; border-radius: 8px; border: 1px solid var(--accent-gold); margin-top: 20px;">
-                            <p style="color: var(--accent-gold); font-weight: bold; margin: 0;">Il tuo verdetto è stato sigillato.</p>
-                        </div>
-                        <button id="return-map-btn" class="btn" style="background: var(--accent-gold); color: #1a1a2e; margin-top: 15px; font-size: 1.2rem; padding: 10px 20px;">Torna alla Mappa</button>
-                    `;
-                }
-
-                trialContent.innerHTML = `
-                    <div style="text-align:center;">
-                        <h2 class="text-gold" style="font-size: 2.2rem; margin-bottom: 15px; font-family: 'Cinzel', serif;">Il Verdetto Popolare</h2>
-                        
-                        <div style="background: rgba(0,0,0,0.6); padding: 25px; border-radius: 10px; border: 1px solid #444; max-width: 600px; margin: 0 auto; text-align: left;">
-                            <h4 style="margin-top:0; color: #fff; text-align: center; border-bottom: 1px solid #555; padding-bottom: 10px;">Statistiche delle Decisioni</h4>
-                            
-                            <div style="margin-top: 15px;">
-                                <div style="display: flex; justify-content: space-between; margin-bottom: 5px;"><span>Conferma Dante</span> <span>${pctConferma}%</span></div>
-                                <div style="width: 100%; background: #222; border-radius: 5px; height: 12px;"><div style="width: ${pctConferma}%; background: var(--accent-gold); height: 100%; border-radius: 5px;"></div></div>
-                            </div>
-                            
-                            <div style="margin-top: 15px;">
-                                <div style="display: flex; justify-content: space-between; margin-bottom: 5px;"><span>Riduzione Pena</span> <span>${pctRiduzione}%</span></div>
-                                <div style="width: 100%; background: #222; border-radius: 5px; height: 12px;"><div style="width: ${pctRiduzione}%; background: #4da8da; height: 100%; border-radius: 5px;"></div></div>
-                            </div>
-                            
-                            <div style="margin-top: 15px;">
-                                <div style="display: flex; justify-content: space-between; margin-bottom: 5px;"><span>Aggravante</span> <span>${pctAggravo}%</span></div>
-                                <div style="width: 100%; background: #222; border-radius: 5px; height: 12px;"><div style="width: ${pctAggravo}%; background: var(--danger-color); height: 100%; border-radius: 5px;"></div></div>
-                            </div>
-                            
-                            <div style="margin-top: 15px;">
-                                <div style="display: flex; justify-content: space-between; margin-bottom: 5px;"><span>Assoluzione</span> <span>${pctAssoluzione}%</span></div>
-                                <div style="width: 100%; background: #222; border-radius: 5px; height: 12px;"><div style="width: ${pctAssoluzione}%; background: #00cc66; height: 100%; border-radius: 5px;"></div></div>
-                            </div>
-                        </div>
-
-                        ${actionBtnHtml}
-                        <p class="text-crimson" style="font-weight: bold; font-size: 1.5rem; margin-top: 20px;">+150 XP Ottenuti</p>
-                    </div>
-                `;
-                
+                trialContent.innerHTML = `<div style="text-align:center; padding: 50px;"><h2 style="color:var(--accent-gold);">Raccolta delle sentenze in corso...</h2></div>`;
                 trialNextBtn.style.display = 'none';
                 trialBackBtn.style.display = 'none';
+
+                const role = (window.EroiDB && window.EroiDB.cache.userProfile) ? window.EroiDB.cache.userProfile.role : 'external';
+                const classCode = (window.EroiDB && window.EroiDB.cache.userProfile) ? window.EroiDB.cache.userProfile.classCode : null;
+                const showVideoBtn = (role === 'teacher' || role === 'admin' || role === 'external');
                 
-                if (showVideoBtn) {
-                    const playBtn = document.getElementById('play-video-btn');
-                    playBtn.onclick = () => {
-                        if (window.AudioEngine) window.AudioEngine.playGavel();
-                        const overlay = document.getElementById('fullscreen-video-overlay');
-                        const video = document.getElementById('finale-video');
-                        
-                        let videoFile = 'ingresso_inferno.mp4';
-                        if (data.campaignId === 'purgatorio') videoFile = 'ingresso_purgatorio.mp4';
-                        if (data.campaignId === 'paradiso') videoFile = 'ingresso_paradiso.mp4';
-                        
-                        video.src = `assets/video/${videoFile}`;
-                        overlay.style.display = 'flex';
-                        video.play();
-                        
-                        const closeVideo = () => {
-                            video.pause();
-                            overlay.style.display = 'none';
+                let statsPromise = Promise.resolve({ conferma: 1, riduzione: 0, aggravo: 0, assoluzione: 0, total: 1, motivations: [] });
+                if (window.EroiDB && window.EroiDB.getCaseStats) {
+                    statsPromise = window.EroiDB.getCaseStats(this.state.currentCaseId, classCode);
+                }
+
+                statsPromise.then(stats => {
+                    if (stats.total === 0) {
+                        stats.total = 1; // prevent div by 0
+                    }
+                    
+                    let pctConferma = Math.round((stats.conferma / stats.total) * 100);
+                    let pctAssoluzione = Math.round((stats.assoluzione / stats.total) * 100);
+                    let pctRiduzione = Math.round((stats.riduzione / stats.total) * 100);
+                    let pctAggravo = Math.round((stats.aggravo / stats.total) * 100);
+                    
+                    // Shuffle motivations and pick up to 3
+                    const shuffledMots = stats.motivations.sort(() => 0.5 - Math.random());
+                    const selectedMots = shuffledMots.slice(0, 3);
+                    
+                    let motivationsHtml = '';
+                    if (selectedMots.length > 0) {
+                        motivationsHtml = `<div style="margin-top: 25px; border-top: 1px solid #555; padding-top: 15px;">
+                            <h5 style="color: var(--accent-gold); margin-bottom: 10px;">Alcune motivazioni anonime:</h5>
+                            <ul style="text-align: left; font-size: 0.95rem; color: #ccc; font-style: italic; padding-left: 20px;">
+                                ${selectedMots.map(m => `<li>"${m}"</li>`).join('')}
+                            </ul>
+                        </div>`;
+                    }
+                    
+                    let actionBtnHtml = '';
+                    if (showVideoBtn) {
+                        actionBtnHtml = `<button id="play-video-btn" class="btn glow" style="background: var(--accent-gold); color: #1a1a2e; margin-top: 30px; font-size: 1.3rem; padding: 15px 30px;">Torna alla Libreria</button>`;
+                    } else {
+                        actionBtnHtml = `
+                            <div style="background: rgba(0,0,0,0.5); padding: 15px; border-radius: 8px; border: 1px solid var(--accent-gold); margin-top: 20px;">
+                                <p style="color: var(--accent-gold); font-weight: bold; margin: 0;">Il tuo verdetto è stato sigillato.</p>
+                            </div>
+                            <button id="return-map-btn" class="btn" style="background: var(--accent-gold); color: #1a1a2e; margin-top: 15px; font-size: 1.2rem; padding: 10px 20px;">Torna alla Mappa</button>
+                        `;
+                    }
+
+                    trialContent.innerHTML = `
+                        <div style="text-align:center;">
+                            <h2 class="text-gold" style="font-size: 2.2rem; margin-bottom: 15px; font-family: 'Cinzel', serif;">Il Verdetto Popolare</h2>
+                            
+                            <div style="background: rgba(0,0,0,0.6); padding: 25px; border-radius: 10px; border: 1px solid #444; max-width: 600px; margin: 0 auto; text-align: left;">
+                                <h4 style="margin-top:0; color: #fff; text-align: center; border-bottom: 1px solid #555; padding-bottom: 10px;">Statistiche delle Decisioni (${stats.total} Voti)</h4>
+                                
+                                <div style="margin-top: 15px;">
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;"><span>Conferma Dante</span> <span>${pctConferma}%</span></div>
+                                    <div style="width: 100%; background: #222; border-radius: 5px; height: 12px;"><div style="width: ${pctConferma}%; background: var(--accent-gold); height: 100%; border-radius: 5px;"></div></div>
+                                </div>
+                                
+                                <div style="margin-top: 15px;">
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;"><span>Riduzione Pena</span> <span>${pctRiduzione}%</span></div>
+                                    <div style="width: 100%; background: #222; border-radius: 5px; height: 12px;"><div style="width: ${pctRiduzione}%; background: #4da8da; height: 100%; border-radius: 5px;"></div></div>
+                                </div>
+                                
+                                <div style="margin-top: 15px;">
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;"><span>Aggravante</span> <span>${pctAggravo}%</span></div>
+                                    <div style="width: 100%; background: #222; border-radius: 5px; height: 12px;"><div style="width: ${pctAggravo}%; background: var(--danger-color); height: 100%; border-radius: 5px;"></div></div>
+                                </div>
+                                
+                                <div style="margin-top: 15px;">
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;"><span>Assoluzione</span> <span>${pctAssoluzione}%</span></div>
+                                    <div style="width: 100%; background: #222; border-radius: 5px; height: 12px;"><div style="width: ${pctAssoluzione}%; background: #00cc66; height: 100%; border-radius: 5px;"></div></div>
+                                </div>
+                                
+                                ${motivationsHtml}
+                            </div>
+
+                            ${actionBtnHtml}
+                            <p class="text-crimson" style="font-weight: bold; font-size: 1.5rem; margin-top: 20px;">+150 XP Ottenuti</p>
+                        </div>
+                    `;
+                    
+                    if (showVideoBtn) {
+                        const playBtn = document.getElementById('play-video-btn');
+                        playBtn.onclick = () => {
+                            if (window.AudioEngine) window.AudioEngine.playGavel();
+                            const overlay = document.getElementById('fullscreen-video-overlay');
+                            const video = document.getElementById('finale-video');
+                            
+                            let videoFile = 'ingresso_inferno.mp4';
+                            if (data.campaignId === 'purgatorio') videoFile = 'ingresso_purgatorio.mp4';
+                            if (data.campaignId === 'paradiso') videoFile = 'ingresso_paradiso.mp4';
+                            
+                            video.src = `assets/video/${videoFile}`;
+                            overlay.style.display = 'flex';
+                            video.play();
+                            
+                            const closeVideo = () => {
+                                video.pause();
+                                overlay.style.display = 'none';
+                                if (window.MapEngine) window.MapEngine.markCaseCompleted(this.state.currentCaseId);
+                                window.showView('view-map');
+                            };
+                            
+                            video.onended = closeVideo;
+                            document.getElementById('close-video-btn').onclick = closeVideo;
+                        };
+                    } else {
+                        const returnBtn = document.getElementById('return-map-btn');
+                        returnBtn.onclick = () => {
                             if (window.MapEngine) window.MapEngine.markCaseCompleted(this.state.currentCaseId);
                             window.showView('view-map');
                         };
-                        
-                        video.onended = closeVideo;
-                        document.getElementById('close-video-btn').onclick = closeVideo;
-                    };
-                } else {
-                    const returnBtn = document.getElementById('return-map-btn');
-                    returnBtn.onclick = () => {
-                        if (window.MapEngine) window.MapEngine.markCaseCompleted(this.state.currentCaseId);
-                        window.showView('view-map');
-                    };
-                }
-                break;
-        }
-    }
-};
-                trialContent.appendChild(returnBtn);
+                    }
+                });
                 break;
         }
     }

@@ -559,10 +559,17 @@
             <!-- TAB VALUTAZIONE -->
             <div id="t-tab-valutazione" class="teacher-tab-content" style="display: none;">
               <div class="parchment-panel">
-                <h3 style="color: var(--accent-crimson); font-family: 'Cinzel', serif; margin-bottom: 1rem;">Verdetti da Valutare</h3>
-                <p class="text-on-parchment-muted" style="margin-bottom: 1rem;">Seleziona un verdetto inviato dai tuoi studenti per assegnare un voto e correggere l'argomentazione.</p>
-                <div style="background: rgba(255,255,255,0.3); border: 1px dashed #aaa; padding: 20px; text-align: center; border-radius: 8px;">
-                  <p style="color: #666; font-style: italic;">Nessun verdetto in attesa di valutazione.</p>
+                <h3 style="color: var(--accent-crimson); font-family: 'Cinzel', serif; margin-bottom: 1rem;">Verdetti della Classe</h3>
+                <p class="text-on-parchment-muted" style="margin-bottom: 1rem;">Seleziona un caso per leggere le decisioni prese dai tuoi studenti e preparare la discussione in aula.</p>
+                
+                <div style="margin-bottom: 20px;">
+                  <select id="teacher-case-select" class="input-form" style="width: 100%; padding: 10px; border-radius: 5px; background: #fff; color: #222; border: 1px solid #ccc; font-size: 1rem;" onchange="if(window.TeacherDashboard) window.TeacherDashboard.loadCaseVerdicts(this.value)">
+                    <option value="">-- Seleziona un Caso --</option>
+                  </select>
+                </div>
+
+                <div id="teacher-verdicts-list" style="background: rgba(255,255,255,0.5); border: 1px solid #aaa; padding: 20px; border-radius: 8px;">
+                  <p style="color: #666; font-style: italic; text-align: center;">Nessun caso selezionato.</p>
                 </div>
               </div>
             </div>

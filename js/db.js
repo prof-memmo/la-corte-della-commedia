@@ -1205,11 +1205,101 @@ const EroiDB = {
     // --- VERDETTI E LOGS ---
     saveSentence: async function(sentenceData) {
         try {
-            // Un id casuale o generato, qui usiamo push id finto o doc vuoto
             const newDocRef = doc(collection(db, "sentences"));
             await setDoc(newDocRef, sentenceData);
             return newDocRef.id;
         } catch (e) {
+            console.error("Errore salvataggio sentenza:", e);
+            return null;
+        }
+    },
+
+    getCaseStats: async function(caseId, classCode = null) {
+        try {
+            let sentencesQuery = query(collection(db, "sentences"), where("caseId", "==", caseId));
+            if (classCode) {
+                sentencesQuery = query(collection(db, "sentences"), where("caseId", "==", caseId), where("classCode", "==", classCode));
+            }
+            
+            const querySnapshot = await getDocs(sentencesQuery);
+            
+            const stats = {
+                conferma: 0,
+                riduzione: 0,
+                aggravo: 0,
+                assoluzione: 0,
+                total: 0,
+                motivations: []
+            };
+
+            querySnapshot.forEach((doc) => {
+                const data = doc.data();
+                stats.total++;
+                if (data.verdict === 'conferma') stats.conferma++;
+                if (data.verdict === 'riduzione') stats.riduzione++;
+                if (data.verdict === 'aggravo') stats.aggravo++;
+                if (data.verdict === 'assoluzione') stats.assoluzione++;
+                
+                if (data.motivation && data.motivation.trim() !== '') {
+                    stats.motivations.push(data.motivation);
+                }
+            });
+            
+            return stats;
+        } catch (e) {
+            console.error("Errore recupero statistiche:", e);
+            return { conferma: 0, riduzione: 0, aggravo: 0, assoluzione: 0, total: 0, motivations: [] };
+        }
+    },
+
+    getRawVerdicts: async function(caseId, classCode = null) {
+        try {
+            let sentencesQuery = query(collection(db, "sentences"), where("caseId", "==", caseId));
+            if (classCode) {
+                sentencesQuery = query(collection(db, "sentences"), where("caseId", "==", caseId), where("classCode", "==", classCode));
+            }
+            const querySnapshot = await getDocs(sentencesQuery);
+            const verdicts = [];
+            querySnapshot.forEach((doc) => {
+                verdicts.push(doc.data());
+            });
+            return verdicts;
+        } catch (e) {
+            console.error("Errore recupero raw verdicts:", e);
+            return [];
+        }
+    }
+            
+            const querySnapshot = await getDocs(sentencesQuery);
+            
+            const stats = {
+                conferma: 0,
+                riduzione: 0,
+                aggravo: 0,
+                assoluzione: 0,
+                total: 0,
+                motivations: []
+            };
+
+            querySnapshot.forEach((doc) => {
+                const data = doc.data();
+                stats.total++;
+                if (data.verdict === 'conferma') stats.conferma++;
+                if (data.verdict === 'riduzione') stats.riduzione++;
+                if (data.verdict === 'aggravo') stats.aggravo++;
+                if (data.verdict === 'assoluzione') stats.assoluzione++;
+                
+                if (data.motivation && data.motivation.trim() !== '') {
+                    stats.motivations.push(data.motivation);
+                }
+            });
+            
+            return stats;
+        } catch (e) {
+            console.error("Errore recupero statistiche:", e);
+            return { conferma: 0, riduzione: 0, aggravo: 0, assoluzione: 0, total: 0, motivations: [] };
+        }
+    } catch (e) {
             console.error("Errore salvataggio sentenza:", e);
             return null;
         }
