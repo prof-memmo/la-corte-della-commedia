@@ -973,8 +973,480 @@ const MOCK_CASES = [
         "riddle": "Come descrive metaforicamente Cacciaguida l'arma dell'esilio, che colpisce costringendo ad abbandonare ogni 'cosa diletta pi\u00f9 caramente'? (4 lettere)",
         "answer": "ARCO"
       }
+    },
+    // NUOVI CASI INFERNO
+    {
+        id: 'c_inf_8',
+        campaignId: 'inferno',
+        characterName: 'Farinata degli Uberti',
+        mapNode: { x: 30, y: 70 },
+        phases: {
+            intro: "Il fiero capo ghibellino si erge dalla sua tomba infuocata, guardandoti con sdegno come se avesse l'inferno in gran dispitto.",
+            facts: "Farinata fu capo della fazione ghibellina a Firenze. Combatté e vinse la battaglia di Montaperti (1260), ma si oppose fermamente alla distruzione di Firenze proposta dai suoi alleati.",
+            accusation: "È condannato tra gli eretici epicurei, che 'l'anima col corpo morta fanno', non credendo nella vita oltre la morte.",
+            dantePerspective: "Dante lo rispetta politicamente per aver salvato Firenze, ma lo condanna teologicamente per la sua mancanza di fede.",
+            defense: "La mia eresia fu un errore intellettuale, ma il mio amore per la patria mi spinse a salvare la città quando tutti volevano raderla al suolo. Non basta questo a riscattarmi?",
+            crossExamination: [
+                {
+                    q: "Perché Farinata si trova nel sesto cerchio?",
+                    options: [
+                        "Perché fu un tiranno",
+                        "Perché non credeva nell'immortalità dell'anima",
+                        "Perché tradì la sua fazione"
+                    ],
+                    correctIndex: 1,
+                    explanation: "Gli epicurei non credevano nella vita eterna, da qui il contrappasso delle tombe di fuoco."
+                },
+                {
+                    q: "Quale grande merito riconosce Dante a Farinata?",
+                    options: [
+                        "Aver salvato Firenze dalla distruzione",
+                        "Aver finanziato l'esilio di Dante",
+                        "Aver sconfitto il papa"
+                    ],
+                    correctIndex: 0,
+                    explanation: "Farinata difese Firenze 'a viso aperto' al concilio di Empoli."
+                }
+            ],
+            reflection: "Un grande leader politico che commette errori teologici: le opere buone terrene possono bilanciare le mancanze spirituali?"
+        }
+    },
+    {
+        id: 'c_inf_9',
+        campaignId: 'inferno',
+        characterName: 'Filippo Argenti',
+        mapNode: { x: 40, y: 35 },
+        phases: {
+            intro: "Dalla palude Stigia emerge coperto di fango uno spirito furioso, che cerca di rovesciare la barca su cui viaggi.",
+            facts: "Filippo Cavicchiuli (detto Argenti perché ferrava i cavalli d'argento) fu un membro influente dei Guelfi Neri, noto per la sua arroganza e scoppi d'ira.",
+            accusation: "È condannato tra gli iracondi, immerso nel fango della palude Stigia, dove si percuote e si morde da solo per l'eternità.",
+            dantePerspective: "Dante prova un disprezzo feroce verso di lui, augurandosi di vederlo straziato dagli altri dannati, in uno sfogo di sdegno 'giusto'.",
+            defense: "La mia ira era la mia natura. Voi mi condannate, ma lo stesso Dante mostra un'ira feroce contro di me: non è forse colpevole dello stesso peccato?",
+            crossExamination: [
+                {
+                    q: "In quale cerchio si trova Filippo Argenti?",
+                    options: [
+                        "Quinto cerchio (Iracondi e Accidiosi)",
+                        "Secondo cerchio (Lussuriosi)",
+                        "Nono cerchio (Traditori)"
+                    ],
+                    correctIndex: 0,
+                    explanation: "Si trova nella palude Stigia, il quinto cerchio."
+                },
+                {
+                    q: "Come reagisce Dante all'incontro con Argenti?",
+                    options: [
+                        "Prova compassione e piange",
+                        "Lo scaccia con estremo disprezzo",
+                        "Fugge terrorizzato"
+                    ],
+                    correctIndex: 1,
+                    explanation: "Dante lo maledice e gode nel vederlo punito, mostrando lo 'sdegno giusto'."
+                }
+            ],
+            reflection: "L'ira può mai essere giustificata (sdegno giusto) o è sempre una perdita della ragione?"
+        }
+    },
+    {
+        id: 'c_inf_10',
+        campaignId: 'inferno',
+        characterName: 'Vanni Fucci',
+        mapNode: { x: 70, y: 75 },
+        phases: {
+            intro: "Un uomo morso da un serpente si incenerisce e rinasce istantaneamente. Con un gesto osceno verso il cielo, ti fissa con ferocia.",
+            facts: "Vanni Fucci di Pistoia, fiero Guelfo Nero, rubò gli arredi sacri nel Duomo di Pistoia, lasciando che un innocente venisse condannato.",
+            accusation: "Condannato tra i ladri (Bolgia 7). Subisce metamorfosi dolorose ed è noto per la sua bestiale arroganza contro Dio.",
+            dantePerspective: "Dante lo descrive come l'anima più superba contro Dio di tutto l'Inferno, disprezzandolo per la sua 'vita bestial'.",
+            defense: "Fui ladro e violento, vero. Ma ho l'ardire di sfidare il Creatore a viso aperto, senza ipocrisie. La mia ribellione non ha qualcosa di titanico?",
+            crossExamination: [
+                {
+                    q: "Per quale crimine principale Vanni Fucci si trova all'Inferno?",
+                    options: [
+                        "Furto di arredi sacri in chiesa",
+                        "Omicidio di un vescovo",
+                        "Tradimento della patria"
+                    ],
+                    correctIndex: 0,
+                    explanation: "Rubò nel Tesoro di San Iacopo e lasciò accusare un innocente."
+                },
+                {
+                    q: "Qual è la particolarità del suo atteggiamento?",
+                    options: [
+                        "Piange perennemente pentito",
+                        "Sfida Dio facendo il gesto delle fiche",
+                        "Cerca di corrompere Dante"
+                    ],
+                    correctIndex: 1,
+                    explanation: "Fucci fa 'le fiche' (gesto osceno) rivolto al cielo sfidando Dio."
+                }
+            ],
+            reflection: "La malvagità pura e la sfida aperta all'autorità suprema: fascino del male o semplice bestialità?"
+        }
+    },
+    
+    // NUOVI CASI PURGATORIO
+    {
+        id: 'c_purg_8',
+        campaignId: 'purgatorio',
+        characterName: 'Marco Lombardo',
+        mapNode: { x: 55, y: 65 },
+        phases: {
+            intro: "Avvolto da un fumo denso e nero come la notte, senti una voce saggia che discorre sul libero arbitrio e sulla corruzione.",
+            facts: "Cortigiano veneziano del XIII secolo, uomo di grande levatura morale, ma afflitto dal peccato dell'ira.",
+            accusation: "Si trova nella cornice degli Iracondi. Espia la sua colpa camminando in un fumo acre che acceca, così come l'ira acceca la mente.",
+            dantePerspective: "Dante lo usa come portavoce per spiegare che la corruzione del mondo dipende dalle cattive scelte umane (libero arbitrio).",
+            defense: "Ho vissuto con sdegno verso un mondo ingiusto. Ora questo fumo mi purifica. Non era la mia ira una reazione a una società corrotta?",
+            crossExamination: [
+                {
+                    q: "Secondo Marco Lombardo, qual è la causa della corruzione del mondo?",
+                    options: [
+                        "L'influenza maligna delle stelle",
+                        "Il libero arbitrio mal usato dagli uomini",
+                        "La debolezza della natura umana"
+                    ],
+                    correctIndex: 1,
+                    explanation: "Marco chiarisce che gli uomini hanno il libero arbitrio e sono responsabili del male."
+                },
+                {
+                    q: "Come è punita l'ira nel Purgatorio?",
+                    options: [
+                        "Avvolti da un fumo buio e denso",
+                        "Immersi nel fuoco bollente",
+                        "Schiacciati da massi enormi"
+                    ],
+                    correctIndex: 0,
+                    explanation: "Il fumo acceca la vista come l'ira ha accecato la mente in vita."
+                }
+            ],
+            reflection: "Si può giustificare l'aggressività (ira) quando è rivolta contro le ingiustizie del mondo?"
+        }
+    },
+    {
+        id: 'c_purg_9',
+        campaignId: 'purgatorio',
+        characterName: 'Forese Donati',
+        mapNode: { x: 50, y: 35 },
+        phases: {
+            intro: "Davanti a te un uomo scheletrico, con gli occhi incavati. Solo dalla sua voce lo riconosci: è un tuo vecchio amico.",
+            facts: "Forese Donati, poeta e amico di gioventù di Dante (scambiarono la 'Tenzone', rime comiche e offensive). Dedito ai piaceri della gola.",
+            accusation: "Sconta il peccato di Gola. Costretto a patire fame e sete guardando frutti profumati e acqua fresca che non può toccare.",
+            dantePerspective: "Dante prova gioia e dolore nel ritrovare l'amico così sciupato. Forese ringrazia sua moglie Nella per le preghiere.",
+            defense: "Amavo il buon cibo e la bella vita fiorentina. Grazie all'amore di mia moglie sono già qui a purificarmi. Il piacere del cibo è davvero una colpa così grave?",
+            crossExamination: [
+                {
+                    q: "Quale peccato sconta Forese Donati?",
+                    options: [
+                        "Lussuria",
+                        "Avarizia",
+                        "Gola"
+                    ],
+                    correctIndex: 2,
+                    explanation: "Forese è punito nella cornice dei Golosi."
+                },
+                {
+                    q: "Chi ringrazia Forese per aver abbreviato il suo tempo nell'Antipurgatorio?",
+                    options: [
+                        "Sua sorella Piccarda",
+                        "La moglie Nella",
+                        "L'amico Dante"
+                    ],
+                    correctIndex: 1,
+                    explanation: "Sua moglie Nella, con le sue preghiere sincere, lo ha aiutato a salire più in fretta."
+                }
+            ],
+            reflection: "Il cibo e l'eccesso: dove si traccia la linea tra la goduria della vita e la perdita del controllo di sé?"
+        }
+    },
+    {
+        id: 'c_purg_10',
+        campaignId: 'purgatorio',
+        characterName: 'Guido Guinizzelli',
+        mapNode: { x: 30, y: 15 },
+        phases: {
+            intro: "Attraverso un muro di fiamme ardenti, intravedi l'ombra del grande maestro della poesia stilnovista.",
+            facts: "Poeta bolognese, considerato da Dante il 'padre' del Dolce Stil Novo (la dottrina che lega amore e cuore gentile).",
+            accusation: "Espia la Lussuria nella settima e ultima cornice del Purgatorio, camminando dentro un muro di fuoco che brucia le impurità carnali.",
+            dantePerspective: "Dante lo chiama 'padre mio' poetico, mostrando enorme devozione e rispetto per il maestro, nonostante il suo peccato.",
+            defense: "Ho cantato l'Amore, ho innalzato la donna ad Angelo. Se l'amore mi ha travolto anche nella carne, non fu per brutalità, ma per un eccesso di passione.",
+            crossExamination: [
+                {
+                    q: "Quale titolo riconosce Dante a Guido Guinizzelli?",
+                    options: [
+                        "Padre della giurisprudenza",
+                        "Padre spirituale e poetico (Stilnovismo)",
+                        "Miglior cavaliere d'Italia"
+                    ],
+                    correctIndex: 1,
+                    explanation: "Dante lo considera il capostipite della poesia d'amore a cui lui stesso appartiene."
+                },
+                {
+                    q: "Come sono puniti i Lussuriosi nel Purgatorio?",
+                    options: [
+                        "Travolti da un vento tempestoso",
+                        "Purificati attraverso un muro di fuoco",
+                        "Cuciti gli occhi con fil di ferro"
+                    ],
+                    correctIndex: 1,
+                    explanation: "I lussuriosi (sia etero che omosessuali) camminano tra fiamme ardenti."
+                }
+            ],
+            reflection: "Arte e vita privata: il talento poetico e l'ispirazione giustificano una vita sregolata nei piaceri?"
+        }
+    },
+
+    // NUOVI CASI PARADISO
+    {
+        id: 'c_par_4',
+        campaignId: 'paradiso',
+        characterName: 'San Tommaso',
+        mapNode: { x: 25, y: 70 },
+        phases: {
+            intro: "Nel cielo del Sole, una corona di spiriti sapienti ruota cantando. Una luce abbagliante si fa avanti: è il Dottor Angelico.",
+            facts: "Frate domenicano e immenso teologo del XIII secolo. Conciliò la filosofia aristotelica con il Cristianesimo.",
+            accusation: "Nessuna colpa. È lo spirito sapiente per eccellenza, lodato per la sua sterminata conoscenza messa al servizio di Dio.",
+            dantePerspective: "Dante lo usa per presentare la vita di San Francesco e per muovere una dura critica contro la corruzione del suo stesso ordine domenicano.",
+            defense: "Ho dedicato la vita alla ricerca della Verità attraverso la Ragione e la Fede. Non vi è contraddizione tra le due, poiché entrambe provengono da Dio.",
+            crossExamination: [
+                {
+                    q: "Di quale grande Santo San Tommaso (che è Domenicano) tesse le lodi?",
+                    options: [
+                        "San Domenico",
+                        "San Francesco d'Assisi",
+                        "San Pietro"
+                    ],
+                    correctIndex: 1,
+                    explanation: "Nel Paradiso, un domenicano loda il fondatore dei francescani, e viceversa, simbolo di armonia."
+                },
+                {
+                    q: "In quale cielo si trova Tommaso d'Aquino?",
+                    options: [
+                        "Cielo della Luna",
+                        "Cielo del Sole (Spiriti Sapienti)",
+                        "Cielo di Marte (Spiriti Militanti)"
+                    ],
+                    correctIndex: 1,
+                    explanation: "Nel Sole, associato alla luce dell'intelletto e della saggezza."
+                }
+            ],
+            reflection: "La Ragione può davvero spiegare la Fede? La scienza e la spiritualità sono destinate ad essere alleate o nemiche?"
+        }
+    },
+    {
+        id: 'c_par_5',
+        campaignId: 'paradiso',
+        characterName: 'San Pier Damiani',
+        mapNode: { x: 40, y: 55 },
+        phases: {
+            intro: "Nel cielo di Saturno (Spiriti Contemplativi), uno spirito fulgente scende lungo una scala d'oro infinita, nel silenzio più totale.",
+            facts: "Eremita e monaco dell'XI secolo, riformatore della Chiesa, fustigatore dei costumi mondani del clero e cardinale quasi controvoglia.",
+            accusation: "È il simbolo della vita contemplativa assoluta e della predestinazione, un uomo che ha rinunciato a tutto per la preghiera.",
+            dantePerspective: "Pier Damiani condanna aspramente i prelati moderni, troppo occupati dai lussi e dal potere rispetto agli apostoli scalzi.",
+            defense: "La Chiesa deve spogliarsi dell'oro e tornare al silenzio e all'eremitaggio. Ma la predestinazione divina è un mistero inaccessibile.",
+            crossExamination: [
+                {
+                    q: "Che oggetto caratterizza il cielo di Saturno dove si trova Pier Damiani?",
+                    options: [
+                        "Una croce di luce",
+                        "Un'aquila fatta di anime",
+                        "Una scala d'oro che sale verso l'alto"
+                    ],
+                    correctIndex: 2,
+                    explanation: "La Scala d'oro simboleggia l'ascesa contemplativa dell'anima a Dio."
+                },
+                {
+                    q: "Chi attacca duramente Pier Damiani nel suo discorso?",
+                    options: [
+                        "L'Imperatore",
+                        "I prelati corrotti e moderni",
+                        "I filosofi arabi"
+                    ],
+                    correctIndex: 1,
+                    explanation: "Rimprovera la pinguedine e la ricchezza dei cardinali del tempo di Dante."
+                }
+            ],
+            reflection: "L'isolamento contemplativo (stare fuori dal mondo) è più nobile dell'impegno attivo nella società?"
+        }
+    },
+    {
+        id: 'c_par_6',
+        campaignId: 'paradiso',
+        characterName: 'San Benedetto',
+        mapNode: { x: 55, y: 40 },
+        phases: {
+            intro: "La luce più grande e candida del cielo di Saturno si fa avanti. È il fondatore del monachesimo occidentale.",
+            facts: "Benedetto da Norcia (480-547), fondatore dell'abbazia di Montecassino e autore della celebre Regola ('Ora et labora').",
+            accusation: "Anima somma e purissima, lamenta la totale decadenza del suo Ordine monastico.",
+            dantePerspective: "Attraverso di lui, Dante denuncia come le abbazie un tempo fiorenti siano ora covi di ladri per colpa della cupidigia dei monaci.",
+            defense: "Io ritirai il mondo a Montecassino fondando una regola santa, ma i miei monaci hanno abbandonato il lavoro per l'usura e l'avidità.",
+            crossExamination: [
+                {
+                    q: "In cosa consisteva principalmente la Regola di San Benedetto?",
+                    options: [
+                        "Isolamento totale nel deserto",
+                        "Ora et labora (Prega e lavora)",
+                        "Povertà estrema senza tetto"
+                    ],
+                    correctIndex: 1,
+                    explanation: "La sua regola si fonda sull'equilibrio tra preghiera e lavoro manuale."
+                },
+                {
+                    q: "Quale abbazia famosa ha fondato?",
+                    options: [
+                        "Cluny",
+                        "Montecassino",
+                        "San Galgano"
+                    ],
+                    correctIndex: 1,
+                    explanation: "Montecassino è la culla dell'ordine benedettino, nominata esplicitamente nel canto."
+                }
+            ],
+            reflection: "Le istituzioni nascono con nobili ideali ma finiscono sempre per corrompersi? Il difetto è umano o sistemico?"
+        }
+    },
+    {
+        id: 'c_par_7',
+        campaignId: 'paradiso',
+        characterName: 'San Pietro',
+        mapNode: { x: 70, y: 25 },
+        phases: {
+            intro: "Nel cielo delle Stelle Fisse, un fuoco intensissimo e roteante si stacca dalla schiera. È il primo degli Apostoli.",
+            facts: "Il primo Papa, discepolo di Cristo. Dante viene interrogato da lui sulla natura della Fede.",
+            accusation: "Non ha colpe, ma è portatore della collera divina contro i papi corrotti del tempo di Dante (soprattutto Bonifacio VIII).",
+            dantePerspective: "La scena in cui San Pietro si arrossa d'ira, e tutto il Paradiso cambia colore per la vergogna dei papi corrotti, è uno dei momenti più drammatici.",
+            defense: "Chi usurpa il mio posto in terra, ha fatto del cimitero mio una cloaca. Non c'è pace in cielo se a Roma siede un usurpatore.",
+            crossExamination: [
+                {
+                    q: "Su quale Virtù Teologale San Pietro esamina Dante?",
+                    options: [
+                        "Carità",
+                        "Fede",
+                        "Speranza"
+                    ],
+                    correctIndex: 1,
+                    explanation: "Pietro esamina Dante sulla Fede; Giacomo sulla Speranza, Giovanni sulla Carità."
+                },
+                {
+                    q: "Cosa accade al cielo quando Pietro nomina Bonifacio VIII?",
+                    options: [
+                        "Un tuono scuote l'universo",
+                        "Tutto il cielo diventa rosso di vergogna e collera",
+                        "Cala il buio totale"
+                    ],
+                    correctIndex: 1,
+                    explanation: "Il cielo si tinge di rosso, riflettendo la collera e la vergogna dell'Apostolo."
+                }
+            ],
+            reflection: "Quando l'autorità suprema si corrompe, è giusto che i cittadini (o i fedeli) si ribellino apertamente come fa Dante?"
+        }
+    },
+    {
+        id: 'c_par_8',
+        campaignId: 'paradiso',
+        characterName: 'Costanza d'Altavilla',
+        mapNode: { x: 45, y: 85 },
+        phases: {
+            intro: "Nel cielo della Luna, accanto a Piccarda, vedi brillare un'altra luce: è una grande imperatrice.",
+            facts: "Figlia di Ruggero II, fu costretta a uscire dal convento per sposare l'imperatore Enrico VI, generando Federico II di Svevia.",
+            accusation: "Come Piccarda, subì la violenza di essere strappata ai voti monastici per ragioni di Stato.",
+            dantePerspective: "Dante sottolinea che, sebbene le sia stato strappato il velo dal capo, nel cuore ella rimase sempre fedele a Dio.",
+            defense: "Il mondo mi strappò alla mia cella per costringermi al trono. Generai un impero potente, ma il mio spirito non ha mai lasciato il monastero.",
+            crossExamination: [
+                {
+                    q: "Chi era il figlio di Costanza d'Altavilla?",
+                    options: [
+                        "Manfredi",
+                        "Federico II di Svevia",
+                        "Carlo d'Angiò"
+                    ],
+                    correctIndex: 1,
+                    explanation: "Costanza è la madre dell'imperatore Federico II."
+                },
+                {
+                    q: "In quale cielo si trova Costanza?",
+                    options: [
+                        "Cielo della Luna",
+                        "Cielo di Venere",
+                        "Cielo del Sole"
+                    ],
+                    correctIndex: 0,
+                    explanation: "Condivide il cielo della Luna (Inadempienti ai voti) con Piccarda Donati."
+                }
+            ],
+            reflection: "È possibile mantenere l'integrità del proprio 'io' quando si è costretti a vivere una vita imposta dalla società?"
+        }
+    },
+    {
+        id: 'c_par_9',
+        campaignId: 'paradiso',
+        characterName: 'Traiano',
+        mapNode: { x: 75, y: 70 },
+        phases: {
+            intro: "Nell'occhio dell'Aquila celeste nel cielo di Giove, brilla un'anima inaspettata: un imperatore romano nato e morto pagano.",
+            facts: "Imperatore romano, noto per la sua immensa giustizia. Secondo la leggenda, il Papa Gregorio Magno pregò per lui fino a farlo resuscitare affinché potesse salvarsi.",
+            accusation: "Nessuna. Simboleggia la Giustizia suprema, tanto forte da aver piegato le regole stesse di Dio e sconfitto l'Inferno.",
+            dantePerspective: "La presenza di Traiano è uno scandalo teologico: un pagano in Paradiso. Dante esalta l'infinita misericordia divina.",
+            defense: "Fui giusto in vita. Feci fermare l'esercito imperiale per ascoltare la supplica di una vedova. Le mie azioni terrene hanno aperto i cieli.",
+            crossExamination: [
+                {
+                    q: "Perché la presenza di Traiano in Paradiso è sorprendente?",
+                    options: [
+                        "Perché era un tiranno crudele",
+                        "Perché morì prima di Cristo",
+                        "Perché era un imperatore romano e pagano"
+                    ],
+                    correctIndex: 2,
+                    explanation: "Traiano era pagano e destinato all'Inferno, ma la preghiera di Gregorio Magno lo salvò."
+                },
+                {
+                    q: "Per quale virtù Traiano è famoso?",
+                    options: [
+                        "Spirito Guerriero",
+                        "Giustizia verso una povera vedova",
+                        "Conquiste territoriali"
+                    ],
+                    correctIndex: 1,
+                    explanation: "Ascoltò la vedova a cui avevano ucciso il figlio, rinviando la spedizione militare."
+                }
+            ],
+            reflection: "Le regole possono essere 'infrante' dall'amore e dalla bontà? La preghiera può cambiare il destino di un uomo?"
+        }
+    },
+    {
+        id: 'c_par_10',
+        campaignId: 'paradiso',
+        characterName: 'San Bernardo',
+        mapNode: { x: 90, y: 20 },
+        phases: {
+            intro: "Sostituendo Beatrice nell'Empireo, un vecchio dal volto benevolo ti si accosta per l'ultima fase del viaggio.",
+            facts: "Bernardo di Chiaravalle (1090-1153), mistico devotissimo alla Vergine Maria, autore di profonde opere di contemplazione.",
+            accusation: "L'ultima e più alta guida di Dante, che ha il compito di chiedere alla Vergine Maria la grazia di far vedere a Dante il volto di Dio.",
+            dantePerspective: "Dante ha bisogno di una guida puramente contemplativa e mistica alla fine. La teologia (Beatrice) non basta più.",
+            defense: "L'intelletto umano ha un limite. Di fronte all'Empireo, solo l'amore puro e l'intercessione della Vergine possono sollevarti a guardare l'Infinito.",
+            crossExamination: [
+                {
+                    q: "Che ruolo ha San Bernardo alla fine del Paradiso?",
+                    options: [
+                        "Scaccia i demoni",
+                        "Sostituisce Beatrice come ultima guida",
+                        "Rimprovera Dante"
+                    ],
+                    correctIndex: 1,
+                    explanation: "Bernardo subentra a Beatrice nell'Empireo per guidare Dante alla visione di Dio."
+                },
+                {
+                    q: "A chi rivolge San Bernardo la sua celebre preghiera finale?",
+                    options: [
+                        "A Dio",
+                        "Alla Vergine Maria",
+                        "Agli Angeli"
+                    ],
+                    correctIndex: 1,
+                    explanation: "Recita la preghiera alla Vergine ('Vergine Madre, figlia del tuo figlio')."
+                }
+            ],
+            reflection: "C'è un limite alla ragione umana? Arriva un punto in cui bisogna affidarsi all'intuizione mistica?"
+        }
     }
-  }
 ];
 const EroiDB = {
     // Cache locale per i dati caricati
