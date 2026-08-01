@@ -76,29 +76,12 @@ getRedirectResult(auth).then(async (result) => {
 // Event Listeners Autenticazione
 loginGoogleBtn.addEventListener('click', async () => {
   try {
-    // Usa signInWithPopup invece di Redirect per un feedback immediato a schermo
-    const result = await signInWithPopup(auth, googleProvider);
-    if (result && result.user) {
-      const userDocRef = doc(db, 'users', result.user.uid);
-      try {
-        const userDoc = await getDoc(userDocRef);
-        if (!userDoc.exists()) {
-          await setDoc(userDocRef, {
-            uid: result.user.uid,
-            email: result.user.email,
-            displayName: result.user.displayName,
-            xp: 0,
-            level: 1,
-            role: 'pending'
-          });
-        }
-      } catch (e) {
-        console.warn("Impossibile leggere/creare il documento utente. Controllo regole Firestore.", e);
-      }
-    }
+    // Ripristinato signInWithRedirect perché signInWithPopup viene bloccato su Safari/iOS e app interne.
+    // La creazione del documento utente è già gestita da getRedirectResult all'inizio del file.
+    await signInWithRedirect(auth, googleProvider);
   } catch (error) {
     console.error("Errore avvio login Google", error);
-    alert("Errore avvio login: " + error.message);
+    alert("Attendi qualche istante o ricarica la pagina. Se l'errore persiste, usa Safari/Chrome invece di un browser interno.");
   }
 });
 
