@@ -1343,7 +1343,7 @@ const MOCK_CASES = [
     {
         id: 'c_par_8',
         campaignId: 'paradiso',
-        characterName: 'Costanza d'Altavilla',
+        characterName: "Costanza d'Altavilla",
         mapNode: { x: 45, y: 85 },
         phases: {
             intro: "Nel cielo della Luna, accanto a Piccarda, vedi brillare un'altra luce: è una grande imperatrice.",
@@ -1757,41 +1757,6 @@ const EroiDB = {
         } catch (e) {
             console.error("Errore recupero raw verdicts:", e);
             return [];
-        }
-    }
-            
-            const querySnapshot = await getDocs(sentencesQuery);
-            
-            const stats = {
-                conferma: 0,
-                riduzione: 0,
-                aggravo: 0,
-                assoluzione: 0,
-                total: 0,
-                motivations: []
-            };
-
-            querySnapshot.forEach((doc) => {
-                const data = doc.data();
-                stats.total++;
-                if (data.verdict === 'conferma') stats.conferma++;
-                if (data.verdict === 'riduzione') stats.riduzione++;
-                if (data.verdict === 'aggravo') stats.aggravo++;
-                if (data.verdict === 'assoluzione') stats.assoluzione++;
-                
-                if (data.motivation && data.motivation.trim() !== '') {
-                    stats.motivations.push(data.motivation);
-                }
-            });
-            
-            return stats;
-        } catch (e) {
-            console.error("Errore recupero statistiche:", e);
-            return { conferma: 0, riduzione: 0, aggravo: 0, assoluzione: 0, total: 0, motivations: [] };
-        }
-    } catch (e) {
-            console.error("Errore salvataggio sentenza:", e);
-            return null;
         }
     }
 };
