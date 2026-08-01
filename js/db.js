@@ -973,7 +973,8 @@ const MOCK_CASES = [
         "riddle": "Come descrive metaforicamente Cacciaguida l'arma dell'esilio, che colpisce costringendo ad abbandonare ogni 'cosa diletta pi\u00f9 caramente'? (4 lettere)",
         "answer": "ARCO"
       }
-    },
+    }
+  },
     // NUOVI CASI INFERNO
     {
         id: 'c_inf_8',

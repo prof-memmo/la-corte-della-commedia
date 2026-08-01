@@ -98,8 +98,12 @@ loginGoogleBtn.addEventListener('click', async () => {
     }
   } catch (error) {
     console.error("Errore avvio login Google", error);
-    if (error.code === 'auth/popup-closed-by-user' || error.code === 'auth/cancelled-popup-request') {
-      console.log("Popup bloccato/chiuso. Il login potrebbe proseguire in background su Safari.");
+    if (error.code === 'auth/popup-blocked' || error.code === 'auth/popup-closed-by-user' || error.code === 'auth/cancelled-popup-request') {
+      if (window !== window.parent) {
+        alert("Il tuo browser sta bloccando l'accesso da dentro l'Hub. Clicca 'OK', poi tieni premuto sul link del gioco e aprilo in una NUOVA SCHEDA per fare il login correttamente!");
+      } else {
+        alert("Il popup di Google è stato chiuso o bloccato dal browser. Se vedi una richiesta di apertura popup, accettala. Altrimenti, ricarica la pagina e riprova.");
+      }
     } else {
       alert("Attendi qualche istante o ricarica la pagina. Se l'errore persiste, prova ad aprire il sito in un'altra scheda.");
     }
