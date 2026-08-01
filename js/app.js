@@ -76,37 +76,11 @@ getRedirectResult(auth).then(async (result) => {
 // Event Listeners Autenticazione
 loginGoogleBtn.addEventListener('click', async () => {
   try {
-    // Usiamo signInWithPopup per permettere il funzionamento dentro l'iframe dell'Hub
-    const result = await signInWithPopup(auth, googleProvider);
-    if (result && result.user) {
-      const userDocRef = doc(db, 'users', result.user.uid);
-      try {
-        const userDoc = await getDoc(userDocRef);
-        if (!userDoc.exists()) {
-          await setDoc(userDocRef, {
-            uid: result.user.uid,
-            email: result.user.email,
-            displayName: result.user.displayName,
-            xp: 0,
-            level: 1,
-            role: 'pending'
-          });
-        }
-      } catch (e) {
-        console.warn("Impossibile leggere/creare il documento utente.", e);
-      }
-    }
+    // Usiamo signInWithRedirect per la massima compatibilità su mobile (niente blocchi popup)
+    await signInWithRedirect(auth, googleProvider);
   } catch (error) {
     console.error("Errore avvio login Google", error);
-    if (error.code === 'auth/popup-blocked' || error.code === 'auth/popup-closed-by-user' || error.code === 'auth/cancelled-popup-request') {
-      if (window !== window.parent) {
-        alert("Il tuo browser sta bloccando l'accesso da dentro l'Hub. Clicca 'OK', poi tieni premuto sul link del gioco e aprilo in una NUOVA SCHEDA per fare il login correttamente!");
-      } else {
-        alert("Il popup di Google è stato chiuso o bloccato dal browser. Se vedi una richiesta di apertura popup, accettala. Altrimenti, ricarica la pagina e riprova.");
-      }
-    } else {
-      alert("Attendi qualche istante o ricarica la pagina. Se l'errore persiste, prova ad aprire il sito in un'altra scheda.");
-    }
+    alert("Errore avvio login: " + error.message);
   }
 });
 
