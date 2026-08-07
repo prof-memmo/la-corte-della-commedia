@@ -76,11 +76,33 @@ getRedirectResult(auth).then(async (result) => {
 // Event Listeners Autenticazione
 loginGoogleBtn.addEventListener('click', async () => {
   try {
-    // Usiamo signInWithRedirect per la massima compatibilità su mobile (niente blocchi popup)
-    await signInWithRedirect(auth, googleProvider);
+    // Usiamo signInWithPopup per evitare i blocchi ITP (Intelligent Tracking Prevention) su Safari iOS
+    const result = await signInWithPopup(auth, googleProvider);
+    if (result && result.user) {
+      const userDocRef = doc(db, 'users', result.user.uid);
+      try {
+        const userDoc = await getDoc(userDocRef);
+        if (!userDoc.exists()) {
+          await setDoc(userDocRef, {
+            uid: result.user.uid,
+            email: result.user.email,
+            displayName: result.user.displayName,
+            xp: 0,
+            level: 1,
+            role: 'pending'
+          });
+        }
+      } catch (e) {
+        console.warn("Impossibile leggere/creare il documento utente.", e);
+      }
+    }
   } catch (error) {
     console.error("Errore avvio login Google", error);
-    alert("Errore avvio login: " + error.message);
+    if (error.code === 'auth/popup-blocked' || error.code === 'auth/popup-closed-by-user' || error.code === 'auth/cancelled-popup-request') {
+      alert("Il popup di Google è stato chiuso o bloccato dal browser. Se vedi una richiesta di apertura popup, accettala. Altrimenti, disabilita il blocco popup e riprova.");
+    } else {
+      alert("Attendi qualche istante o ricarica la pagina. Errore: " + error.message);
+    }
   }
 });
 
