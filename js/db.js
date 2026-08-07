@@ -1,6 +1,6 @@
 import { db, doc, getDoc, setDoc } from "./firebase-config.js";
 import { collection, getDocs, query, where, orderBy, updateDoc, or, arrayUnion } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
+import { getUserProfile, updateXP, getAllUsers, updateUserRole } from './services/users.js';\nimport { saveClass, getClassById, getClassByCode, getTeacherClasses, joinClassAsCollaborator, getStudentsByClass } from './services/classes.js';\nimport { getCampaigns, getCasesByCampaign, saveSentence, getCaseStats, getUserSentences, getRawVerdicts } from './services/progress.js';\n\n
 const MOCK_CASES = [
   {
     "id": "paolo_francesca",
@@ -1459,50 +1459,16 @@ const EroiDB = {
     },
 
     // --- PROFILO UTENTE ---
-    getUserProfile: async function(uid) {
-        try {
-            const docSnap = await getDoc(doc(db, "users", uid));
-            if (docSnap.exists()) {
-                this.cache.userProfile = docSnap.data();
-                return this.cache.userProfile;
-            }
-            return null;
+    getUserProfile,            return null;
         } catch (e) {
             console.error("Errore fetch profilo:", e);
             return null;
         }
     },
 
-    updateXP: async function(uid, amount) {
-        if (!this.cache.userProfile) return;
-        const newXp = (this.cache.userProfile.xp || 0) + amount;
-        try {
-            await updateDoc(doc(db, "users", uid), { xp: newXp });
-            this.cache.userProfile.xp = newXp;
-            return newXp;
-        } catch (e) {
-            console.error("Errore aggiornamento XP:", e);
-        }
-    },
+    updateXP,    },
 
-    getAllUsers: async function() {
-        try {
-            const querySnapshot = await getDocs(collection(db, "users"));
-            const users = [];
-            querySnapshot.forEach((doc) => {
-                users.push({ id: doc.id, ...doc.data() });
-            });
-            // --- Aggiunta MOCK DATA ---
-            const mockUsers = [
-                { id: "mock-teacher", uid: "mock-teacher", email: "prof.memmo@lacorte.it", displayName: "Prof Memmo", role: "teacher" },
-                { id: "mock-student", uid: "mock-student", email: "studente.test@lacorte.it", displayName: "Studente Test", role: "student", classId: "TEST-CLASS", level: 1, xp: 0 },
-                { id: "mock-external", uid: "mock-external", email: "esterno.test@lacorte.it", displayName: "Visitatore", role: "external" }
-            ];
-            const existingEmails = users.map(u => u.email);
-            for (let mu of mockUsers) {
-                if (!existingEmails.includes(mu.email)) users.push(mu);
-            }
-            // --- FINE MOCK DATA ---
+    getAllUsers,            // --- FINE MOCK DATA ---
             return users;
         } catch (e) {
             console.error("Errore getAllUsers:", e);
@@ -1510,73 +1476,26 @@ const EroiDB = {
         }
     },
 
-    updateUserRole: async function(uid, newRole) {
-        try {
-            await updateDoc(doc(db, "users", uid), { role: newRole });
-        } catch (e) {
-            console.error("Errore updateUserRole:", e);
-            throw e;
-        }
-    },
+    updateUserRole,    },
     
     // --- DOCENTI E CLASSI ---
-    saveClass: async function(classData) {
-        try {
-            await setDoc(doc(db, "classes", classData.id), classData);
-            return classData.id;
-        } catch (e) {
-            console.error("Errore saveClass:", e);
-            throw e;
-        }
-    },
+    saveClass,    },
 
-    getClassById: async function(id) {
-        try {
-            const docSnap = await getDoc(doc(db, "classes", id));
-            if (docSnap.exists()) {
-                return { id: docSnap.id, ...docSnap.data() };
-            }
-            return null;
+    getClassById,            return null;
         } catch (e) {
             console.error("Errore getClassById:", e);
             return null;
         }
     },
 
-    getClassByCode: async function(code) {
-        try {
-            const q = query(collection(db, "classes"), where("code", "==", code.toUpperCase()));
-            const querySnapshot = await getDocs(q);
-            if (!querySnapshot.empty) {
-                return { id: querySnapshot.docs[0].id, ...querySnapshot.docs[0].data() };
-            }
-            return null;
+    getClassByCode,            return null;
         } catch (e) {
             console.error("Errore getClassByCode:", e);
             return null;
         }
     },
 
-    getTeacherClasses: async function(teacherEmail) {
-        try {
-            const q = query(
-                collection(db, "classes"), 
-                or(
-                    where("teacher", "==", teacherEmail),
-                    where("collaborators", "array-contains", teacherEmail)
-                )
-            );
-            const querySnapshot = await getDocs(q);
-            const classes = [];
-            querySnapshot.forEach((doc) => {
-                classes.push(doc.data());
-            });
-            // --- MOCK CLASS ---
-            if (teacherEmail === "prof.memmo@lacorte.it") {
-                if (!classes.find(c => c.id === "TEST-CLASS")) {
-                    classes.push({ id: "TEST-CLASS", name: "Classe di Test (3^A)", code: "TEST1234", teacher: "prof.memmo@lacorte.it" });
-                }
-            }
+    getTeacherClasses,            }
             // --- FINE MOCK CLASS ---
             return classes;
         } catch (e) {
@@ -1585,14 +1504,7 @@ const EroiDB = {
         }
     },
 
-    joinClassAsCollaborator: async function(classId, teacherEmail) {
-        try {
-            const docRef = doc(db, "classes", classId);
-            const docSnap = await getDoc(docRef);
-            if (!docSnap.exists()) {
-                throw new Error("Classe non trovata.");
-            }
-            const data = docSnap.data();
+    joinClassAsCollaborator,            const data = docSnap.data();
             if (data.teacher === teacherEmail) {
                 throw new Error("Sei già il docente principale di questa classe.");
             }
@@ -1609,20 +1521,7 @@ const EroiDB = {
         }
     },
 
-    getStudentsByClass: async function(classId) {
-        try {
-            const q = query(collection(db, "users"), where("classId", "==", classId), where("role", "==", "student"));
-            const querySnapshot = await getDocs(q);
-            const students = [];
-            querySnapshot.forEach((doc) => {
-                students.push(doc.data());
-            });
-            // --- MOCK STUDENTS ---
-            if (classId === "TEST-CLASS") {
-                if (!students.find(s => s.email === "studente.test@lacorte.it")) {
-                    students.push({ id: "mock-student", uid: "mock-student", email: "studente.test@lacorte.it", displayName: "Studente Test", role: "student", classId: "TEST-CLASS", level: 1, xp: 0 });
-                }
-            }
+    getStudentsByClass,            }
             // --- FINE MOCK STUDENTS ---
             return students;
         } catch (e) {
@@ -1632,30 +1531,9 @@ const EroiDB = {
     },
 
     // --- CAMPAGNE E CASI ---
-    getCampaigns: async function() {
-        if (this.cache.campaigns.length > 0) return this.cache.campaigns;
-        
-        try {
-            const q = query(collection(db, "campaigns"), orderBy("order", "asc"));
-            const querySnapshot = await getDocs(q);
-            const campaigns = [];
-            querySnapshot.forEach((doc) => {
-                campaigns.push({ id: doc.id, ...doc.data() });
-            });
-            this.cache.campaigns = campaigns;
-            return campaigns;
-        } catch (e) {
-            console.error("Errore fetch campagne:", e);
-            return [];
-        }
-    },
+    getCampaigns,    },
 
-    getCasesByCampaign: async function(campaignId) {
-        if (this.cache.cases && this.cache.cases.length > 0) {
-            const cachedCases = this.cache.cases.filter(c => c.campaignId === campaignId);
-            if (cachedCases.length > 0) return cachedCases;
-        }
-
+    getCasesByCampaign,
         try {
             const q = query(collection(db, "cases"), where("campaignId", "==", campaignId));
             const querySnapshot = await getDocs(q);
@@ -1676,24 +1554,9 @@ const EroiDB = {
     },
 
     // --- VERDETTI E LOGS ---
-    saveSentence: async function(sentenceData) {
-        try {
-            const newDocRef = doc(collection(db, "sentences"));
-            await setDoc(newDocRef, sentenceData);
-            return newDocRef.id;
-        } catch (e) {
-            console.error("Errore salvataggio sentenza:", e);
-            return null;
-        }
-    },
+    saveSentence,    },
 
-    getCaseStats: async function(caseId, classCode = null) {
-        try {
-            let sentencesQuery = query(collection(db, "sentences"), where("caseId", "==", caseId));
-            if (classCode) {
-                sentencesQuery = query(collection(db, "sentences"), where("caseId", "==", caseId), where("classCode", "==", classCode));
-            }
-            
+    getCaseStats,            
             const querySnapshot = await getDocs(sentencesQuery);
             
             const stats = {
@@ -1725,30 +1588,9 @@ const EroiDB = {
         }
     },
 
-    getUserSentences: async function(uid) {
-        try {
-            const sentencesQuery = query(collection(db, "sentences"), where("uid", "==", uid));
-            const querySnapshot = await getDocs(sentencesQuery);
-            const verdicts = [];
-            querySnapshot.forEach((doc) => {
-                verdicts.push(doc.data());
-            });
-            // sort by timestamp descending locally since we didn't setup composite indexes
-            verdicts.sort((a,b) => (b.timestamp?.seconds || 0) - (a.timestamp?.seconds || 0));
-            return verdicts;
-        } catch (e) {
-            console.error("Errore recupero user sentences:", e);
-            return [];
-        }
-    },
+    getUserSentences,    },
 
-    getRawVerdicts: async function(caseId, classCode = null) {
-        try {
-            let sentencesQuery = query(collection(db, "sentences"), where("caseId", "==", caseId));
-            if (classCode) {
-                sentencesQuery = query(collection(db, "sentences"), where("caseId", "==", caseId), where("classCode", "==", classCode));
-            }
-            const querySnapshot = await getDocs(sentencesQuery);
+    getRawVerdicts,            const querySnapshot = await getDocs(sentencesQuery);
             const verdicts = [];
             querySnapshot.forEach((doc) => {
                 verdicts.push(doc.data());
