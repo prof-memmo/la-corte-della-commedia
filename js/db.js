@@ -1,6 +1,11 @@
 import { db, doc, getDoc, setDoc } from "./firebase-config.js";
 import { collection, getDocs, query, where, orderBy, updateDoc, or, arrayUnion } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-import { getUserProfile, updateXP, getAllUsers, updateUserRole } from './services/users.js';\nimport { saveClass, getClassById, getClassByCode, getTeacherClasses, joinClassAsCollaborator, getStudentsByClass } from './services/classes.js';\nimport { getCampaigns, getCasesByCampaign, saveSentence, getCaseStats, getUserSentences, getRawVerdicts } from './services/progress.js';\n\n
+
+import { getUserProfile, updateXP, getAllUsers, updateUserRole } from './services/users.js';
+import { saveClass, getClassById, getClassByCode, getTeacherClasses, joinClassAsCollaborator, getStudentsByClass } from './services/classes.js';
+import { getCampaigns, getCasesByCampaign, saveSentence, getCaseStats, getUserSentences, getRawVerdicts } from './services/progress.js';
+
+
 const MOCK_CASES = [
   {
     "id": "paolo_francesca",
@@ -1450,6 +1455,11 @@ const MOCK_CASES = [
     }
 ];
 const EroiDB = {
+
+    getUserProfile, updateXP, getAllUsers, updateUserRole,
+    saveClass, getClassById, getClassByCode, getTeacherClasses, joinClassAsCollaborator, getStudentsByClass,
+    getCampaigns, getCasesByCampaign, saveSentence, getCaseStats, getUserSentences, getRawVerdicts,
+
     // Cache locale per i dati caricati
     cache: {
         campaigns: [],
@@ -1459,148 +1469,12 @@ const EroiDB = {
     },
 
     // --- PROFILO UTENTE ---
-    getUserProfile,            return null;
-        } catch (e) {
-            console.error("Errore fetch profilo:", e);
-            return null;
-        }
-    },
-
-    updateXP,    },
-
-    getAllUsers,            // --- FINE MOCK DATA ---
-            return users;
-        } catch (e) {
-            console.error("Errore getAllUsers:", e);
-            return [];
-        }
-    },
-
-    updateUserRole,    },
     
     // --- DOCENTI E CLASSI ---
-    saveClass,    },
-
-    getClassById,            return null;
-        } catch (e) {
-            console.error("Errore getClassById:", e);
-            return null;
-        }
-    },
-
-    getClassByCode,            return null;
-        } catch (e) {
-            console.error("Errore getClassByCode:", e);
-            return null;
-        }
-    },
-
-    getTeacherClasses,            }
-            // --- FINE MOCK CLASS ---
-            return classes;
-        } catch (e) {
-            console.error("Errore getTeacherClasses:", e);
-            return [];
-        }
-    },
-
-    joinClassAsCollaborator,            const data = docSnap.data();
-            if (data.teacher === teacherEmail) {
-                throw new Error("Sei già il docente principale di questa classe.");
-            }
-            if (data.collaborators && data.collaborators.includes(teacherEmail)) {
-                throw new Error("Sei già un collaboratore di questa classe.");
-            }
-            await updateDoc(docRef, {
-                collaborators: arrayUnion(teacherEmail)
-            });
-            return true;
-        } catch (e) {
-            console.error("Errore joinClassAsCollaborator:", e);
-            throw e;
-        }
-    },
-
-    getStudentsByClass,            }
-            // --- FINE MOCK STUDENTS ---
-            return students;
-        } catch (e) {
-            console.error("Errore getStudentsByClass:", e);
-            return [];
-        }
-    },
 
     // --- CAMPAGNE E CASI ---
-    getCampaigns,    },
-
-    getCasesByCampaign,
-        try {
-            const q = query(collection(db, "cases"), where("campaignId", "==", campaignId));
-            const querySnapshot = await getDocs(q);
-            const cases = [];
-            querySnapshot.forEach((doc) => {
-                cases.push({ id: doc.id, ...doc.data() });
-            });
-            if (cases.length === 0 && campaignId === "inferno") {
-                this.cache.cases = this.cache.cases.concat(MOCK_CASES);
-                return MOCK_CASES;
-            }
-            this.cache.cases = this.cache.cases.concat(cases);
-            return cases;
-        } catch (e) {
-            console.error("Errore fetch casi:", e);
-            return [];
-        }
-    },
 
     // --- VERDETTI E LOGS ---
-    saveSentence,    },
-
-    getCaseStats,            
-            const querySnapshot = await getDocs(sentencesQuery);
-            
-            const stats = {
-                conferma: 0,
-                riduzione: 0,
-                aggravo: 0,
-                assoluzione: 0,
-                total: 0,
-                motivations: []
-            };
-
-            querySnapshot.forEach((doc) => {
-                const data = doc.data();
-                stats.total++;
-                if (data.verdict === 'conferma') stats.conferma++;
-                if (data.verdict === 'riduzione') stats.riduzione++;
-                if (data.verdict === 'aggravo') stats.aggravo++;
-                if (data.verdict === 'assoluzione') stats.assoluzione++;
-                
-                if (data.motivation && data.motivation.trim() !== '') {
-                    stats.motivations.push(data.motivation);
-                }
-            });
-            
-            return stats;
-        } catch (e) {
-            console.error("Errore recupero statistiche:", e);
-            return { conferma: 0, riduzione: 0, aggravo: 0, assoluzione: 0, total: 0, motivations: [] };
-        }
-    },
-
-    getUserSentences,    },
-
-    getRawVerdicts,            const querySnapshot = await getDocs(sentencesQuery);
-            const verdicts = [];
-            querySnapshot.forEach((doc) => {
-                verdicts.push(doc.data());
-            });
-            return verdicts;
-        } catch (e) {
-            console.error("Errore recupero raw verdicts:", e);
-            return [];
-        }
-    }
 };
 
 window.EroiDB = EroiDB;

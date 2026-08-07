@@ -1,5 +1,9 @@
-import { db, doc, getDoc, setDoc } from "../firebase-config.js";\nimport { collection, getDocs, query, where, orderBy, updateDoc, or, arrayUnion } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";\n\nexport const getCampaigns = async function() {
-        if (this.cache.campaigns.length > 0) return this.cache.campaigns;
+import EroiDB from "../db.js";
+import { db, doc, getDoc, setDoc } from "../firebase-config.js";
+import { collection, getDocs, query, where, orderBy, updateDoc, or, arrayUnion } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+export const getCampaigns = async function() {
+        if (EroiDB.cache.campaigns.length > 0) return EroiDB.cache.campaigns;
         
         try {
             const q = query(collection(db, "campaigns"), orderBy("order", "asc"));
@@ -8,18 +12,40 @@ import { db, doc, getDoc, setDoc } from "../firebase-config.js";\nimport { colle
             querySnapshot.forEach((doc) => {
                 campaigns.push({ id: doc.id, ...doc.data() });
             });
-            this.cache.campaigns = campaigns;
+            EroiDB.cache.campaigns = campaigns;
             return campaigns;
         } catch (e) {
             console.error("Errore fetch campagne:", e);
             return [];
-        };\n
-\n\nexport const getCasesByCampaign = async function(campaignId) {
-        if (this.cache.cases && this.cache.cases.length > 0) {
-            const cachedCases = this.cache.cases.filter(c => c.campaignId === campaignId);
+        }
+    };
+
+export const getCasesByCampaign = async function(campaignId) {
+        if (EroiDB.cache.cases && EroiDB.cache.cases.length > 0) {
+            const cachedCases = EroiDB.cache.cases.filter(c => c.campaignId === campaignId);
             if (cachedCases.length > 0) return cachedCases;
-        };\n
-\n\nexport const saveSentence = async function(sentenceData) {
+        }
+
+        try {
+            const q = query(collection(db, "cases"), where("campaignId", "==", campaignId));
+            const querySnapshot = await getDocs(q);
+            const cases = [];
+            querySnapshot.forEach((doc) => {
+                cases.push({ id: doc.id, ...doc.data() });
+            });
+            if (cases.length === 0 && campaignId === "inferno") {
+                EroiDB.cache.cases = EroiDB.cache.cases.concat(MOCK_CASES);
+                return MOCK_CASES;
+            }
+            EroiDB.cache.cases = EroiDB.cache.cases.concat(cases);
+            return cases;
+        } catch (e) {
+            console.error("Errore fetch casi:", e);
+            return [];
+        }
+    };
+
+export const saveSentence = async function(sentenceData) {
         try {
             const newDocRef = doc(collection(db, "sentences"));
             await setDoc(newDocRef, sentenceData);
@@ -27,14 +53,48 @@ import { db, doc, getDoc, setDoc } from "../firebase-config.js";\nimport { colle
         } catch (e) {
             console.error("Errore salvataggio sentenza:", e);
             return null;
-        };\n
-\n\nexport const getCaseStats = async function(caseId, classCode = null) {
+        }
+    };
+
+export const getCaseStats = async function(caseId, classCode = null) {
         try {
             let sentencesQuery = query(collection(db, "sentences"), where("caseId", "==", caseId));
             if (classCode) {
                 sentencesQuery = query(collection(db, "sentences"), where("caseId", "==", caseId), where("classCode", "==", classCode));
-            };\n
-\n\nexport const getUserSentences = async function(uid) {
+            }
+            
+            const querySnapshot = await getDocs(sentencesQuery);
+            
+            const stats = {
+                conferma: 0,
+                riduzione: 0,
+                aggravo: 0,
+                assoluzione: 0,
+                total: 0,
+                motivations: []
+            };
+
+            querySnapshot.forEach((doc) => {
+                const data = doc.data();
+                stats.total++;
+                if (data.verdict === 'conferma') stats.conferma++;
+                if (data.verdict === 'riduzione') stats.riduzione++;
+                if (data.verdict === 'aggravo') stats.aggravo++;
+                if (data.verdict === 'assoluzione') stats.assoluzione++;
+                
+                if (data.motivation && data.motivation.trim() !== '') {
+                    stats.motivations.push(data.motivation);
+                }
+            });
+            
+            return stats;
+        } catch (e) {
+            console.error("Errore recupero statistiche:", e);
+            return { conferma: 0, riduzione: 0, aggravo: 0, assoluzione: 0, total: 0, motivations: [] };
+        }
+    };
+
+export const getUserSentences = async function(uid) {
         try {
             const sentencesQuery = query(collection(db, "sentences"), where("uid", "==", uid));
             const querySnapshot = await getDocs(sentencesQuery);
@@ -48,11 +108,24 @@ import { db, doc, getDoc, setDoc } from "../firebase-config.js";\nimport { colle
         } catch (e) {
             console.error("Errore recupero user sentences:", e);
             return [];
-        };\n
-\n\nexport const getRawVerdicts = async function(caseId, classCode = null) {
+        }
+    };
+
+export const getRawVerdicts = async function(caseId, classCode = null) {
         try {
             let sentencesQuery = query(collection(db, "sentences"), where("caseId", "==", caseId));
             if (classCode) {
                 sentencesQuery = query(collection(db, "sentences"), where("caseId", "==", caseId), where("classCode", "==", classCode));
-            };\n
-\n
+            }
+            const querySnapshot = await getDocs(sentencesQuery);
+            const verdicts = [];
+            querySnapshot.forEach((doc) => {
+                verdicts.push(doc.data());
+            });
+            return verdicts;
+        } catch (e) {
+            console.error("Errore recupero raw verdicts:", e);
+            return [];
+        }
+    };
+

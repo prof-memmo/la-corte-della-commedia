@@ -1,21 +1,34 @@
-import { db, doc, getDoc, setDoc } from "../firebase-config.js";\nimport { collection, getDocs, query, where, orderBy, updateDoc, or, arrayUnion } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";\n\nexport const getUserProfile = async function(uid) {
+import EroiDB from "../db.js";
+import { db, doc, getDoc, setDoc } from "../firebase-config.js";
+import { collection, getDocs, query, where, orderBy, updateDoc, or, arrayUnion } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+export const getUserProfile = async function(uid) {
         try {
             const docSnap = await getDoc(doc(db, "users", uid));
             if (docSnap.exists()) {
-                this.cache.userProfile = docSnap.data();
-                return this.cache.userProfile;
-            };\n
-\n\nexport const updateXP = async function(uid, amount) {
-        if (!this.cache.userProfile) return;
-        const newXp = (this.cache.userProfile.xp || 0) + amount;
+                EroiDB.cache.userProfile = docSnap.data();
+                return EroiDB.cache.userProfile;
+            }
+            return null;
+        } catch (e) {
+            console.error("Errore fetch profilo:", e);
+            return null;
+        }
+    };
+
+export const updateXP = async function(uid, amount) {
+        if (!EroiDB.cache.userProfile) return;
+        const newXp = (EroiDB.cache.userProfile.xp || 0) + amount;
         try {
             await updateDoc(doc(db, "users", uid), { xp: newXp });
-            this.cache.userProfile.xp = newXp;
+            EroiDB.cache.userProfile.xp = newXp;
             return newXp;
         } catch (e) {
             console.error("Errore aggiornamento XP:", e);
-        };\n
-\n\nexport const getAllUsers = async function() {
+        }
+    };
+
+export const getAllUsers = async function() {
         try {
             const querySnapshot = await getDocs(collection(db, "users"));
             const users = [];
@@ -31,12 +44,21 @@ import { db, doc, getDoc, setDoc } from "../firebase-config.js";\nimport { colle
             const existingEmails = users.map(u => u.email);
             for (let mu of mockUsers) {
                 if (!existingEmails.includes(mu.email)) users.push(mu);
-            };\n
-\n\nexport const updateUserRole = async function(uid, newRole) {
+            }
+            // --- FINE MOCK DATA ---
+            return users;
+        } catch (e) {
+            console.error("Errore getAllUsers:", e);
+            return [];
+        }
+    };
+
+export const updateUserRole = async function(uid, newRole) {
         try {
             await updateDoc(doc(db, "users", uid), { role: newRole });
         } catch (e) {
             console.error("Errore updateUserRole:", e);
             throw e;
-        };\n
-\n
+        }
+    };
+

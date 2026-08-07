@@ -1081,56 +1081,18 @@ window.TeacherDashboard = {
 };
 
 
-        const tab = document.getElementById('a-tab-' + id);
-        if (tab) tab.style.display = 'none';
-    });
-    
-    const btnActive = document.getElementById('a-btn-' + tabName);
-    if (btnActive) {
-        btnActive.classList.add('active');
-        btnActive.style.borderBottom = '2px solid var(--accent-gold)';
-        btnActive.style.color = 'var(--accent-gold)';
+
+
+
+
+window.sortAdminUsers = function(col) {
+    if (!window.adminUsersSort) window.adminUsersSort = { col: 'date', asc: false };
+    if (window.adminUsersSort.col === col) {
+        window.adminUsersSort.asc = !window.adminUsersSort.asc;
+    } else {
+        window.adminUsersSort.col = col;
+        window.adminUsersSort.asc = true;
     }
-    const tabActive = document.getElementById('a-tab-' + tabName);
-    if (tabActive) tabActive.style.display = 'block';
-    
-    if (tabName === 'utenti') {
-        loadAdminUsers();
-    } else if (tabName === 'scuole') {
-        renderAdminSchoolsList();
-    }
-};
-
-            }
-        });
-
-        if (schoolsMap.size === 0) {
-            list.innerHTML = '<tr><td colspan="4" style="padding: 1rem; text-align: center; color: #888;">Nessuna scuola registrata.</td></tr>';
-            return;
-        }
-
-        let html = '';
-        Array.from(schoolsMap.values()).forEach(s => {
-            html += `
-              <tr style="border-bottom: 1px solid #333;">
-                <td style="padding: 10px; font-weight: bold; color: var(--accent-gold);">${s.name}</td>
-                <td style="padding: 10px; color: #ccc;">${s.city}</td>
-                <td style="padding: 10px;">${s.referentName}</td>
-                <td style="padding: 10px; text-align: right;">
-                    <a href="mailto:${s.referentEmail}" title="Scrivi al referente ${s.referentName}" class="btn" style="background: rgba(255,255,255,0.1); color: var(--accent-gold); padding: 5px 10px; border-radius: 5px; text-decoration: none; display: inline-flex; align-items: center; gap: 5px;">
-                        <i class="fa-solid fa-envelope"></i> Contatta
-                    </a>
-                </td>
-              </tr>
-            `;
-        });
-        list.innerHTML = html;
-    } catch (e) {
-        console.error("Errore renderAdminSchoolsList", e);
-        list.innerHTML = '<tr><td colspan="4" style="padding: 1rem; text-align: center; color: red;">Errore caricamento scuole</td></tr>';
-    }
-};
-
     window.loadAdminUsers();
 };
 
@@ -1145,6 +1107,23 @@ window.sortTeacherStudents = function(col) {
     if (window.TeacherDashboard) window.TeacherDashboard.renderClasses();
 };
 
+window.loadAdminUsers = async function() {
+    const list = document.getElementById('admin-users-list');
+    if (!list) return;
+    
+    list.innerHTML = '<tr><td colspan="4" style="padding: 1rem; text-align: center; color: #888;">Caricamento in corso...</td></tr>';
+    
+    // Initialize global filter state if not exists
+    if (!window.adminUsersFilter) window.adminUsersFilter = 'all';
+    
+    try {
+        const users = await EroiDB.getAllUsers();
+        window.adminUsersList = users || [];
+        
+        if (!users || users.length === 0) {
+            list.innerHTML = '<tr><td colspan="4" style="padding: 1rem; text-align: center; color: #888;">Nessun utente trovato</td></tr>';
+            return;
+        }
         
         // Update stats counters
         let countTeacher = 0, countStudent = 0, countExternal = 0;
@@ -1221,36 +1200,7 @@ window.sortTeacherStudents = function(col) {
     }
 };
 
-window.filterAdminUsers = function(filterType) {
-    window.adminUsersFilter = filterType;
-    
-    // Mostra nascondi i contenitori
-    const usersWrapper = document.getElementById('admin-users-table-wrapper');
-    const schoolsWrapper = document.getElementById('admin-schools-table-wrapper');
-    if (filterType === 'schools') {
-        if (usersWrapper) usersWrapper.style.display = 'none';
-        if (schoolsWrapper) schoolsWrapper.style.display = 'block';
-    } else {
-        if (usersWrapper) usersWrapper.style.display = 'block';
-        if (schoolsWrapper) schoolsWrapper.style.display = 'none';
-    }
-    
-    // Aggiorna gli stili delle card
-    const cards = ['all', 'teacher', 'student', 'external', 'schools'];
-    cards.forEach(c => {
-        const el = document.getElementById('stat-card-' + c);
-        if (el) {
-            if (c === filterType) {
-                el.style.border = '3px solid #5C67F2';
-            } else {
-                el.style.border = '3px solid transparent';
-            }
-        }
-    });
-    
-    // Ricarica la lista per applicare il filtro e l'ordinamento
-    window.loadAdminUsers();
-};
+
 
 window.updateUserRole = async function(uid, newRole) {
     if (confirm("Sei sicuro di voler cambiare il ruolo di questo utente?")) {
