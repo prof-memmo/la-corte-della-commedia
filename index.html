@@ -96,8 +96,8 @@
 
               <div class="dropdown-actions" style="display: flex; gap: 5px; flex-wrap: wrap; justify-content: center; margin-top: 5px;">
                 <button class="btn btn-secondary" onclick="window.app.openEditProfileModal()" style="width: 100%; border-radius: 6px; padding: 6px; font-size: 0.75rem; background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.2); color: #ccc; cursor: pointer;"><i class="fa-solid fa-user-edit"></i> Modifica Profilo</button>
-                <button class="btn btn-secondary" onclick="window.showLegal('privacy')" style="flex: 1; min-width: 45%; border-radius: 6px; padding: 6px; font-size: 0.75rem; background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.2); color: #ccc; cursor: pointer;"><i class="fa-solid fa-shield"></i> Privacy</button>
-                <button class="btn btn-secondary" onclick="window.showLegal('terms')" style="flex: 1; min-width: 45%; border-radius: 6px; padding: 6px; font-size: 0.75rem; background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.2); color: #ccc; cursor: pointer;"><i class="fa-solid fa-scroll"></i> Termini</button>
+                <button class="btn btn-secondary" onclick="window.openSharedModal('privacy')" style="flex: 1; min-width: 45%; border-radius: 6px; padding: 6px; font-size: 0.75rem; background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.2); color: #ccc; cursor: pointer;"><i class="fa-solid fa-shield"></i> Privacy</button>
+                <button class="btn btn-secondary" onclick="window.openSharedModal('termini')" style="flex: 1; min-width: 45%; border-radius: 6px; padding: 6px; font-size: 0.75rem; background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.2); color: #ccc; cursor: pointer;"><i class="fa-solid fa-scroll"></i> Termini</button>
                 <button class="btn btn-secondary" onclick="window.showContattiModal()" style="flex: 1; min-width: 45%; border-radius: 6px; padding: 6px; font-size: 0.75rem; background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.2); color: #ccc; cursor: pointer;"><i class="fa-solid fa-envelope"></i> Contatti</button>
                 <button id="logout-btn" class="btn btn-secondary" style="flex: 1; min-width: 45%; border-radius: 6px; padding: 6px; font-size: 0.75rem; background: rgba(200, 50, 50, 0.2); border: 1px solid rgba(200, 50, 50, 0.5); color: #ffcccc; cursor: pointer;"><i class="fa-solid fa-power-off"></i> Logout</button>
               </div>
@@ -128,7 +128,7 @@
                 </label>
                 <label style="display: flex; gap: 0.5rem; align-items: center; cursor: pointer;">
                   <input type="checkbox" id="privacy-check">
-                  <span>Accetto <a href="#" onclick="showLegal('privacy'); return false;" style="color: var(--accent-gold); font-weight: bold; text-decoration: underline;">Privacy</a> e <a href="#" onclick="showLegal('terms'); return false;" style="color: var(--accent-gold); font-weight: bold; text-decoration: underline;">Termini</a></span>
+                  <span>Accetto <a href="#" onclick="openSharedModal('privacy'); return false;" style="color: var(--accent-gold); font-weight: bold; text-decoration: underline;">Privacy</a> e <a href="#" onclick="openSharedModal('termini'); return false;" style="color: var(--accent-gold); font-weight: bold; text-decoration: underline;">Termini</a></span>
                 </label>
               </div>
 

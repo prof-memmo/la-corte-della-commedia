@@ -809,11 +809,9 @@ async function loadStudentCases(isAdmin = false) {
 }
 
 window.showLegal = function(type) {
-    const modal = document.getElementById('legal-modal');
-    const content = document.getElementById('legal-text-container');
-    
-    content.innerHTML = LEGAL_TEXTS[type] || '';
-    modal.classList.remove('hidden');
+    if (typeof openSharedModal === 'function') {
+        openSharedModal(type === 'terms' ? 'termini' : type);
+    }
 };
 
 document.getElementById('close-legal-btn').addEventListener('click', () => {
