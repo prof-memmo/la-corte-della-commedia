@@ -1216,67 +1216,9 @@ window.updateUserRole = async function(uid, newRole) {
 
 
 window.showContattiModal = function() {
-    const modal = document.getElementById('legal-modal');
-    const content = document.getElementById('legal-text-container');
-    if (!modal || !content) return;
-    
-    content.innerHTML = `
-      <div style="display: flex; flex-direction: column; gap: 20px;">
-        <h2 style="color: var(--accent-gold); font-family: 'Cinzel', serif; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">📧 Contatti</h2>
-        <div style="padding: 16px; background: rgba(212,175,55,0.08); border-left: 4px solid var(--accent-gold); border-radius: 8px;">
-          <h4 style="color: var(--accent-gold); margin-bottom: 8px;">Scopri il mondo Prof. Memmo</h4>
-          <p style="color: #666; font-size: 0.9rem; margin-bottom: 10px;"><a href="https://prof-memmo.github.io/games/" target="_blank" style="color: var(--accent-gold); font-weight: bold; text-decoration: underline;">Visita il sito</a> per scoprire i materiali, i giochi e la filosofia, oppure <a href="https://prof-memmo.github.io/games/condividi-esperienza.html" target="_blank" style="color: var(--accent-gold); font-weight: bold; text-decoration: underline;">condividi la tua esperienza</a> lasciando commenti e feedback tramite il modulo!</p>
-          <div style="display: flex; align-items: center; gap: 10px; color: var(--accent-gold); font-weight: bold;">
-            <i class="fa-solid fa-envelope"></i> <span>prof.memmo@gmail.com</span>
-          </div>
-          <div style="margin-top: 1rem; display: flex; align-items: center; gap: 10px;">
-            <span style="font-weight: 600; color: #333;">Seguimi sui social:</span>
-            <a href="https://www.instagram.com/prof.memmo_games?igsh=MW5pNHY3dHBxMHEyag%3D%3D&utm_source=qr" target="_blank" style="color: #E1306C; font-size: 2.2rem; display: inline-flex; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
-                <i class="fa-brands fa-instagram"></i>
-            </a>
-          </div>
-        </div>
-        <div style="padding: 16px; background: rgba(0,0,0,0.05); border: 1px solid rgba(0,0,0,0.1); border-radius: 8px;">
-          <h4 style="color: #333; margin-bottom: 12px; font-size: 0.95rem;">Invia un Messaggio</h4>
-          <div style="display: flex; flex-direction: column; gap: 10px;">
-            <input type="text" id="contact-modal-name" placeholder="Il tuo nome" class="input-form" style="padding: 8px 12px; border: 1px solid #ccc; border-radius: 4px;">
-            <input type="email" id="contact-modal-email" placeholder="La tua email" class="input-form" style="padding: 8px 12px; border: 1px solid #ccc; border-radius: 4px;">
-            <select id="contact-modal-topic" class="input-form" style="padding: 8px 12px; background-color: #fff; border: 1px solid #ccc; border-radius: 4px;">
-                <option value="" disabled selected style="color: #888;">Tipologia della comunicazione...</option>
-                <option value="Richiesta di informazioni" style="color: black;">Richiesta di informazioni</option>
-                <option value="Opinioni" style="color: black;">Opinioni</option>
-                <option value="Altro" style="color: black;">Altro</option>
-            </select>
-            <textarea id="contact-modal-message" placeholder="Come posso aiutarti?" class="input-form" style="height: 80px; resize: none; padding: 8px 12px; border: 1px solid #ccc; border-radius: 4px;"></textarea>
-            <label style="display: flex; align-items: flex-start; gap: 8px; font-size: 0.8rem; color: #555; cursor: pointer;">
-              <input type="checkbox" id="contact-modal-check" style="margin-top: 2px;">
-              <span>Ho almeno 16 anni o sono sotto supervisione di un adulto. Accetto la 
-                <a href="#" onclick="event.preventDefault(); window.showLegal('privacy')" style="color: var(--accent-gold);">Privacy Policy</a> e i 
-                <a href="#" onclick="event.preventDefault(); window.showLegal('terms')" style="color: var(--accent-gold);">Termini</a>.
-              </span>
-            </label>
-            <button class="btn btn-primary" style="width: 100%; padding: 10px;" onclick="window.submitContattiModal()">
-              <i class="fa-solid fa-paper-plane"></i> Invia Messaggio
-            </button>
-          </div>
-        </div>
-      </div>
-    `;
-    modal.classList.remove('hidden');
-};
-
-window.submitContattiModal = function() {
-    const name = document.getElementById('contact-modal-name')?.value.trim();
-    const email = document.getElementById('contact-modal-email')?.value.trim();
-    const topic = document.getElementById('contact-modal-topic')?.value;
-    const message = document.getElementById('contact-modal-message')?.value.trim();
-    const check = document.getElementById('contact-modal-check')?.checked;
-    if (!name || !email || !topic || !message) { alert('Compila tutti i campi, compresa la tipologia.'); return; }
-    if (!check) { alert('Devi accettare la Privacy Policy e i Termini.'); return; }
-    
-    // Mostriamo un toast di successo
-    alert('Messaggio inviato! Ti risponderemo presto.');
-    document.getElementById('legal-modal').classList.add('hidden');
+    if (typeof openSharedModal === 'function') {
+        openSharedModal('contatti');
+    }
 };
 
 async function renderArchivio() {
