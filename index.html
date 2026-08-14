@@ -121,31 +121,14 @@
                 <p class="text-on-parchment-muted" style="font-size: 0.95rem; margin-bottom: 0.2rem;">Accedi o registrati per iniziare a giocare.</p>
               </div>
               
-              <div style="text-align: left; font-size: 0.85rem; color: var(--text-primary); background: rgba(0,0,0,0.15); padding: 0.8rem; border-radius: 4px; border: 1px solid var(--border-color); margin-bottom: 0.5rem;">
-                <label style="display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.3rem; cursor: pointer;">
-                  <input type="checkbox" id="age-check">
-                  <span>Ho almeno 16 anni o supervisione di un adulto</span>
-                </label>
-                <label style="display: flex; gap: 0.5rem; align-items: center; cursor: pointer;">
-                  <input type="checkbox" id="privacy-check">
-                  <span>Accetto <a href="#" onclick="openSharedModal('privacy'); return false;" style="color: var(--accent-gold); font-weight: bold; text-decoration: underline;">Privacy</a> e <a href="#" onclick="openSharedModal('termini'); return false;" style="color: var(--accent-gold); font-weight: bold; text-decoration: underline;">Termini</a></span>
-                </label>
-              </div>
-
-              <button id="login-google-btn" class="btn btn-primary" style="background: #fff; color: #444; border: 1px solid #ddd; display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; padding: 10px; font-size: 1rem; font-weight: bold; border-radius: 50px; margin-bottom: 10px;" disabled>
-                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="20" height="20"> Entra con Google
-              </button>
-              
-              <div style="text-align: center; color: var(--text-muted); margin-bottom: 10px; font-size: 0.8rem; font-weight: bold;">— OPPURE —</div>
-
-              <div id="login-email-form" style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 5px;">
-                  <input type="email" id="login-email" placeholder="Email" style="padding: 10px; border-radius: 8px; border: 1px solid #ddd; background: rgba(255,255,255,0.9); color: #1a1a2e; font-size: 0.95rem;">
-                  <input type="password" id="login-password" placeholder="Password" style="padding: 10px; border-radius: 8px; border: 1px solid #ddd; background: rgba(255,255,255,0.9); color: #1a1a2e; font-size: 0.95rem;">
-                  <button id="login-email-btn" class="btn" style="background: var(--accent-gold); color: #1a1a2e; font-weight: bold; border-radius: 8px; padding: 10px; font-size: 1rem;" disabled>Accedi o Registrati</button>
+              <div style="text-align: center; margin: 25px 0;">
+                <button type="button" class="btn btn-primary" style="background: var(--accent-gold); color: #1a1a2e; font-size: 1.1rem; font-weight: 800; padding: 14px 28px; border-radius: 50px; box-shadow: 0 4px 15px rgba(0,0,0,0.4); border: none; cursor: pointer; width: 100%;" onclick="window.location.href='https://prof-memmo.github.io/prof-memmo-gestione-siti/portal.html?redirect=corte_della_commedia'">
+                  <i class="fa-solid fa-right-to-bracket" style="margin-right: 10px;"></i> Accedi tramite Hub
+                </button>
               </div>
               
-              <p class="text-on-parchment-muted" style="font-size: 0.8rem; margin-top: 5px; line-height: 1.3;">
-                Se è il tuo primo accesso, verrai guidato alla selezione del profilo.
+              <p class="text-on-parchment-muted" style="font-size: 0.85rem; margin-top: 5px; line-height: 1.3;">
+                Verrai reindirizzato al Portale Unico del Prof. Memmo per l'accesso sicuro.
               </p>
             </div>
           </div>
