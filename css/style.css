@@ -319,8 +319,8 @@ h1, h2, h3, h4, h5, h6 {
         padding-right: 5px !important;
     }
     
-    /* Su smartphone non usiamo "card", ma un layout piatto fluido come le app native */
-    .parchment-panel, .dark-panel {
+    /* Su smartphone non usiamo "card" nei contenuti interni, ma preserviamo la schermata di login */
+    .app-content .parchment-panel, .dark-panel {
         background: transparent !important;
         border: none !important;
         box-shadow: none !important;
@@ -329,8 +329,20 @@ h1, h2, h3, h4, h5, h6 {
         padding: 10px 5px !important;
         margin-bottom: 15px !important;
     }
+
+    #view-login .parchment-panel {
+        background-color: var(--bg-parchment) !important;
+        color: var(--text-on-parchment) !important;
+        border: 1px solid #dcd0b3 !important;
+        border-radius: var(--radius-md) !important;
+        padding: 1.5rem 1rem !important;
+        box-shadow: var(--shadow-md) !important;
+        max-width: 450px !important;
+        width: 100% !important;
+        margin: 0 auto !important;
+    }
     
-    .text-on-parchment-muted {
+    .app-content .text-on-parchment-muted {
         color: var(--text-light) !important;
     }
     
