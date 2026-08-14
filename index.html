@@ -226,189 +226,26 @@
           </div>
         </section>
 
-        <!-- VISTA ADMIN -->
         <section id="view-admin-dashboard" class="view animate-fade-in">
           <div style="text-align: center; margin-bottom: 2rem;">
-            <h2 class="text-gold" style="font-size: 2.5rem; text-shadow: 0 0 20px rgba(212,175,55,0.5); font-family: 'Cinzel', serif;">Pannello Admin</h2>
-            <div style="text-align: center; margin-top: 15px;">
-              <button onclick="showView('view-teacher-dashboard')" class="btn" style="background: var(--accent-gold); color: black; padding: 5px 15px; border-radius: 5px; border: none; cursor: pointer; font-size: 0.8rem;">
+            <h2 class="text-gold" style="font-size: 2.5rem; text-shadow: 0 0 20px rgba(212,175,55,0.5); font-family: 'Cinzel', serif;">Pannello Tecnico</h2>
+            <div style="display: flex; justify-content: center; gap: 10px; margin-top: 15px; flex-wrap: wrap;">
+              <button onclick="showView('view-teacher-dashboard')" class="btn" style="background: var(--accent-gold); color: black; padding: 6px 16px; border-radius: 6px; border: none; cursor: pointer; font-size: 0.85rem; font-weight: bold;">
                  <i class="fa-solid fa-gavel"></i> Vai al Pannello Docente
               </button>
+              <a href="https://prof-memmo.github.io/prof-memmo-gestione-siti/" target="_blank" class="btn" style="background: rgba(99,102,241,0.2); color: #818cf8; border: 1px solid #6366f1; text-decoration: none; padding: 6px 16px; border-radius: 6px; font-size: 0.85rem; font-weight: bold; display: inline-flex; align-items: center; gap: 6px;">
+                <i class="fa-solid fa-gauge-high"></i> Hub Utenti &amp; Ecosistema
+              </a>
             </div>
           </div>
           
           <div class="tabs-header" style="display: flex; border-bottom: 1px solid #333; margin-top: 2rem; margin-bottom: 2rem;">
-            <button class="tab-btn active" onclick="switchAdminTab('utenti')" id="a-btn-utenti" style="flex: 1; background: transparent; border: none; color: var(--accent-gold); padding: 15px; cursor: pointer; border-bottom: 2px solid var(--accent-gold);">Gestione Utenti</button>
-            <button class="tab-btn" onclick="switchAdminTab('fascicoli')" id="a-btn-fascicoli" style="flex: 1; background: transparent; border: none; color: #888; padding: 15px; cursor: pointer;">Archivio Fascicoli</button>
-            <button class="tab-btn" onclick="switchAdminTab('sistema')" id="a-btn-sistema" style="flex: 1; background: transparent; border: none; color: #888; padding: 15px; cursor: pointer;">Impostazioni</button>
+            <button class="tab-btn active" onclick="switchAdminTab('fascicoli')" id="a-btn-fascicoli" style="flex: 1; background: transparent; border: none; color: var(--accent-gold); padding: 15px; cursor: pointer; border-bottom: 2px solid var(--accent-gold);">Archivio Fascicoli</button>
+            <button class="tab-btn" onclick="switchAdminTab('sistema')" id="a-btn-sistema" style="flex: 1; background: transparent; border: none; color: #888; padding: 15px; cursor: pointer;">Backup &amp; Hub</button>
           </div>
           
-          <div id="a-tab-utenti" class="admin-tab-content active" style="display: block;">
-            <div class="dark-panel" style="background: rgba(26,22,20,0.9); border: 1px solid var(--border-color); padding: 20px; border-radius: 8px;">
-                <h3 class="text-gold" style="font-family: 'Cinzel', serif; border-bottom: 1px solid var(--border-gold); padding-bottom: 10px; margin-bottom: 20px;"><i class="fa-solid fa-users"></i> Elenco Iscritti</h3>
-                
-                <div id="admin-stats-cards" style="display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: nowrap; overflow-x: auto; padding-bottom: 10px; justify-content: center;">
-                    <div class="stat-card active" onclick="window.filterAdminUsers('all')" style="background: white; border-radius: 12px; padding: 15px; min-width: 90px; text-align: center; cursor: pointer; border: 3px solid #5C67F2; box-shadow: 0 4px 6px rgba(0,0,0,0.3); flex-shrink: 0;" id="stat-card-all">
-                        <div style="font-size: 2rem; font-weight: bold; color: #5C67F2; margin-bottom: 5px;" id="stat-count-all">0</div>
-                        <div style="font-size: 0.75rem; font-weight: 800; color: #888; letter-spacing: 1px;">TUTTI</div>
-                    </div>
-                    <div class="stat-card" onclick="window.filterAdminUsers('teacher')" style="background: white; border-radius: 12px; padding: 15px; min-width: 90px; text-align: center; cursor: pointer; border: 3px solid transparent; box-shadow: 0 4px 6px rgba(0,0,0,0.3); flex-shrink: 0;" id="stat-card-teacher">
-                        <div style="font-size: 2rem; font-weight: bold; color: #3498db; margin-bottom: 5px;" id="stat-count-teacher">0</div>
-                        <div style="font-size: 0.75rem; font-weight: 800; color: #888; letter-spacing: 1px;">DOCENTI</div>
-                    </div>
-                    <div class="stat-card" onclick="window.filterAdminUsers('student')" style="background: white; border-radius: 12px; padding: 15px; min-width: 90px; text-align: center; cursor: pointer; border: 3px solid transparent; box-shadow: 0 4px 6px rgba(0,0,0,0.3); flex-shrink: 0;" id="stat-card-student">
-                        <div style="font-size: 2rem; font-weight: bold; color: #2ecc71; margin-bottom: 5px;" id="stat-count-student">0</div>
-                        <div style="font-size: 0.75rem; font-weight: 800; color: #888; letter-spacing: 1px;">STUDENTI</div>
-                    </div>
-                    <div class="stat-card" onclick="window.filterAdminUsers('external')" style="background: white; border-radius: 12px; padding: 15px; min-width: 90px; text-align: center; cursor: pointer; border: 3px solid transparent; box-shadow: 0 4px 6px rgba(0,0,0,0.3); flex-shrink: 0;" id="stat-card-external">
-                        <div style="font-size: 2rem; font-weight: bold; color: #9b59b6; margin-bottom: 5px;" id="stat-count-external">0</div>
-                        <div style="font-size: 0.75rem; font-weight: 800; color: #888; letter-spacing: 1px;">PELLEGRINI</div>
-                    </div>
-                    <div class="stat-card" onclick="window.filterAdminUsers('schools')" style="background: white; border-radius: 12px; padding: 15px; min-width: 90px; text-align: center; cursor: pointer; border: 3px solid transparent; box-shadow: 0 4px 6px rgba(0,0,0,0.3); flex-shrink: 0;" id="stat-card-schools">
-                        <div style="font-size: 2rem; font-weight: bold; color: #a55eea; margin-bottom: 5px;" id="stat-count-schools">0</div>
-                        <div style="font-size: 0.75rem; font-weight: 800; color: #888; letter-spacing: 1px;">SCUOLE</div>
-                    </div>
-                </div>
-
-                <div id="admin-users-table-wrapper" style="overflow-x: auto;">
-                  <table style="width: 100%; text-align: left; border-collapse: collapse; margin-top: 10px; color: white;">
-                    <thead>
-                      <tr style="border-bottom: 1px solid var(--border-color);">
-                        <th style="cursor:pointer; padding: 10px;" onclick="window.sortAdminUsers('email')"><div style="display: flex; align-items: center; white-space: nowrap;">Email / Nome <i class="fa-solid fa-sort" style="margin-left:5px; font-size:0.8em; color:#888;"></i></div></th>
-                        <th style="cursor:pointer; padding: 10px;" onclick="window.sortAdminUsers('role')"><div style="display: flex; align-items: center; white-space: nowrap;">Ruolo <i class="fa-solid fa-sort" style="margin-left:5px; font-size:0.8em; color:#888;"></i></div></th>
-                        <th style="cursor:pointer; padding: 10px;" onclick="window.sortAdminUsers('date')"><div style="display: flex; align-items: center; white-space: nowrap;">Data Iscrizione <i class="fa-solid fa-sort" style="margin-left:5px; font-size:0.8em; color:#888;"></i></div></th>
-                        <th style="padding: 10px; text-align: right;">Azioni</th>
-                      </tr>
-                    </thead>
-                    <tbody id="admin-users-list">
-                      <tr><td colspan="4" style="padding: 1rem; text-align: center; color: #888;">Caricamento utenti in corso...</td></tr>
-                    </tbody>
-                  </table>
-                </div>
-
-                <div id="admin-schools-table-wrapper" style="overflow-x: auto; display: none;">
-                  <table style="width: 100%; text-align: left; border-collapse: collapse; margin-top: 10px; color: white;">
-                    <thead>
-                      <tr style="border-bottom: 1px solid var(--border-color);">
-                        <th style="padding: 10px;">Nome Scuola</th>
-                        <th style="padding: 10px;">Città</th>
-                        <th style="padding: 10px;">Referente</th>
-                        <th style="padding: 10px;">Azioni</th>
-                      </tr>
-                    </thead>
-                    <tbody id="admin-schools-list">
-                      <tr><td colspan="4" style="padding: 1rem; text-align: center; color: #888;">Caricamento scuole in corso...</td></tr>
-                    </tbody>
-                  </table>
-                </div>
-            </div>
-          </div>
-
-          
-          <div id="a-tab-sistema" class="admin-tab-content" style="display: none;">
-            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem;">
-              
-              <!-- Left Column -->
-              <div style="display: flex; flex-direction: column; gap: 2rem;">
-                
-                <!-- Configurazioni di Campagna -->
-                <div class="dark-panel" style="background: rgba(26,22,20,0.9); border: 1px solid var(--border-color); padding: 20px; border-radius: 8px;">
-                  <h3 class="text-gold" style="font-family: 'Cinzel', serif; border-bottom: 1px solid var(--border-gold); padding-bottom: 10px; margin-bottom: 20px; text-transform: uppercase;">Configurazioni di Campagna</h3>
-                  <form id="form-admin-settings" onsubmit="return false;" style="display: flex; flex-direction: column; gap: 15px;">
-                    <div>
-                      <label style="display:block; margin-bottom:5px; color:#aaa; font-size:0.8rem; text-transform:uppercase;">Nome Piattaforma</label>
-                      <input type="text" id="admin-setting-appname" class="input-form" value="La Corte della Commedia" required style="width: 100%; padding: 10px; border-radius: 5px; background: #111; color: white; border: 1px solid #333;">
-                    </div>
-                    <div>
-                      <label style="display:block; margin-bottom:5px; color:#aaa; font-size:0.8rem; text-transform:uppercase;">Copyright Footer</label>
-                      <input type="text" id="admin-setting-copyright" class="input-form" value="© 2026 Prof. Memmo Games & Co. - Tutti i diritti riservati." required style="width: 100%; padding: 10px; border-radius: 5px; background: #111; color: white; border: 1px solid #333;">
-                    </div>
-                    <div>
-                      <label style="display:block; margin-bottom:5px; color:#aaa; font-size:0.8rem; text-transform:uppercase;">Contatti Globali</label>
-                      <input type="text" id="admin-setting-contacts" class="input-form" value="Email: prof.memmo@gmail.com | Supporto: support@profmemmogames.it | Tel: +39 06 1234567" required style="width: 100%; padding: 10px; border-radius: 5px; background: #111; color: white; border: 1px solid #333;">
-                    </div>
-                    <div style="display: none; align-items: center; gap: 12px; margin-top: 10px;">
-                      <!-- Placeholder for future global settings -->
-                    </div>
-                    <button type="submit" class="btn" style="width: 100%; margin-top: 10px; background: var(--accent-gold); color: black; font-weight: bold; padding: 12px; border-radius: 5px;" onclick="alert('Configurazioni salvate (Mock)')">Applica Modifiche Globali</button>
-                  </form>
-                </div>
-
-                <!-- Gestione Personale -->
-                <div class="dark-panel" style="background: rgba(26,22,20,0.9); border: 1px solid var(--border-color); padding: 20px; border-radius: 8px;">
-                  <h3 class="text-gold" style="font-family: 'Cinzel', serif; border-bottom: 1px solid var(--border-gold); padding-bottom: 10px; margin-bottom: 20px; text-transform: uppercase;">Gestione Personale (Docenti e Amministratori Secondari)</h3>
-                  <form id="form-create-staff" onsubmit="return false;" style="display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 15px; align-items: flex-end; margin-bottom: 20px;">
-                    <div>
-                      <label style="display:block; margin-bottom:5px; color:#aaa; font-size:0.8rem; text-transform:uppercase;">Nome Completo</label>
-                      <input type="text" id="staff-name" class="input-form" required placeholder="Prof. Franco" style="width: 100%; padding: 10px; border-radius: 5px; background: #111; color: white; border: 1px solid #333;">
-                    </div>
-                    <div>
-                      <label style="display:block; margin-bottom:5px; color:#aaa; font-size:0.8rem; text-transform:uppercase;">Indirizzo Email</label>
-                      <input type="email" id="staff-email" class="input-form" required placeholder="docente@scuola.it" style="width: 100%; padding: 10px; border-radius: 5px; background: #111; color: white; border: 1px solid #333;">
-                    </div>
-                    <div>
-                      <label style="display:block; margin-bottom:5px; color:#aaa; font-size:0.8rem; text-transform:uppercase;">Password Temporanea</label>
-                      <input type="text" id="staff-password" class="input-form" required placeholder="storia456" style="width: 100%; padding: 10px; border-radius: 5px; background: #111; color: white; border: 1px solid #333;">
-                    </div>
-                    <div>
-                      <label style="display:block; margin-bottom:5px; color:#aaa; font-size:0.8rem; text-transform:uppercase;">Ruolo Autorizzato</label>
-                      <select id="staff-role" class="input-form" required style="width: 100%; padding: 10px; border-radius: 5px; background: #111; color: white; border: 1px solid #333;">
-                        <option value="teacher">Docente</option>
-                        <option value="admin">Amministratore Secondario</option>
-                      </select>
-                    </div>
-                    <button type="submit" class="btn" style="background: var(--accent-gold); color: black; font-weight: bold; padding: 12px; border-radius: 5px; grid-column: 1 / -1;" onclick="alert('Staff registrato! (Mock)')">Registra</button>
-                  </form>
-                  
-                  <div style="margin-bottom: 15px;"><input type="text" placeholder="Cerca in questo elenco..." style="width: 100%; padding: 10px 15px; border-radius: 20px; background: rgba(0,0,0,0.5); color: white; border: 1px solid #555; outline: none; font-style: italic;"></div>
-                  <div style="overflow-x: auto; margin-top: 20px;">
-                    <table style="width: 100%; text-align: left; border-collapse: collapse; color: white; font-size: 0.9rem;">
-                      <thead>
-                        <tr style="border-bottom: 1px solid var(--border-gold); text-transform: uppercase; color: var(--accent-gold);">
-                          <th style="padding: 10px;">Nome</th>
-                          <th style="padding: 10px;">Email</th>
-                          <th style="padding: 10px;">Ruolo</th>
-                          <th style="padding: 10px;">Azione</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr style="border-bottom: 1px solid #333;">
-                          <td style="padding: 10px; font-weight: bold;">Prof. Memmo</td>
-                          <td style="padding: 10px;">prof.memmo@gmail.com</td>
-                          <td style="padding: 10px; color: var(--accent-gold); font-weight: bold;">ADMIN</td>
-                          <td style="padding: 10px; font-style: italic; color: #aaa;">Admin Principale</td>
-                        </tr>
-                        <!-- Altri admin andranno qui -->
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Right Column -->
-              <div style="display: flex; flex-direction: column; gap: 2rem;">
-                
-                <!-- Backup e Ripristino -->
-                <div class="dark-panel" style="background: rgba(26,22,20,0.9); border: 1px solid var(--border-color); padding: 20px; border-radius: 8px;">
-                  <h3 class="text-gold" style="font-family: 'Cinzel', serif; border-bottom: 1px solid var(--border-gold); padding-bottom: 10px; margin-bottom: 15px; text-transform: uppercase;">Backup, Ripristino & Esportazione</h3>
-                  <p style="color: #aaa; font-size: 0.85rem; margin-bottom: 20px; line-height: 1.4;">
-                    Salva l'intero stato del gioco in locale come file JSON oppure esporta le anagrafiche dei tuoi studenti in foglio di calcolo.
-                  </p>
-                  <div style="display: flex; flex-direction: column; gap: 10px;">
-                    <button class="btn" style="background: transparent; border: 1px solid var(--accent-gold); color: var(--accent-gold); padding: 10px; font-weight: bold; border-radius: 5px;" onclick="alert('Esportazione JSON in corso... (Mock)')"><i class="fa-solid fa-download"></i> Esporta Database JSON</button>
-                    <button class="btn" style="background: transparent; border: 1px solid var(--accent-gold); color: var(--accent-gold); padding: 10px; font-weight: bold; border-radius: 5px;" onclick="alert('Ripristino JSON in corso... (Mock)')"><i class="fa-solid fa-upload"></i> Ripristina Database JSON</button>
-                    <button class="btn" style="background: transparent; border: 1px solid var(--accent-gold); color: var(--accent-gold); padding: 10px; font-weight: bold; border-radius: 5px;" onclick="alert('Esportazione CSV in corso... (Mock)')"><i class="fa-solid fa-file-csv"></i> Esporta Studenti CSV</button>
-                  </div>
-                  <div style="margin-top: 30px; border-top: 1px solid #333; padding-top: 20px;">
-                    <button class="btn" style="background: #e74c3c; color: white; border: none; padding: 12px; font-weight: bold; border-radius: 5px; width: 100%;" onclick="if(confirm('Attenzione! Questa operazione cancellerà tutto il database. Sei sicuro?')) alert('Ripristino ai valori di fabbrica... (Mock)')"><i class="fa-solid fa-triangle-exclamation"></i> Ripristina Valori Fabbrica</button>
-                  </div>
-                </div>
-
-              </div>
-            </div>
-          </div>
-
-          <div id="a-tab-fascicoli" class="admin-tab-content" style="display: none;">
+          <!-- TAB FASCICOLI (ATTIVA) -->
+          <div id="a-tab-fascicoli" class="admin-tab-content active" style="display: block;">
             <div style="display: grid; grid-template-columns: 1fr; gap: 2rem;">
               <div class="dark-panel" style="position: relative;">
                 <div style="position: relative; z-index: 1;">
@@ -419,6 +256,34 @@
                     <li style="padding: 1rem; text-align: center; color: #888;">Caricamento casi in corso...</li>
                   </ul>
                 </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB SISTEMA & HUB -->
+          <div id="a-tab-sistema" class="admin-tab-content" style="display: none;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+              <!-- Backup e Ripristino -->
+              <div class="dark-panel" style="background: rgba(26,22,20,0.9); border: 1px solid var(--border-color); padding: 20px; border-radius: 8px;">
+                <h3 class="text-gold" style="font-family: 'Cinzel', serif; border-bottom: 1px solid var(--border-gold); padding-bottom: 10px; margin-bottom: 15px; text-transform: uppercase;">Backup &amp; Ripristino</h3>
+                <p style="color: #aaa; font-size: 0.85rem; margin-bottom: 20px; line-height: 1.4;">
+                  Salva o ripristina lo stato dei processi, dei verdetti e dei fascicoli del tribunale.
+                </p>
+                <div style="display: flex; flex-direction: column; gap: 10px;">
+                  <button class="btn" style="background: transparent; border: 1px solid var(--accent-gold); color: var(--accent-gold); padding: 10px; font-weight: bold; border-radius: 5px;" onclick="alert('Esportazione JSON in corso... (Mock)')"><i class="fa-solid fa-download"></i> Esporta Database JSON</button>
+                  <button class="btn" style="background: transparent; border: 1px solid var(--accent-gold); color: var(--accent-gold); padding: 10px; font-weight: bold; border-radius: 5px;" onclick="alert('Ripristino JSON in corso... (Mock)')"><i class="fa-solid fa-upload"></i> Ripristina Database JSON</button>
+                </div>
+              </div>
+
+              <!-- Hub Gestione Utenti -->
+              <div class="dark-panel" style="background: rgba(26,22,20,0.9); border: 1px solid var(--border-color); padding: 20px; border-radius: 8px;">
+                <h3 class="text-gold" style="font-family: 'Cinzel', serif; border-bottom: 1px solid var(--border-gold); padding-bottom: 10px; margin-bottom: 15px; text-transform: uppercase;"><i class="fa-solid fa-users-gear"></i> Gestione Utenti Ecosistema</h3>
+                <p style="color: #aaa; font-size: 0.85rem; line-height: 1.5; margin-bottom: 15px;">
+                  Tutti gli utenti (Docenti, Studenti, Pellegrini), l'approvazione degli accessi e le statistiche sono ora gestiti centralmente nell'<b>Hub Generale Didattico</b>.
+                </p>
+                <a href="https://prof-memmo.github.io/prof-memmo-gestione-siti/" target="_blank" class="btn" style="background: var(--accent-gold); color: black; font-weight: bold; text-decoration: none; padding: 10px 18px; border-radius: 6px; display: inline-block;">
+                  Apri Hub Amministrazione &rarr;
+                </a>
               </div>
             </div>
           </div>
