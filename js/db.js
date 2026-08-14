@@ -1,5 +1,4 @@
-import { db, doc, getDoc, setDoc } from "./firebase-config.js";
-import { collection, getDocs, query, where, orderBy, updateDoc, or, arrayUnion } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { db, doc, collection, getDoc, getDocs, setDoc, updateDoc, query, where, orderBy, or, arrayUnion } from "./firebase-config.js";
 
 import { getUserProfile, updateXP, getAllUsers, updateUserRole } from './services/users.js';
 import { saveClass, getClassById, getClassByCode, getTeacherClasses, joinClassAsCollaborator, getStudentsByClass } from './services/classes.js';

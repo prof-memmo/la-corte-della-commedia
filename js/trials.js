@@ -1,5 +1,6 @@
 // js/trials.js
 // Motore per l'esecuzione dei Processi (Quiz) in "La Corte della Commedia"
+import { db, doc, collection, setDoc } from "./firebase-config.js";
 
 export class CommediaTrials {
     constructor(appRef) {
@@ -165,13 +166,16 @@ export class CommediaTrials {
                 this.app.updateUI();
                 
                 // Salva su Firestore collection missioni
-                if (window.fbDb) {
-                   await window.fbDb.app.collection('commedia_missions_completed').add({
+                try {
+                   const newMissionRef = doc(collection(db, 'missions_completed'));
+                   await setDoc(newMissionRef, {
                        userId: this.app.user.uid,
                        userEmail: this.app.user.email,
                        trialId: this.currentTrial.id,
-                       timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                       timestamp: new Date().toISOString()
                    });
+                } catch(e) {
+                   console.warn("Mission log non registrato:", e);
                 }
 
                 // Torna alla mappa o archivio

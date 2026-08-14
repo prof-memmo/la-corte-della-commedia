@@ -196,6 +196,38 @@ onAuthStateChanged(auth, async (user) => {
   window.app.user = user;
   
   if (user) {
+    const userEmail = user.email ? user.email.toLowerCase() : '';
+    const isSuperAdmin = (userEmail === 'prof.memmo@gmail.com');
+
+    // 1. Verifica sull'Hub Centrale (Single Sign-On Auth)
+    if (!isSuperAdmin) {
+      try {
+        const hubDocRef = doc(db, 'hub_users', user.uid);
+        const hubDoc = await getDoc(hubDocRef);
+        if (!hubDoc.exists()) {
+          alert("Profilo Hub non trovato. Completa l'onboarding nell'Hub.");
+          window.location.href = 'https://prof-memmo.github.io/prof-memmo-gestione-siti/portal.html?redirect=corte_della_commedia';
+          return;
+        }
+        const hubData = hubDoc.data();
+        if (hubData.statusAccount !== 'active') {
+          alert("Accesso negato: L'account non è attivo nell'Hub (potrebbe essere sospeso o in attesa di approvazione).");
+          window.location.href = 'https://prof-memmo.github.io/prof-memmo-gestione-siti/portal.html';
+          return;
+        }
+        if (!hubData.platforms || !hubData.platforms.corte_della_commedia || !hubData.platforms.corte_della_commedia.enabled) {
+          alert("Accesso negato: Piattaforma La Corte della Commedia non abilitata per il tuo profilo.");
+          window.location.href = 'https://prof-memmo.github.io/prof-memmo-gestione-siti/portal.html';
+          return;
+        }
+      } catch (err) {
+        console.error("Errore verifica Hub:", err);
+        alert("Errore di sicurezza Hub. Riprova.");
+        window.location.href = 'https://prof-memmo.github.io/prof-memmo-gestione-siti/portal.html';
+        return;
+      }
+    }
+
     welcomeMessage.textContent = `Bentornato, Giudice ${user.displayName}`;
     
     // Mostra il menu utente
@@ -628,7 +660,7 @@ window.app = {
       if (isTeacher) {
         updateData.school = schoolInput;
       }
-      await firebase.firestore().collection('users').doc(user.uid).update(updateData);
+      await updateDoc(doc(db, 'users', user.uid), updateData);
       
       // Update local cache
       profile.displayName = nameInput;

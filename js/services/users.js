@@ -1,6 +1,5 @@
 import EroiDB from "../db.js";
-import { db, doc, getDoc, setDoc } from "../firebase-config.js";
-import { collection, getDocs, query, where, orderBy, updateDoc, or, arrayUnion } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { db, doc, collection, getDoc, getDocs, setDoc, updateDoc, query, where, orderBy, or, arrayUnion } from "../firebase-config.js";
 
 export const getUserProfile = async function(uid) {
         try {
