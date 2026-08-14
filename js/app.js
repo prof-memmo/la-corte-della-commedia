@@ -220,18 +220,17 @@ onAuthStateChanged(auth, async (user) => {
         if (hubData.anagrafica && hubData.anagrafica.nome) {
           hubName = hubData.anagrafica.nome;
         }
-        if (!isSuperAdmin && hubData.statusAccount && hubData.statusAccount !== 'active') {
-          alert("Accesso negato: L'account non è ancora attivo nell'Hub (potrebbe essere sospeso o in attesa di approvazione).");
+        if (!isSuperAdmin && hubData.statusAccount && (hubData.statusAccount === 'rejected' || hubData.statusAccount === 'suspended')) {
+          alert("Accesso negato: L'account è stato sospeso nell'Hub.");
           window.location.href = 'https://prof-memmo.github.io/prof-memmo-gestione-siti/portal.html';
           return;
         }
-      } else if (!isSuperAdmin) {
-        console.warn("Profilo Hub non trovato: redirect all'onboarding centrale.");
-        window.location.href = 'https://prof-memmo.github.io/prof-memmo-gestione-siti/portal.html?redirect=corte_della_commedia';
-        return;
+      } else {
+        hubRole = isSuperAdmin ? 'admin' : 'student';
       }
     } catch (err) {
-      console.error("Errore verifica Hub:", err);
+      console.warn("Verifica Hub (fallback locale):", err);
+      hubRole = isSuperAdmin ? 'admin' : 'student';
     }
 
     welcomeMessage.textContent = `Bentornato, Giudice ${hubName}`;
