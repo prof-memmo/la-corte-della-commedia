@@ -197,46 +197,51 @@ onAuthStateChanged(auth, async (user) => {
   
   if (user) {
     const userEmail = user.email ? user.email.toLowerCase() : '';
-    const isSuperAdmin = (userEmail === 'prof.memmo@gmail.com');
+    let isSuperAdmin = (userEmail === 'prof.memmo@gmail.com');
+    let hubRole = 'student';
+    let hubName = user.displayName || 'Giudice';
 
     // 1. Verifica sull'Hub Centrale (Single Sign-On Auth)
-    if (!isSuperAdmin) {
-      try {
-        const hubDocRef = doc(db, 'hub_users', user.uid);
-        const hubDoc = await getDoc(hubDocRef);
-        if (!hubDoc.exists()) {
-          alert("Profilo Hub non trovato. Completa l'onboarding nell'Hub.");
-          window.location.href = 'https://prof-memmo.github.io/prof-memmo-gestione-siti/portal.html?redirect=corte_della_commedia';
-          return;
-        }
+    try {
+      const hubDocRef = doc(db, 'hub_users', user.uid);
+      const hubDoc = await getDoc(hubDocRef);
+      if (hubDoc.exists()) {
         const hubData = hubDoc.data();
-        if (hubData.statusAccount !== 'active') {
-          alert("Accesso negato: L'account non è attivo nell'Hub (potrebbe essere sospeso o in attesa di approvazione).");
+        if (hubData.role === 'admin' || isSuperAdmin) {
+          isSuperAdmin = true;
+          hubRole = 'admin';
+        } else if (hubData.role === 'docente') {
+          hubRole = 'teacher';
+        } else if (hubData.role === 'viandante' || hubData.role === 'forestiero') {
+          hubRole = 'external';
+        } else {
+          hubRole = 'student';
+        }
+        if (hubData.anagrafica && hubData.anagrafica.nome) {
+          hubName = hubData.anagrafica.nome;
+        }
+        if (!isSuperAdmin && hubData.statusAccount && hubData.statusAccount !== 'active') {
+          alert("Accesso negato: L'account non è ancora attivo nell'Hub (potrebbe essere sospeso o in attesa di approvazione).");
           window.location.href = 'https://prof-memmo.github.io/prof-memmo-gestione-siti/portal.html';
           return;
         }
-        if (!hubData.platforms || !hubData.platforms.corte_della_commedia || !hubData.platforms.corte_della_commedia.enabled) {
-          alert("Accesso negato: Piattaforma La Corte della Commedia non abilitata per il tuo profilo.");
-          window.location.href = 'https://prof-memmo.github.io/prof-memmo-gestione-siti/portal.html';
-          return;
-        }
-      } catch (err) {
-        console.error("Errore verifica Hub:", err);
-        alert("Errore di sicurezza Hub. Riprova.");
-        window.location.href = 'https://prof-memmo.github.io/prof-memmo-gestione-siti/portal.html';
+      } else if (!isSuperAdmin) {
+        console.warn("Profilo Hub non trovato: redirect all'onboarding centrale.");
+        window.location.href = 'https://prof-memmo.github.io/prof-memmo-gestione-siti/portal.html?redirect=corte_della_commedia';
         return;
       }
+    } catch (err) {
+      console.error("Errore verifica Hub:", err);
     }
 
-    welcomeMessage.textContent = `Bentornato, Giudice ${user.displayName}`;
+    welcomeMessage.textContent = `Bentornato, Giudice ${hubName}`;
     
     // Mostra il menu utente
     const userMenu = document.getElementById('user-menu-container');
     if (userMenu) userMenu.style.display = 'block';
     
     const headerName = document.getElementById('header-user-name');
-    if (headerName) headerName.textContent = user.displayName || 'Giudice';
-    
+    if (headerName) headerName.textContent = hubName;
     
     // Mostra header, nav e footer
     const mainHeader = document.getElementById('main-app-header');
@@ -247,35 +252,51 @@ onAuthStateChanged(auth, async (user) => {
     if (mainFooter) mainFooter.style.display = 'flex';
     
     // Leggi Profilo dal database tramite EroiDB
-    let role = 'student';
+    let role = isSuperAdmin ? 'admin' : hubRole;
     try {
       if (EroiDB) {
-        const profile = await EroiDB.getUserProfile(user.uid);
-        if (profile) {
-          const xp = profile.xp || 0;
-          role = profile.role || 'student';
-          
-          // Auto-upgrade prof.memmo
-          if (user.email && user.email.toLowerCase() === 'prof.memmo@gmail.com' && role !== 'admin') {
-              try {
-                  await window.EroiDB.updateUserRole(user.uid, 'admin');
-                  role = 'admin';
-                  if (window.EroiDB.cache && window.EroiDB.cache.userProfile) {
-                      window.EroiDB.cache.userProfile.role = 'admin';
-                  }
-              } catch(err) { console.error("Impossibile promuovere prof.memmo ad admin", err); }
+        let profile = await EroiDB.getUserProfile(user.uid);
+        if (!profile) {
+          profile = {
+            uid: user.uid,
+            email: userEmail,
+            displayName: hubName,
+            role: role,
+            xp: 0,
+            fiorini: 50,
+            level: 1,
+            completedCases: []
+          };
+          try {
+            await setDoc(doc(db, "users", user.uid), profile);
+            EroiDB.cache.userProfile = profile;
+          } catch(errSet) {
+            console.warn("Impossibile salvare profilo locale iniziale:", errSet);
           }
-          
-          const xpText = `XP: ${xp} / 500`;
-          
-          const xpSpan = document.getElementById('user-xp');
-          if (xpSpan) xpSpan.textContent = xpText;
-          
-          const dropdownXp = document.getElementById('dropdown-user-xp');
-          if (dropdownXp) dropdownXp.textContent = `${xp} XP`;
-          
-          window.app.profile = profile;
+        } else {
+          role = profile.role || role;
         }
+        
+        if (isSuperAdmin) {
+          role = 'admin';
+          if (profile && profile.role !== 'admin') {
+            try {
+              await window.EroiDB.updateUserRole(user.uid, 'admin');
+              profile.role = 'admin';
+            } catch(e) {}
+          }
+        }
+        
+        const xp = profile ? (profile.xp || 0) : 0;
+        const xpText = `XP: ${xp} / 500`;
+        
+        const xpSpan = document.getElementById('user-xp');
+        if (xpSpan) xpSpan.textContent = xpText;
+        
+        const dropdownXp = document.getElementById('dropdown-user-xp');
+        if (dropdownXp) dropdownXp.textContent = `${xp} XP`;
+        
+        window.app.profile = profile;
       }
     } catch (e) {
       console.warn("Impossibile caricare il profilo.", e);
@@ -283,7 +304,7 @@ onAuthStateChanged(auth, async (user) => {
     
     const navLabel = document.getElementById('nav-dashboard-label');
     if (navLabel) {
-      if (role === 'teacher' || role === 'admin' || (user.email && user.email.toLowerCase() === 'prof.memmo@gmail.com')) {
+      if (role === 'teacher' || role === 'admin' || isSuperAdmin) {
         navLabel.textContent = 'Loggia';
       } else {
         navLabel.textContent = 'Fascicoli';
@@ -291,13 +312,7 @@ onAuthStateChanged(auth, async (user) => {
     }
     
     // Routing in base al ruolo
-    const userEmail = user.email ? user.email.toLowerCase() : '';
-    if (role === 'pending') {
-      showView('view-onboarding');
-      // Nascondi menu utente e nav bar durante l'onboarding
-      if (userMenu) userMenu.style.display = 'none';
-      if (bottomNav) bottomNav.style.display = 'none';
-    } else if (userEmail === 'prof.memmo@gmail.com' || role === 'admin' || role === 'teacher') {
+    if (isSuperAdmin || role === 'admin' || role === 'teacher') {
       showView('view-teacher-dashboard');
       
       // Mostra il bottone LIM nella bottom bar per i docenti
@@ -306,7 +321,7 @@ onAuthStateChanged(auth, async (user) => {
       
       const adminNav = document.getElementById('nav-item-admin');
       if (adminNav) {
-          if (userEmail === 'prof.memmo@gmail.com' || role === 'admin') {
+          if (isSuperAdmin || role === 'admin') {
               adminNav.style.display = 'block';
           } else {
               adminNav.style.display = 'none';
@@ -318,14 +333,15 @@ onAuthStateChanged(auth, async (user) => {
       }
       
       if (window.TeacherDashboard) window.TeacherDashboard.init();
-      if (window.MapEngine) window.MapEngine.init(); // Initialize map for admin/teachers too
+      if (window.MapEngine) window.MapEngine.init();
     } else if (role === 'external') {
       window.goToDashboard();
-      MapEngine.init();
+      if (window.MapEngine) window.MapEngine.init();
     } else {
       window.goToDashboard();
-      MapEngine.init();
+      if (window.MapEngine) window.MapEngine.init();
     }
+
   } else {
     // Nascondi il menu utente, header, nav e footer
     const userMenu = document.getElementById('user-menu-container');
