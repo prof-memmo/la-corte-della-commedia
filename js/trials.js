@@ -43,10 +43,19 @@ export class CommediaTrials {
             qEl.style.padding = '15px';
             qEl.style.color = '#333';
             
-            let html = `<h4 style="color: var(--accent-crimson); margin-bottom: 15px; font-family: 'Cinzel', serif;">Fase ${index + 1}: ${q.text}</h4>`;
+            let qData = q;
+            const qKey = `trial_${trialId}_q_${q.id || index}`;
+            if (window.LiveEditor && typeof window.LiveEditor.apply === 'function') {
+                qData = window.LiveEditor.apply(qKey, q);
+            }
+            const editBtn = (window.LiveEditor && typeof window.LiveEditor.renderBtn === 'function')
+                ? window.LiveEditor.renderBtn(qKey, { text: qData.text, hint: qData.hint })
+                : '';
+
+            let html = `<h4 style="color: var(--accent-crimson); margin-bottom: 15px; font-family: 'Cinzel', serif; display: flex; justify-content: space-between; align-items: center;"><span>Fase ${index + 1}: ${qData.text}</span> ${editBtn}</h4>`;
             html += `<div style="display: flex; flex-direction: column; gap: 10px;">`;
             
-            q.options.forEach((opt, optIndex) => {
+            qData.options.forEach((opt, optIndex) => {
                 html += `
                 <label style="display: flex; align-items: flex-start; gap: 10px; cursor: pointer; padding: 10px; border: 1px solid rgba(0,0,0,0.2); border-radius: 6px; transition: background 0.2s;" onmouseover="this.style.background='rgba(0,0,0,0.05)'" onmouseout="this.style.background='transparent'">
                     <input type="radio" name="q_${q.id}" value="${optIndex}" style="margin-top: 4px;" onchange="window.commediaApp.trialsEngine.selectAnswer('${q.id}', parseInt(this.value))">
@@ -57,7 +66,7 @@ export class CommediaTrials {
             
             // Container per l'indizio
             html += `<div id="hint-container-${q.id}" style="display: none; margin-top: 15px; padding: 12px; background: rgba(212,175,55,0.1); border-left: 3px solid var(--accent-gold); border-radius: 4px;">
-                <p style="margin:0; font-size: 0.85rem; font-style: italic; color: #555;"><strong><i class="fa-solid fa-lightbulb"></i> Indizio:</strong> ${q.hint}</p>
+                <p style="margin:0; font-size: 0.85rem; font-style: italic; color: #555;"><strong><i class="fa-solid fa-lightbulb"></i> Indizio:</strong> ${qData.hint}</p>
             </div>`;
 
             qEl.innerHTML = html;
