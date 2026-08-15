@@ -86,7 +86,15 @@ export const EroiGame = {
             trialBackBtn.style.display = 'none'; // Prima fase, non si torna indietro nel processo, usa la freccia della header o annulla.
         }
 
-        const data = this.state.caseData;
+        let data = this.state.caseData;
+        if (window.LiveEditor && typeof window.LiveEditor.apply === 'function') {
+            data = window.LiveEditor.apply(`case_${data.id}`, data);
+        }
+
+        const getEditBtn = (subKey, currentTxt) => {
+            if (!window.LiveEditor || typeof window.LiveEditor.renderBtn !== 'function') return '';
+            return window.LiveEditor.renderBtn(`case_${data.id}_${subKey}`, { characterName: data.characterName, text: currentTxt });
+        };
 
         switch (this.state.currentPhase) {
             case 1: // Fase 1: Apertura del Fascicolo
@@ -96,7 +104,7 @@ export const EroiGame = {
                     <hr style="border-color: rgba(212,175,55,0.2); margin: 15px 0;">
                     
                     <div style="background: rgba(0,0,0,0.3); padding: 25px; border-left: 4px solid var(--accent-gold); margin-top: 20px; border-radius: 4px; box-shadow: 0 4px 10px rgba(0,0,0,0.3);">
-                        <h4 style="color: var(--accent-gold); margin-top: 0; margin-bottom: 15px;">Introduzione</h4>
+                        <h4 style="color: var(--accent-gold); margin-top: 0; margin-bottom: 15px;">Introduzione ${getEditBtn('intro', data.phases?.intro)}</h4>
                         <p style="line-height: 1.8; font-size: 1.15rem;">${data.phases?.intro || "Nessuna introduzione."}</p>
                         
                         <h4 style="color: var(--accent-gold); margin-top: 25px; margin-bottom: 15px;">L'Obiettivo</h4>
@@ -110,10 +118,10 @@ export const EroiGame = {
                     <h3 class="text-crimson" style="text-align:center;">Fase 2: Ricostruzione dei Fatti</h3>
                     
                     <div style="background: url('assets/Immagini/parchment_bg.png') center/cover; padding: 30px; border-radius: 10px; color: #222; font-family: 'Times New Roman', serif; box-shadow: inset 0 0 40px rgba(0,0,0,0.5), 0 5px 15px rgba(0,0,0,0.5); margin-top: 20px;">
-                        <h4 style="color: #4a2c11; margin-top: 0; border-bottom: 1px solid rgba(74, 44, 17, 0.3); padding-bottom: 5px;">I Fatti Storici</h4>
+                        <h4 style="color: #4a2c11; margin-top: 0; border-bottom: 1px solid rgba(74, 44, 17, 0.3); padding-bottom: 5px;">I Fatti Storici ${getEditBtn('facts', data.phases?.facts)}</h4>
                         <p style="line-height: 1.8; font-size: 1.15rem;">${data.phases?.facts || "Nessun fatto storico."}</p>
                         
-                        <h4 style="color: #4a2c11; margin-top: 25px; border-bottom: 1px solid rgba(74, 44, 17, 0.3); padding-bottom: 5px;">La Tragedia</h4>
+                        <h4 style="color: #4a2c11; margin-top: 25px; border-bottom: 1px solid rgba(74, 44, 17, 0.3); padding-bottom: 5px;">La Tragedia ${getEditBtn('tragedia', data.phases?.tragedia)}</h4>
                         <p style="line-height: 1.8; font-size: 1.15rem;">${data.phases?.tragedia || "Nessuna tragedia."}</p>
                     </div>
                 `;
@@ -143,10 +151,10 @@ export const EroiGame = {
                             <img src="public/assets/dante_full.png" style="max-height: 450px; width: auto; filter: drop-shadow(0 0 10px rgba(0,0,0,0.8));">
                         </div>
                         <div style="flex: 1; background: url('assets/Immagini/parchment_bg.png') center/cover; padding: 25px; border-radius: 10px; color: #222; font-family: 'Times New Roman', serif; box-shadow: inset 0 0 30px rgba(0,0,0,0.4), 0 5px 15px rgba(0,0,0,0.5); min-width: 250px;">
-                            <h4 style="color: #6a040f; margin-top: 0; border-bottom: 1px solid rgba(106, 4, 15, 0.3); padding-bottom: 5px;">${danteTitle}</h4>
+                            <h4 style="color: #6a040f; margin-top: 0; border-bottom: 1px solid rgba(106, 4, 15, 0.3); padding-bottom: 5px;">${danteTitle} ${getEditBtn('accusation', data.phases?.accusation)}</h4>
                             <p style="line-height: 1.8; font-size: 1.15rem;">${data.phases?.accusation || "L'indagine è silente."}</p>
                             
-                            <h5 style="color: #6a040f; margin-top: 20px;">Citazione</h5>
+                            <h5 style="color: #6a040f; margin-top: 20px;">Citazione ${getEditBtn('citazione', data.phases?.citazione)}</h5>
                             <p style="font-size: 1.1rem; font-style: italic; background: rgba(0,0,0,0.05); padding: 10px; border-left: 3px solid #6a040f;">${data.phases?.citazione || "Nessuna citazione."}</p>
 
                             <h5 style="color: #6a040f; margin-top: 20px;">${contrapTitle}</h5>
@@ -168,7 +176,7 @@ export const EroiGame = {
                             <img src="public/assets/difesa_full.png" style="max-height: 450px; width: auto; filter: drop-shadow(0 0 10px rgba(0,0,0,0.8));">
                         </div>
                         <div style="flex: 1; background: url('assets/Immagini/parchment_bg.png') center/cover; padding: 25px; border-radius: 10px; color: #222; font-family: 'Times New Roman', serif; box-shadow: inset 0 0 30px rgba(0,0,0,0.4), 0 5px 15px rgba(0,0,0,0.5); min-width: 250px;">
-                            <h4 style="color: #4a2c11; margin-top: 0; border-bottom: 1px solid rgba(74, 44, 17, 0.3); padding-bottom: 5px; text-align: right;">${defTitle}</h4>
+                            <h4 style="color: #4a2c11; margin-top: 0; border-bottom: 1px solid rgba(74, 44, 17, 0.3); padding-bottom: 5px; text-align: right;">${defTitle} ${getEditBtn('defense', data.phases?.defense)}</h4>
                             <p style="font-size: 1.15rem; line-height: 1.8;">${data.phases?.defense || "La difesa tace."}</p>
                         </div>
                     </div>
