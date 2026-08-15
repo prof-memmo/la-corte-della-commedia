@@ -43,14 +43,15 @@ const privacyCheck = document.getElementById('privacy-check');
 const logoutBtn = document.getElementById('logout-btn');
 const welcomeMessage = document.getElementById('welcome-message');
 
-// Abilitazione dei bottoni in base alle checkbox
+// Abilitazione dei bottoni in base alle checkbox (se presenti)
 function updateLoginButtons() {
+  if (!ageCheck || !privacyCheck) return;
   const isChecked = ageCheck.checked && privacyCheck.checked;
-  loginGoogleBtn.disabled = !isChecked;
-  loginEmailBtn.disabled = !isChecked;
+  if (loginGoogleBtn) loginGoogleBtn.disabled = !isChecked;
+  if (loginEmailBtn) loginEmailBtn.disabled = !isChecked;
 }
-ageCheck.addEventListener('change', updateLoginButtons);
-privacyCheck.addEventListener('change', updateLoginButtons);
+if (ageCheck) ageCheck.addEventListener('change', updateLoginButtons);
+if (privacyCheck) privacyCheck.addEventListener('change', updateLoginButtons);
 
 // Controllo del risultato del redirect (se veniamo da un login su Safari)
 getRedirectResult(auth).then(async (result) => {
@@ -70,125 +71,72 @@ getRedirectResult(auth).then(async (result) => {
   }
 }).catch((error) => {
   console.error("Errore di login da redirect", error);
-  alert("Errore durante il login: " + error.message);
 });
 
-// Event Listeners Autenticazione
-loginGoogleBtn.addEventListener('click', async () => {
-  try {
-    // Usiamo signInWithPopup per evitare i blocchi ITP (Intelligent Tracking Prevention) su Safari iOS
-    const result = await signInWithPopup(auth, googleProvider);
-    if (result && result.user) {
-      const userDocRef = doc(db, 'users', result.user.uid);
-      try {
-        const userDoc = await getDoc(userDocRef);
-        if (!userDoc.exists()) {
-          await setDoc(userDocRef, {
-            uid: result.user.uid,
-            email: result.user.email,
-            displayName: result.user.displayName,
-            xp: 0,
-            level: 1,
-            role: 'pending'
-          });
+// Event Listeners Autenticazione legacy
+if (loginGoogleBtn) {
+  loginGoogleBtn.addEventListener('click', async () => {
+    try {
+      const result = await signInWithPopup(auth, googleProvider);
+      if (result && result.user) {
+        const userDocRef = doc(db, 'users', result.user.uid);
+        try {
+          const userDoc = await getDoc(userDocRef);
+          if (!userDoc.exists()) {
+            await setDoc(userDocRef, {
+              uid: result.user.uid,
+              email: result.user.email,
+              displayName: result.user.displayName,
+              xp: 0,
+              level: 1,
+              role: 'pending'
+            });
+          }
+        } catch (e) {
+          console.warn("Impossibile leggere/creare il documento utente.", e);
         }
-      } catch (e) {
-        console.warn("Impossibile leggere/creare il documento utente.", e);
+      }
+    } catch (error) {
+      console.error("Errore avvio login Google", error);
+      if (error.code !== 'auth/popup-closed-by-user' && error.code !== 'auth/cancelled-popup-request') {
+        alert("Errore login: " + error.message);
       }
     }
-  } catch (error) {
-    console.error("Errore avvio login Google", error);
-    if (error.code === 'auth/popup-blocked' || error.code === 'auth/popup-closed-by-user' || error.code === 'auth/cancelled-popup-request') {
-      alert("Il popup di Google è stato chiuso o bloccato dal browser. Se vedi una richiesta di apertura popup, accettala. Altrimenti, disabilita il blocco popup e riprova.");
-    } else {
-      alert("Attendi qualche istante o ricarica la pagina. Errore: " + error.message);
+  });
+}
+
+if (loginEmailBtn) {
+  loginEmailBtn.addEventListener('click', async () => {
+    const emailInput = document.getElementById('login-email');
+    const passInput = document.getElementById('login-password');
+    const email = emailInput ? emailInput.value : '';
+    const password = passInput ? passInput.value : '';
+    if (!email || !password) {
+      alert("Inserisci email e password.");
+      return;
     }
-  }
-});
-
-loginEmailBtn.addEventListener('click', async () => {
-  const email = document.getElementById('login-email').value;
-  const password = document.getElementById('login-password').value;
-  if (!email || !password) {
-    alert("Inserisci email e password.");
-    return;
-  }
-  
-  // Disable button to prevent double click
-  const originalText = loginEmailBtn.textContent;
-  loginEmailBtn.textContent = 'Accesso in corso...';
-  loginEmailBtn.disabled = true;
-
-  try {
-    // --- MOCK LOGIN PER ACCOUNT DI TEST ---
-    const testAccounts = {
-        "prof.memmo@lacorte.it": { uid: "mock-teacher", email: "prof.memmo@lacorte.it", displayName: "Prof Memmo", role: "teacher" },
-        "studente.test@lacorte.it": { uid: "mock-student", email: "studente.test@lacorte.it", displayName: "Studente Test", role: "student", classId: "TEST-CLASS" },
-        "esterno.test@lacorte.it": { uid: "mock-external", email: "esterno.test@lacorte.it", displayName: "Visitatore", role: "external" }
-    };
     
-    if (testAccounts[email]) {
-        console.log("Mock login per test account:", email);
-        const user = testAccounts[email];
-        // Trigger manuale dello stato auth
-        state.user = user;
-        window.EroiDB.cache.userProfile = user;
-        
-        welcomeMessage.textContent = `Bentornato, ${user.displayName}`;
-        const userMenu = document.getElementById('user-menu-container');
-        if (userMenu) userMenu.style.display = 'block';
-        const headerName = document.getElementById('header-user-name');
-        if (headerName) headerName.textContent = user.displayName;
-        
-        viewAuth.classList.remove('active');
-        await initializeDashboard(user.email, user.role);
-        
-        loginEmailBtn.textContent = originalText;
-        loginEmailBtn.disabled = false;
-        return; // esci senza usare firebase
-    }
-    // --- FINE MOCK LOGIN ---
+    const originalText = loginEmailBtn.textContent;
+    loginEmailBtn.textContent = 'Accesso in corso...';
+    loginEmailBtn.disabled = true;
 
     try {
-      // Prova il login reale
       await signInWithEmailAndPassword(auth, email, password);
-    } catch (err) {
-      if (err.code === 'auth/user-not-found' || err.code === 'auth/invalid-credential') {
-        // Se non esiste, crea l'utente
-        const userCreds = await createUserWithEmailAndPassword(auth, email, password);
-        // Estrai nome dall'email per il displayName
-        let displayName = email.split('@')[0].replace('.', ' ');
-        displayName = displayName.charAt(0).toUpperCase() + displayName.slice(1);
-        
-        await updateProfile(userCreds.user, { displayName: displayName });
-        
-        // Crea record in Firestore (Ruolo pending di default)
-        let role = 'pending';
-
-        await setDoc(doc(db, 'users', userCreds.user.uid), {
-          uid: userCreds.user.uid,
-          email: email,
-          displayName: displayName,
-          xp: 0,
-          level: 1,
-          role: role
-        });
-      } else {
-        throw err;
-      }
+    } catch (error) {
+      console.error("Errore email login", error);
+      alert("Errore: " + error.message);
+    } finally {
+      loginEmailBtn.textContent = originalText;
+      loginEmailBtn.disabled = false;
     }
-  } catch (error) {
-    console.error("Errore email login", error);
-    alert("Errore: " + error.message);
-  } finally {
-    loginEmailBtn.textContent = originalText;
-    loginEmailBtn.disabled = false;
-  }
-});
+  });
+}
 
-logoutBtn.addEventListener('click', () => {
-  signOut(auth);
-});
+if (logoutBtn) {
+  logoutBtn.addEventListener('click', () => {
+    signOut(auth);
+  });
+}
 
 onAuthStateChanged(auth, async (user) => {
   if (state.user && state.user.uid && state.user.uid.startsWith("mock-")) return; // ignora se è un account mock già loggato
