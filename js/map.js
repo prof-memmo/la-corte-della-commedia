@@ -95,9 +95,26 @@ export const MapEngine = {
     },
 
     isAdmin: function() {
-        if (!EroiDB.cache.userProfile) return false;
-        const email = EroiDB.cache.userProfile.email ? EroiDB.cache.userProfile.email.toLowerCase() : '';
-        return EroiDB.cache.userProfile.role === 'admin' || email === 'prof.memmo@gmail.com';
+        if (window.EroiDB && EroiDB.cache && EroiDB.cache.userProfile) {
+            const email = EroiDB.cache.userProfile.email ? EroiDB.cache.userProfile.email.toLowerCase() : '';
+            if (EroiDB.cache.userProfile.role === 'admin' || email === 'prof.memmo@gmail.com') return true;
+        }
+        if (window.Auth && typeof window.Auth.getUser === 'function') {
+            const u = window.Auth.getUser();
+            if (u && (u.role === 'admin' || (u.email && u.email.toLowerCase() === 'prof.memmo@gmail.com'))) return true;
+        }
+        if (window.firebase && window.firebase.auth && window.firebase.auth().currentUser) {
+            const fbEmail = (window.firebase.auth().currentUser.email || '').toLowerCase();
+            if (fbEmail === 'prof.memmo@gmail.com') return true;
+        }
+        const saved = localStorage.getItem('commedia_user') || localStorage.getItem('user');
+        if (saved) {
+            try {
+                const parsed = JSON.parse(saved);
+                if (parsed.role === 'admin' || (parsed.email && parsed.email.toLowerCase() === 'prof.memmo@gmail.com')) return true;
+            } catch(e) {}
+        }
+        return false;
     },
 
     
