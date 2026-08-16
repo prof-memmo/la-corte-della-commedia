@@ -499,7 +499,7 @@ export const MinigamesEngine = {
             <div class="animate-fade-in" style="background: url('assets/Immagini/parchment_bg.png') center/cover; border-radius: 10px; padding: 30px; box-shadow: inset 0 0 40px rgba(0,0,0,0.8); color: #222; font-family: 'Times New Roman', serif;">
                 <div style="text-align: center; margin-bottom: 20px;">
                     <img src="assets/Immagini/3.png" style="width: 80px; opacity: 0.8;">
-                    <h3 style="color: #6a040f; margin-top: 10px; font-family: 'Cinzel', serif;">Il Sigillo della Sentenza</h3>
+                    <h3 style="color: #6a040f; margin-top: 10px; font-family: 'Julius Sans One', sans-serif;">Il Sigillo della Sentenza</h3>
                     <p style="font-style: italic; font-size: 1.1rem; color: #444;">Per archiviare la tua decisione e apporre il sigillo di ceralacca, devi dimostrare di aver colto l'essenza del caso.</p>
                 </div>
                 

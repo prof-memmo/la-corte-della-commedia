@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400..900&family=Julius+Sans+One&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- CSS Esterno -->
-    <link rel="stylesheet" href="css/style.css?v=23">
+    <link rel="stylesheet" href="css/style.css?v=25">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
   <!-- Icone per Safari e Dispositivi Mobili -->
@@ -35,7 +35,7 @@
     <div id="edit-profile-modal" class="legal-modal hidden">
         <div class="legal-modal-content parchment-panel" style="max-width: 450px;">
             <span class="close-legal" onclick="document.getElementById('edit-profile-modal').classList.add('hidden')">&times;</span>
-            <h2 style="color: var(--accent-gold); margin-bottom: 20px; font-family: 'Cinzel', serif;"><i class="fa-solid fa-user-edit"></i> Modifica Profilo</h2>
+            <h2 style="color: var(--accent-gold); margin-bottom: 20px; font-family: 'Julius Sans One', sans-serif;"><i class="fa-solid fa-user-edit"></i> Modifica Profilo</h2>
             <form id="form-edit-profile" onsubmit="event.preventDefault(); if(window.app) window.app.saveProfileData();">
                 <div style="margin-bottom: 1.5rem; text-align: left;">
                     <label style="display: block; font-weight: 800; color: var(--accent-gold); margin-bottom: 0.5rem; font-size: 0.9rem;">Nome e Cognome / Nickname:</label>
@@ -47,6 +47,11 @@
                 </div>
                 <button type="submit" class="btn btn-primary" style="width: 100%; padding: 1rem; border-radius: 30px; font-weight: 800;">Salva Modifiche</button>
             </form>
+            <div style="margin-top: 1.2rem; padding-top: 1.2rem; border-top: 1px solid rgba(212,175,55,0.3); text-align: center;">
+                <a href="https://prof-memmo.github.io/games/profilo.html" target="_blank" class="btn btn-secondary" style="width: 100%; border-radius: 30px; font-weight: 800; font-size: 0.9rem; display: inline-flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; padding: 0.8rem 1rem;">
+                    <i class="fa-solid fa-globe"></i> 🌐 Profilo Utente Ecosistema (Sito Vetrina)
+                </a>
+            </div>
         </div>
     </div>
 
@@ -136,7 +141,7 @@
 
         <!-- VISTA ONBOARDING -->
         <section id="view-onboarding" class="view animate-fade-in" style="padding-top: 2rem;">
-          <h2 class="text-gold" style="text-align: center; font-size: 2.5rem; font-family: 'Cinzel', serif;">Scegli il tuo percorso</h2>
+          <h2 class="text-gold" style="text-align: center; font-size: 2.5rem; font-family: 'Julius Sans One', sans-serif;">Scegli il tuo percorso</h2>
           <p style="text-align: center; color: #ccc; margin-bottom: 2rem;">Seleziona con quale veste vuoi varcare le porte dell'Inferno.</p>
           
           <div style="display: flex; flex-direction: column; gap: 15px; max-width: 600px; margin: 0 auto; padding: 0 1rem;">
@@ -176,7 +181,7 @@
         <!-- VISTA PROFILO (LIBRERIA) -->
         <section id="view-dashboard" class="view animate-fade-in">
           <div style="text-align: center; margin-bottom: 2rem;">
-            <h2 class="text-gold" id="welcome-message" style="font-size: 2.5rem; text-shadow: 0 0 20px rgba(212,175,55,0.5); font-family: 'Cinzel', serif;">La Tua Libreria</h2>
+            <h2 class="text-gold" id="welcome-message" style="font-size: 2.5rem; text-shadow: 0 0 20px rgba(212,175,55,0.5); font-family: 'Julius Sans One', sans-serif;">La Tua Libreria</h2>
           </div>
           
           <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 2rem; margin-top: 2rem; align-items: start;">
@@ -188,7 +193,7 @@
               <p class="text-on-parchment-muted" style="margin-bottom: 1.5rem;" id="user-xp">XP: 0 / 500</p>
               
               <hr style="border: 0; border-top: 1px solid rgba(0,0,0,0.1); margin-bottom: 1rem;">
-              <h4 style="color: var(--accent-crimson); font-family: 'Cinzel', serif; margin-bottom: 1rem;">I Tuoi Titoli</h4>
+              <h4 style="color: var(--accent-crimson); font-family: 'Julius Sans One', sans-serif; margin-bottom: 1rem;">I Tuoi Titoli</h4>
               
               <div style="display: flex; flex-direction: column; gap: 10px; text-align: left; padding: 0 10px;" id="badges-container">
                 <!-- I badge verranno accesi da JS -->
@@ -213,7 +218,7 @@
             <!-- Libreria Fascicoli -->
             <div class="dark-panel" style="min-height: 400px; position: relative;">
               <div style="position: relative; z-index: 1;">
-                <h3 class="text-gold" style="font-family: 'Cinzel', serif; font-size: 1.8rem; border-bottom: 2px solid var(--accent-gold); padding-bottom: 10px; margin-bottom: 2rem;">
+                <h3 class="text-gold" style="font-family: 'Julius Sans One', sans-serif; font-size: 1.8rem; border-bottom: 2px solid var(--accent-gold); padding-bottom: 10px; margin-bottom: 2rem;">
                   <img src="assets/Immagini/4.png" style="width: 40px; vertical-align: middle; margin-right: 15px; filter: drop-shadow(0 2px 5px rgba(0,0,0,0.5));">Collezione Sentenze
                 </h3>
                 
@@ -228,7 +233,7 @@
 
         <section id="view-admin-dashboard" class="view animate-fade-in">
           <div style="text-align: center; margin-bottom: 2rem;">
-            <h2 class="text-gold" style="font-size: 2.5rem; text-shadow: 0 0 20px rgba(212,175,55,0.5); font-family: 'Cinzel', serif;">Pannello Tecnico</h2>
+            <h2 class="text-gold" style="font-size: 2.5rem; text-shadow: 0 0 20px rgba(212,175,55,0.5); font-family: 'Julius Sans One', sans-serif;">Pannello Tecnico</h2>
             <div style="display: flex; justify-content: center; gap: 10px; margin-top: 15px; flex-wrap: wrap;">
               <button onclick="showView('view-teacher-dashboard')" class="btn" style="background: var(--accent-gold); color: black; padding: 6px 16px; border-radius: 6px; border: none; cursor: pointer; font-size: 0.85rem; font-weight: bold;">
                  <i class="fa-solid fa-gavel"></i> Vai al Pannello Docente
@@ -255,7 +260,7 @@
             <div style="display: grid; grid-template-columns: 1fr; gap: 2rem;">
               <div class="dark-panel" style="position: relative;">
                 <div style="position: relative; z-index: 1;">
-                  <h3 class="text-gold" style="font-family: 'Cinzel', serif; border-bottom: 1px solid var(--border-gold); padding-bottom: 10px; margin-bottom: 20px;">
+                  <h3 class="text-gold" style="font-family: 'Julius Sans One', sans-serif; border-bottom: 1px solid var(--border-gold); padding-bottom: 10px; margin-bottom: 20px;">
                     <img src="assets/Immagini/4.png" style="width: 30px; vertical-align: middle; margin-right: 10px;">Archivio Segreto dei Fascicoli
                   </h3>
                   <ul id="admin-cases-list" style="list-style: none; padding: 0;">
@@ -312,7 +317,7 @@
         <!-- DASHBOARD DOCENTE (Solo per Prof e Admin) -->
         <section id="view-teacher-dashboard" class="view animate-fade-in">
           <div class="glass-panel" style="background: rgba(26,22,20,0.9); border: 1px solid var(--border-color); padding: 20px; border-radius: 8px;">
-            <h2 class="section-title" style="font-family: 'Cinzel', serif; color: var(--accent-gold); margin-bottom: 20px; text-align: center;"><i class="fa-solid fa-gavel"></i> Pannello Docente</h2>
+            <h2 class="section-title" style="font-family: 'Julius Sans One', sans-serif; color: var(--accent-gold); margin-bottom: 20px; text-align: center;"><i class="fa-solid fa-gavel"></i> Pannello Docente</h2>
             <div style="text-align: center; margin-bottom: 15px;">
             </div>
             
@@ -345,7 +350,7 @@
                 <!-- PANNELLO CLASSI -->
                 <div id="panel-stats-classes" class="panoramica-sub-panel" style="display: block;">
                   <div class="parchment-panel" style="margin-bottom: 20px;">
-                    <h3 class="panel-title" style="color: var(--accent-crimson); font-family: 'Cinzel', serif; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 20px;"><i class="fa-solid fa-users"></i> Nuova Classe</h3>
+                    <h3 class="panel-title" style="color: var(--accent-crimson); font-family: 'Julius Sans One', sans-serif; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 20px;"><i class="fa-solid fa-users"></i> Nuova Classe</h3>
                     <form id="form-create-class" onsubmit="return false;" style="display: grid; gap: 10px; max-width: 400px;">
                       <input type="text" class="input-form" placeholder="Codice Classe (es. 1A)" required style="padding: 10px; border: 1px solid #333; background: #fff; border-radius: 5px;">
                       <input type="text" class="input-form" placeholder="Nome esteso (es. 1A Legge)" required style="padding: 10px; border: 1px solid #333; background: #fff; border-radius: 5px;">
@@ -353,7 +358,7 @@
                     </form>
                   </div>
                   <div class="parchment-panel" style="margin-bottom: 20px;">
-                    <h3 class="panel-title" style="color: var(--accent-crimson); font-family: 'Cinzel', serif; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 20px;"><i class="fa-solid fa-handshake"></i> Unisciti come Collaboratore</h3>
+                    <h3 class="panel-title" style="color: var(--accent-crimson); font-family: 'Julius Sans One', sans-serif; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 20px;"><i class="fa-solid fa-handshake"></i> Unisciti come Collaboratore</h3>
                     <form id="form-join-collaborator" onsubmit="return false;" style="display: grid; gap: 10px; max-width: 400px;">
                       <input type="text" id="join-collaborator-code" class="input-form" placeholder="Codice della Classe" required style="padding: 10px; border: 1px solid #333; background: #fff; border-radius: 5px;">
                       <button type="submit" class="btn btn-secondary" style="padding: 10px;">Partecipa alla Gestione</button>
@@ -364,7 +369,7 @@
                 <!-- PANNELLO STUDENTI -->
                 <div id="panel-stats-students" class="panoramica-sub-panel" style="display: none;">
                   <div class="parchment-panel" style="margin-bottom: 20px;">
-                    <h3 class="panel-title" style="color: var(--accent-crimson); font-family: 'Cinzel', serif; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 20px;"><i class="fa-solid fa-user-plus"></i> Aggiungi Studente</h3>
+                    <h3 class="panel-title" style="color: var(--accent-crimson); font-family: 'Julius Sans One', sans-serif; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 20px;"><i class="fa-solid fa-user-plus"></i> Aggiungi Studente</h3>
                     <form id="form-create-student" onsubmit="return false;" style="display: grid; gap: 10px; max-width: 400px;">
                       <input type="text" id="new-student-name" class="input-form" placeholder="Nome e Cognome Studente" required style="padding: 10px; border: 1px solid #333; background: #fff; border-radius: 5px;">
                       <input type="email" id="new-student-email" class="input-form" placeholder="Email fittizia/reale" required style="padding: 10px; border: 1px solid #333; background: #fff; border-radius: 5px;">
@@ -376,7 +381,7 @@
                   </div>
                   
                   <div class="dark-panel">
-                    <h3 style="color: var(--accent-gold); font-family: 'Cinzel', serif; margin-bottom: 1rem;">Registro Iscritti</h3>
+                    <h3 style="color: var(--accent-gold); font-family: 'Julius Sans One', sans-serif; margin-bottom: 1rem;">Registro Iscritti</h3>
                     <div id="teacher-students-list" style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; min-height: 150px;">
                       <!-- Popolato via JS -->
                     </div>
@@ -388,7 +393,7 @@
                 <!-- PANNELLO DOCENTI -->
                 <div id="panel-stats-docenti" class="panoramica-sub-panel" style="display: none;">
                    <div class="dark-panel">
-                     <h3 style="color: var(--accent-gold); font-family: 'Cinzel', serif; margin-bottom: 1rem;"><i class="fa-solid fa-user-group"></i> I Miei Colleghi Collaboratori</h3>
+                     <h3 style="color: var(--accent-gold); font-family: 'Julius Sans One', sans-serif; margin-bottom: 1rem;"><i class="fa-solid fa-user-group"></i> I Miei Colleghi Collaboratori</h3>
                      <p style="color: #888; margin-bottom: 15px;">Elenco dei docenti che collaborano alle tue classi.</p>
                      <div class="table-responsive">
                        <table class="game-table" id="teacher-docenti-table" style="width: 100%; border-collapse: collapse; text-align: left;">
@@ -410,7 +415,7 @@
             <!-- TAB NODI -->
             <div id="t-tab-nodi" class="teacher-tab-content" style="display: none;">
               <div class="parchment-panel">
-                <h3 class="panel-title" style="color: var(--accent-crimson); font-family: 'Cinzel', serif; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 20px;"><i class="fa-solid fa-map-location-dot"></i> Gestione Nodi Mappa</h3>
+                <h3 class="panel-title" style="color: var(--accent-crimson); font-family: 'Julius Sans One', sans-serif; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 20px;"><i class="fa-solid fa-map-location-dot"></i> Gestione Nodi Mappa</h3>
                 <p style="margin-bottom: 15px; color: #555; font-size: 0.9rem;">Blocca o sblocca l'accesso ai cerchi dell'Inferno per le tue classi. Il Limbo è sempre sbloccato di default.</p>
                 <div style="margin-bottom: 20px;">
                   <label for="select-nodi-class" style="display: block; margin-bottom: 5px; color: #333; font-weight: bold;">Seleziona Classe:</label>
@@ -427,7 +432,7 @@
             <!-- TAB VALUTAZIONE -->
             <div id="t-tab-valutazione" class="teacher-tab-content" style="display: none;">
               <div class="parchment-panel">
-                <h3 style="color: var(--accent-crimson); font-family: 'Cinzel', serif; margin-bottom: 1rem;">Verdetti della Classe</h3>
+                <h3 style="color: var(--accent-crimson); font-family: 'Julius Sans One', sans-serif; margin-bottom: 1rem;">Verdetti della Classe</h3>
                 <p class="text-on-parchment-muted" style="margin-bottom: 1rem;">Seleziona un caso per leggere le decisioni prese dai tuoi studenti e preparare la discussione in aula.</p>
                 
                 <div style="margin-bottom: 20px;">
@@ -445,18 +450,18 @@
             <!-- TAB IMPOSTAZIONI -->
             <div id="t-tab-impostazioni" class="teacher-tab-content" style="display: none;">
               <div class="dark-panel">
-                <h3 style="color: var(--accent-gold); font-family: 'Cinzel', serif; margin-bottom: 1rem;">Impostazioni Pannello</h3>
+                <h3 style="color: var(--accent-gold); font-family: 'Julius Sans One', sans-serif; margin-bottom: 1rem;">Impostazioni Pannello</h3>
                 <p style="color: #888; margin-bottom: 20px;">Configura i permessi di visualizzazione e gestione.</p>
                 <button class="btn" style="border: 1px solid #333; background: #2a2a2a; color: #fff;">Esporta Dati Studenti</button>
               </div>
                 <div class="dark-panel" style="margin-top: 30px; background: rgba(255,50,50,0.05); border: 1px solid rgba(255,50,50,0.3);">
-                  <h3 style="color: #ff4d4d; font-family: 'Cinzel', serif; margin-bottom: 10px;"><i class="fa-solid fa-triangle-exclamation"></i> Danger Zone: Archiviazione Annuale</h3>
+                  <h3 style="color: #ff4d4d; font-family: 'Julius Sans One', sans-serif; margin-bottom: 10px;"><i class="fa-solid fa-triangle-exclamation"></i> Danger Zone: Archiviazione Annuale</h3>
                   <p style="color: #ccc; margin-bottom: 15px; font-size: 0.9rem;">Questa opzione archivia tutti gli studenti dell'anno in corso, salvandone una "fotografia". Se necessario, l'operazione potrà essere annullata dall'Archivio Storico.</p>
                   <button class="btn" style="background: transparent; border: 1px solid #ff4d4d; color: #ff4d4d; padding: 10px 15px; font-weight: bold; border-radius: 5px;"><i class="fa-solid fa-box-archive"></i> ESEGUI ARCHIVIAZIONE ANNO</button>
                 </div>
 
                 <div class="dark-panel" style="margin-top: 20px; background: rgba(255,255,255,0.02); border: 1px solid #333;">
-                  <h3 style="color: var(--accent-gold); font-family: 'Cinzel', serif; margin-bottom: 10px;"><i class="fa-solid fa-clock-rotate-left"></i> Archivio Storico</h3>
+                  <h3 style="color: var(--accent-gold); font-family: 'Julius Sans One', sans-serif; margin-bottom: 10px;"><i class="fa-solid fa-clock-rotate-left"></i> Archivio Storico</h3>
                   <p style="color: #aaa; margin-bottom: 10px; font-size: 0.9rem;">Consulta lo storico degli studenti degli anni passati o ripristina un anno archiviato.</p>
                   <p style="color: #666; font-style: italic; font-size: 0.85rem;">Caricamento archivio in corso...</p>
                 </div>
@@ -467,12 +472,12 @@
         <!-- VISTA PELLEGRINI -->
         <section id="view-external-dashboard" class="view animate-fade-in">
           <div style="text-align: center; margin-bottom: 2rem;">
-            <h2 class="text-gold" style="font-size: 2.5rem; text-shadow: 0 0 20px rgba(212,175,55,0.5); font-family: 'Cinzel', serif;">Rifugio dei Pellegrini</h2>
+            <h2 class="text-gold" style="font-size: 2.5rem; text-shadow: 0 0 20px rgba(212,175,55,0.5); font-family: 'Julius Sans One', sans-serif;">Rifugio dei Pellegrini</h2>
             <p style="color: #ccc; font-style: italic;">Benvenuto, Viaggiatore</p>
           </div>
           <div class="parchment-panel" style="margin-top: 2rem; border-radius: 15px; text-align: center;">
             <img src="assets/Immagini/4.png" style="width: 80px; margin-bottom: 1rem; filter: drop-shadow(0 5px 10px rgba(0,0,0,0.5));">
-            <h3 style="font-family: 'Cinzel', serif; color: var(--accent-crimson);">L'Archivio Pubblico</h3>
+            <h3 style="font-family: 'Julius Sans One', sans-serif; color: var(--accent-crimson);">L'Archivio Pubblico</h3>
             <p class="text-on-parchment-muted" style="margin-top: 1rem; font-size: 1.1rem; line-height: 1.6;">Benvenuto nella Corte della Commedia. Come ospite (Pellegrino), hai accesso limitato alle stanze interne del Tribunale, ma sei libero di esplorare la mappa e tentare di farti strada tra i dannati.<br><br>Puoi navigare tramite la <strong>Mappa</strong> in basso per avviare il tuo primo caso.</p>
           </div>
         </section>
@@ -503,7 +508,7 @@
         <!-- VISTA MAPPA -->
         <section id="view-map" class="view animate-fade-in">
           <div style="text-align: center; margin-bottom: 2rem;">
-            <h2 class="text-gold" style="font-size: 2.5rem; text-shadow: 0 0 20px rgba(212,175,55,0.5); font-family: 'Cinzel', serif;">I Regni Oltremondani</h2>
+            <h2 class="text-gold" style="font-size: 2.5rem; text-shadow: 0 0 20px rgba(212,175,55,0.5); font-family: 'Julius Sans One', sans-serif;">I Regni Oltremondani</h2>
           </div>
           
           <!-- Tabs -->
@@ -528,12 +533,12 @@
         <!-- VISTA REGOLAMENTO -->
         <section id="view-regolamento" class="view animate-fade-in">
           <div style="text-align: center; margin-bottom: 2rem;">
-            <h2 class="text-gold" style="font-size: 2.5rem; text-shadow: 0 0 20px rgba(212,175,55,0.5); font-family: 'Cinzel', serif;">Regolamento della Corte</h2>
+            <h2 class="text-gold" style="font-size: 2.5rem; text-shadow: 0 0 20px rgba(212,175,55,0.5); font-family: 'Julius Sans One', sans-serif;">Regolamento della Corte</h2>
           </div>
           
           <!-- REGOLAMENTO COMUNE A TUTTI -->
           <div id="reg-comune" class="parchment-panel" style="max-width: 800px; margin: 0 auto 2rem auto; padding: 2rem; border-radius: 15px; display: block;">
-            <h2 style="color: var(--accent-gold); font-family: 'Cinzel', serif; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 20px; text-align: center;">Il Procedimento Giudiziario</h2>
+            <h2 style="color: var(--accent-gold); font-family: 'Julius Sans One', sans-serif; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 20px; text-align: center;">Il Procedimento Giudiziario</h2>
             <p class="text-on-parchment-muted" style="margin-bottom: 1.5rem; line-height: 1.6;">Ogni caso affrontato nella Corte rappresenta un procedimento giudiziario (Campagna &rarr; Fascicolo &rarr; Missioni &rarr; Prove &rarr; Verdetto &rarr; Archivio) ed è strutturato in <strong>10 fasi fondamentali</strong>:</p>
 
             <ul style="list-style-type: none; padding-left: 0; margin-bottom: 1.5rem;" class="text-on-parchment-muted">
@@ -549,37 +554,37 @@
               <li style="margin-bottom: 1rem;"><strong style="color: var(--accent-crimson);">10. La Sentenza:</strong> Generazione della pergamena finale con il risultato, XP e badge, che verrà conservata nell'Archivio.</li>
             </ul>
 
-            <h3 style="color: var(--accent-crimson); font-family: 'Cinzel', serif; margin-top: 2rem;">La Giuria e la Progressione</h3>
+            <h3 style="color: var(--accent-crimson); font-family: 'Julius Sans One', sans-serif; margin-top: 2rem;">La Giuria e la Progressione</h3>
             <p class="text-on-parchment-muted" style="margin-bottom: 1.5rem; line-height: 1.6;">Al termine di ogni procedimento verranno mostrati i risultati aggregati (percentuali e grafici) della tua <strong>Giuria</strong>: la tua Classe (nella modalità Scuola) o la tua Corte Privata (nella modalità Comunità), favorendo il dibattito collettivo. Tutte le tue azioni ti faranno guadagnare <strong>XP, livelli, badge e collezioni</strong>, permettendoti di scalare le classifiche e completare il tuo personale viaggio di redenzione.</p>
           </div>
 
           <div id="reg-studente" class="parchment-panel" style="max-width: 800px; margin: 0 auto 2rem auto; padding: 2rem; border-radius: 15px; display: block;">
-            <h2 style="color: var(--accent-gold); font-family: 'Cinzel', serif; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 20px; text-align: center;">Regolamento dello Studente (Modalità Scuola)</h2>
-            <h3 style="color: var(--accent-crimson); font-family: 'Cinzel', serif;">1. I Tre Livelli di Indagine</h3>
+            <h2 style="color: var(--accent-gold); font-family: 'Julius Sans One', sans-serif; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 20px; text-align: center;">Regolamento dello Studente (Modalità Scuola)</h2>
+            <h3 style="color: var(--accent-crimson); font-family: 'Julius Sans One', sans-serif;">1. I Tre Livelli di Indagine</h3>
             <p class="text-on-parchment-muted" style="margin-bottom: 1.5rem; line-height: 1.6;">Il tuo Docente imposterà per la tua Classe uno dei tre livelli di difficoltà, a seconda del grado scolastico: <strong>Esploratore</strong> (per un approccio guidato), <strong>Giurista</strong> (per una maggiore autonomia e interpretazione), o <strong>Magistrato</strong> (per le sfide più ardue, ricche di collegamenti storici e filosofici).</p>
             
-            <h3 style="color: var(--accent-crimson); font-family: 'Cinzel', serif;">2. La Valutazione dei Docenti</h3>
+            <h3 style="color: var(--accent-crimson); font-family: 'Julius Sans One', sans-serif;">2. La Valutazione dei Docenti</h3>
             <p class="text-on-parchment-muted" style="margin-bottom: 1.5rem; line-height: 1.6;">Le tue sentenze e le tue motivazioni verranno lette e valutate dal tuo Docente (il Sommo Giudice). Se l'argomentazione è ritenuta valida, sarai ricompensato con XP e Fiorini d'oro, che ti permetteranno di ottenere nuovi e prestigiosi titoli nobiliari.</p>
           </div>
 
           <div id="reg-pellegrino" class="parchment-panel" style="max-width: 800px; margin: 0 auto 2rem auto; padding: 2rem; border-radius: 15px; display: block;">
-            <h2 style="color: var(--accent-gold); font-family: 'Cinzel', serif; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 20px; text-align: center;">Regolamento del Pellegrino (Modalità Comunità)</h2>
-            <h3 style="color: var(--accent-crimson); font-family: 'Cinzel', serif;">1. Giocatore Unico o Corti Private (Multiplayer)</h3>
+            <h2 style="color: var(--accent-gold); font-family: 'Julius Sans One', sans-serif; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 20px; text-align: center;">Regolamento del Pellegrino (Modalità Comunità)</h2>
+            <h3 style="color: var(--accent-crimson); font-family: 'Julius Sans One', sans-serif;">1. Giocatore Unico o Corti Private (Multiplayer)</h3>
             <p class="text-on-parchment-muted" style="margin-bottom: 1.5rem; line-height: 1.6;">Come pellegrino (Giurato) hai due scelte: affrontare il viaggio in <strong>solitaria</strong>, oppure creare una <strong>Corte Privata</strong>. In quest'ultimo caso potrai generare un link e invitare amici, compagni di lettura o familiari per vivere un'esperienza multiplayer, confrontando le vostre sentenze e visualizzando le statistiche della vostra Corte.</p>
             
-            <h3 style="color: var(--accent-crimson); font-family: 'Cinzel', serif;">2. Il Ruolo del Presidente di Corte</h3>
+            <h3 style="color: var(--accent-crimson); font-family: 'Julius Sans One', sans-serif;">2. Il Ruolo del Presidente di Corte</h3>
             <p class="text-on-parchment-muted" style="margin-bottom: 1.5rem; line-height: 1.6;">Se decidi di creare tu la Corte Privata, ne diventi il "Presidente". Come Presidente potrai scegliere il livello di difficoltà per il tuo gruppo (Esploratore, Giurista o Magistrato), decidere quali casi sbloccare e amministrare l'ingresso dei nuovi giurati.</p>
           </div>
 
           <div id="reg-docente" class="parchment-panel" style="max-width: 800px; margin: 0 auto 2rem auto; padding: 2rem; border-radius: 15px; display: block;">
-            <h2 style="color: var(--accent-gold); font-family: 'Cinzel', serif; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 20px; text-align: center;">Regolamento del Docente (Modalità Scuola)</h2>
-            <h3 style="color: var(--accent-crimson); font-family: 'Cinzel', serif;">1. Il Pannello del Docente (Dossier e Classi)</h3>
+            <h2 style="color: var(--accent-gold); font-family: 'Julius Sans One', sans-serif; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 20px; text-align: center;">Regolamento del Docente (Modalità Scuola)</h2>
+            <h3 style="color: var(--accent-crimson); font-family: 'Julius Sans One', sans-serif;">1. Il Pannello del Docente (Dossier e Classi)</h3>
             <p class="text-on-parchment-muted" style="margin-bottom: 1.5rem; line-height: 1.6;">In veste di Sommo Docente, hai il pieno controllo sulle tue aule e sui tuoi studenti. Dal tuo pannello puoi creare nuove "Classi", ottenere un Codice univoco da condividere con i tuoi alunni per l'iscrizione, e monitorare l'andamento didattico e la Classifica della classe in tempo reale.</p>
             
-            <h3 style="color: var(--accent-crimson); font-family: 'Cinzel', serif;">2. Assegnazione Livelli e Nodi</h3>
+            <h3 style="color: var(--accent-crimson); font-family: 'Julius Sans One', sans-serif;">2. Assegnazione Livelli e Nodi</h3>
             <p class="text-on-parchment-muted" style="margin-bottom: 1.5rem; line-height: 1.6;">Per ogni classe devi stabilire il target di profondità (Esploratore per la sec. di I grado; Giurista per il biennio; Magistrato per il triennio). Puoi anche decidere il ritmo del gioco, impostando uno sblocco "Automatico" per i casi successivi o "Manuale" per allinearli alle lezioni in classe.</p>
 
-            <h3 style="color: var(--accent-crimson); font-family: 'Cinzel', serif;">3. La Valutazione dei Verdetti</h3>
+            <h3 style="color: var(--accent-crimson); font-family: 'Julius Sans One', sans-serif;">3. La Valutazione dei Verdetti</h3>
             <p class="text-on-parchment-muted" style="margin-bottom: 1.5rem; line-height: 1.6;">Sei tu il giudice ultimo dell'argomentazione espressa dai ragazzi. Nel Dossier troverai le sentenze: approvandole garantirai XP e badge, mentre respingendole potrai fornire un feedback formativo obbligando lo studente a rielaborare la motivazione.</p>
           </div>
         </section>
@@ -591,7 +596,7 @@
             <div class="student-header" style="display: grid; grid-template-columns: 100px 1fr auto; gap: 20px; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 20px; margin-bottom: 24px;">
               <div class="student-avatar-img" id="stud-dashboard-avatar" style="width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--accent-gold); background: #111; display: flex; align-items: center; justify-content: center; font-size: 3rem;">🏛️</div>
               <div class="student-name-level">
-                <h3 id="stud-dashboard-name" style="font-family: 'Cinzel', serif; font-size: 1.8rem; color: var(--accent-gold); margin:0;">Nome Studente</h3>
+                <h3 id="stud-dashboard-name" style="font-family: 'Julius Sans One', sans-serif; font-size: 1.8rem; color: var(--accent-gold); margin:0;">Nome Studente</h3>
                 <p style="color: #aaa; margin: 5px 0;">Livello: <strong id="stud-dashboard-level" style="color: var(--accent-gold);">1</strong></p>
               </div>
               <div class="student-currency" style="text-align: right;">
@@ -615,7 +620,7 @@
           <div class="dashboard-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; margin-top: 24px;">
             <!-- Statistiche Studente -->
             <div class="glass-panel" style="background: rgba(26,22,20,0.9); border: 1px solid var(--border-color); padding: 20px; border-radius: 8px;">
-              <h3 class="panel-title" style="font-family: 'Cinzel', serif; color: var(--accent-crimson); margin-bottom: 15px;"><i class="fa-solid fa-scale-balanced" style="color: var(--accent-gold);"></i> Statistiche</h3>
+              <h3 class="panel-title" style="font-family: 'Julius Sans One', sans-serif; color: var(--accent-crimson); margin-bottom: 15px;"><i class="fa-solid fa-scale-balanced" style="color: var(--accent-gold);"></i> Statistiche</h3>
               <div>
                 <div class="stat-row" style="display: flex; justify-content: space-between; padding: 12px 16px; background: rgba(255,255,255,0.03); border: 1px solid #333; border-radius: 8px; margin-bottom: 10px;">
                   <span class="stat-label">🧠 Logica</span>
@@ -638,7 +643,7 @@
 
             <!-- Accesso alla Mappa -->
             <div class="glass-panel" style="background: rgba(26,22,20,0.9); border: 1px solid var(--border-color); padding: 20px; border-radius: 8px; text-align: center; display: flex; flex-direction: column; justify-content: center;">
-              <h3 class="panel-title" style="font-family: 'Cinzel', serif; color: var(--accent-gold); margin-bottom: 15px;"><i class="fa-solid fa-gavel"></i> Il Tribunale ti attende</h3>
+              <h3 class="panel-title" style="font-family: 'Julius Sans One', sans-serif; color: var(--accent-gold); margin-bottom: 15px;"><i class="fa-solid fa-gavel"></i> Il Tribunale ti attende</h3>
               <p style="color: #aaa; margin-bottom: 20px;">Esplora i fascicoli disponibili e inizia la tua arringa difensiva o d'accusa.</p>
               <button class="btn btn-primary" onclick="showView('view-map')" style="font-size: 1.1rem; padding: 15px 30px; width: 100%;">Entra nel Tribunale</button>
             </div>
@@ -648,7 +653,7 @@
         <!-- ARCHIVIO (Storico Verdetti) -->
         <section id="view-archivio" class="view animate-fade-in" style="background: url('assets/Immagini/pergamena_vuota.jpg') no-repeat center center; background-size: cover; color: #222;">
             <div style="background: rgba(255,255,255,0.7); min-height: 100%; padding: 20px;">
-                <h2 style="font-size: 2.5rem; text-shadow: 0 0 10px rgba(0,0,0,0.2); font-family: 'Cinzel', serif; color: var(--accent-crimson); text-align: center; margin-bottom: 20px;">
+                <h2 style="font-size: 2.5rem; text-shadow: 0 0 10px rgba(0,0,0,0.2); font-family: 'Julius Sans One', sans-serif; color: var(--accent-crimson); text-align: center; margin-bottom: 20px;">
                     <i class="fa-solid fa-scroll"></i> Il Tuo Archivio Segreto
                 </h2>
                 <p style="text-align: center; font-style: italic; color: #555; margin-bottom: 30px;">
@@ -665,7 +670,7 @@
         <!-- AULA DEL TRIBUNALE (Processo Attivo) -->
         <section id="view-active-trial" class="view flex-view animate-fade-in" style="padding-top: 10px; height: 100%; flex-direction: column;">
           <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(212,175,55,0.2); padding-bottom: 10px; margin-bottom: 20px;">
-            <h3 id="trial-title" class="text-gold" style="font-family: 'Cinzel', serif; margin: 0; font-size: 1.5rem;">Titolo Processo</h3>
+            <h3 id="trial-title" class="text-gold" style="font-family: 'Julius Sans One', sans-serif; margin: 0; font-size: 1.5rem;">Titolo Processo</h3>
             <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.8rem; flex-shrink: 0;" id="btn-abort-trial" onclick="showView('view-map')">
               <i class="fa-solid fa-xmark"></i> Abbandona
             </button>

@@ -305,7 +305,7 @@ export const EroiGame = {
 
                     trialContent.innerHTML = `
                         <div style="text-align:center;">
-                            <h2 class="text-gold" style="font-size: 2.2rem; margin-bottom: 15px; font-family: 'Cinzel', serif;">Il Verdetto Popolare</h2>
+                            <h2 class="text-gold" style="font-size: 2.2rem; margin-bottom: 15px; font-family: 'Julius Sans One', sans-serif;">Il Verdetto Popolare</h2>
                             
                             <div style="background: rgba(0,0,0,0.6); padding: 25px; border-radius: 10px; border: 1px solid #444; max-width: 600px; margin: 0 auto; text-align: left;">
                                 <h4 style="margin-top:0; color: #fff; text-align: center; border-bottom: 1px solid #555; padding-bottom: 10px;">Statistiche delle Decisioni (${stats.total} Voti)</h4>

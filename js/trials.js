@@ -52,7 +52,7 @@ export class CommediaTrials {
                 ? window.LiveEditor.renderBtn(qKey, { text: qData.text, hint: qData.hint })
                 : '';
 
-            let html = `<h4 style="color: var(--accent-crimson); margin-bottom: 15px; font-family: 'Cinzel', serif; display: flex; justify-content: space-between; align-items: center;"><span>Fase ${index + 1}: ${qData.text}</span> ${editBtn}</h4>`;
+            let html = `<h4 style="color: var(--accent-crimson); margin-bottom: 15px; font-family: 'Julius Sans One', sans-serif; display: flex; justify-content: space-between; align-items: center;"><span>Fase ${index + 1}: ${qData.text}</span> ${editBtn}</h4>`;
             html += `<div style="display: flex; flex-direction: column; gap: 10px;">`;
             
             qData.options.forEach((opt, optIndex) => {
@@ -218,7 +218,7 @@ export class CommediaTrials {
             card.style.border = '1px solid var(--accent-gold)';
             
             card.innerHTML = `
-                <h3 style="color: var(--accent-crimson); font-family: 'Cinzel', serif; margin-bottom: 10px;">${trial.title}</h3>
+                <h3 style="color: var(--accent-crimson); font-family: 'Julius Sans One', sans-serif; margin-bottom: 10px;">${trial.title}</h3>
                 <div style="background: rgba(255,255,255,0.8); padding: 15px; border-radius: 8px; color: #111; font-size: 0.95rem;">
                     ${trial.dossierHtml || '<p>Nessun materiale aggiuntivo per questo caso.</p>'}
                 </div>

@@ -340,7 +340,7 @@
                 <div class="dark-panel" style="background: rgba(26,22,20,0.9); border: 1px solid var(--border-color); padding: 20px; border-radius: 8px; margin-bottom: 20px; grid-column: 1 / -1;">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
                         <div>
-                            <h3 class="text-gold" style="font-family: 'Cinzel', serif; margin: 0; font-size: 1.15rem; display: flex; align-items: center; gap: 8px; text-transform: uppercase;">
+                            <h3 class="text-gold" style="font-family: 'Julius Sans One', sans-serif; margin: 0; font-size: 1.15rem; display: flex; align-items: center; gap: 8px; text-transform: uppercase;">
                                 <i class="fa-solid fa-pen-to-square"></i> Live Editor Didattico (Correzioni al Volo)
                             </h3>
                             <p style="font-size: 0.85rem; color: #aaa; margin: 4px 0 0 0;">

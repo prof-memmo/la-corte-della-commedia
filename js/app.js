@@ -1250,7 +1250,7 @@ async function renderArchivio() {
         html += `
         <div style="background: rgba(255, 255, 255, 0.9); padding: 20px; border-radius: 10px; border-left: 6px solid ${badgeColor}; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin-bottom: 15px; text-align: left;">
             <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #ddd; padding-bottom: 10px; margin-bottom: 15px;">
-                <h4 style="margin: 0; font-family: 'Cinzel', serif; font-size: 1.3rem; color: #222;">
+                <h4 style="margin: 0; font-family: 'Julius Sans One', sans-serif; font-size: 1.3rem; color: #222;">
                     Caso: ${window.EroiDB.cache.cases.find(c => c.id === v.caseId)?.characterName || v.caseId}
                 </h4>
                 <span style="background: ${badgeColor}; color: ${v.verdict==='conferma'?'#000':'#fff'}; padding: 5px 12px; border-radius: 20px; font-size: 0.9rem; font-weight: bold; text-transform: uppercase;">
