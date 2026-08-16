@@ -1211,9 +1211,7 @@ window.updateUserRole = async function(uid, newRole) {
 
 
 window.showContattiModal = function() {
-    if (typeof openSharedModal === 'function') {
-        openSharedModal('contatti');
-    }
+    window.open('https://prof-memmo.github.io/games/contatti.html', '_blank');
 };
 
 async function renderArchivio() {
