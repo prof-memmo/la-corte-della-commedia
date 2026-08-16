@@ -113,9 +113,9 @@
 
         scanAndInjectPencils: function() {
             if (!this.isAdmin()) return;
-            // Inietta matite su schede processo
-            document.querySelectorAll('.processo-card, .case-card, .accusa-box').forEach(card => {
-                const titleEl = card.querySelector('.case-title, h3, h4');
+            // Inietta matite su schede processo, casi e capi d'accusa
+            document.querySelectorAll('.processo-card, .case-card, .accusa-box, .case-detail-header').forEach(card => {
+                const titleEl = card.querySelector('.case-title, h2, h3, h4');
                 if (titleEl && !titleEl.querySelector('.live-edit-quick-btn')) {
                     const caseId = card.getAttribute('data-case-id') || titleEl.textContent.trim();
                     const btn = document.createElement('button');
@@ -126,6 +126,24 @@
                     btn.onclick = (e) => {
                         e.stopPropagation();
                         window.LiveEditor.openModal(`case_${caseId.toLowerCase().replace(/[^a-z0-9]/g, '_')}`, '');
+                    };
+                    titleEl.appendChild(btn);
+                }
+            });
+
+            // Inietta matite su minigiochi, arringhe, prove, testimonianze e verdetto
+            document.querySelectorAll('.minigame-wrapper, .minigame-card, .arringa-box, .dialogo-container, .prova-item, .verdetto-card').forEach((el, idx) => {
+                const titleEl = el.querySelector('.minigame-title, .arringa-header, .dialogo-speaker, h3, h4');
+                if (titleEl && !titleEl.querySelector('.live-edit-quick-btn')) {
+                    const elId = el.getAttribute('data-id') || `corte_game_${idx}`;
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.className = 'live-edit-quick-btn';
+                    btn.innerHTML = '✏️';
+                    btn.title = 'Modifica testo/dialogo di questa sezione';
+                    btn.onclick = (e) => {
+                        e.stopPropagation();
+                        window.LiveEditor.openModal(`corte_${elId}`, '');
                     };
                     titleEl.appendChild(btn);
                 }
