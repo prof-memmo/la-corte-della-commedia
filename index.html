@@ -242,7 +242,7 @@
           <div class="tabs-header" style="display: flex; border-bottom: 1px solid #333; margin-top: 2rem; margin-bottom: 2rem;">
             <button class="tab-btn active" onclick="switchAdminTab('fascicoli')" id="a-btn-fascicoli" style="flex: 1; background: transparent; border: none; color: var(--accent-gold); padding: 15px; cursor: pointer; border-bottom: 2px solid var(--accent-gold);">Archivio Fascicoli</button>
             <button class="tab-btn" onclick="switchAdminTab('liveeditor')" id="a-btn-liveeditor" style="flex: 1; background: transparent; border: none; color: #888; padding: 15px; cursor: pointer;">✏️ Live Editor</button>
-            <button class="tab-btn" onclick="switchAdminTab('sistema')" id="a-btn-sistema" style="flex: 1; background: transparent; border: none; color: #888; padding: 15px; cursor: pointer;">Backup &amp; Hub</button>
+            <button class="tab-btn" onclick="switchAdminTab('sistema')" id="a-btn-sistema" style="flex: 1; background: transparent; border: none; color: #888; padding: 15px; cursor: pointer;">⚙️ Impostazioni &amp; Sistema</button>
           </div>
           
           <!-- TAB LIVE EDITOR -->
@@ -266,33 +266,43 @@
             </div>
           </div>
 
-          <!-- TAB SISTEMA & HUB -->
+          <!-- TAB SISTEMA & IMPOSTAZIONI -->
           <div id="a-tab-sistema" class="admin-tab-content" style="display: none;">
-            <!-- Live Editor Didattico (Correzioni al Volo) -->
-            <div id="admin-live-editor-container"></div>
+            <div style="margin-bottom: 20px;">
+              <label style="font-size: 0.85rem; color: #888; display: block; margin-bottom: 6px;">Account Amministratore</label>
+              <input type="text" id="admin-corte-email" class="input-control" value="prof.memmo@gmail.com" readonly style="width: 100%; padding: 10px 14px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.3); color: #aaa;">
+            </div>
 
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
-              <!-- Backup e Ripristino -->
-              <div class="dark-panel" style="background: rgba(26,22,20,0.9); border: 1px solid var(--border-color); padding: 20px; border-radius: 8px;">
-                <h3 class="text-gold" style="font-family: 'Cinzel', serif; border-bottom: 1px solid var(--border-gold); padding-bottom: 10px; margin-bottom: 15px; text-transform: uppercase;">Backup &amp; Ripristino</h3>
-                <p style="color: #aaa; font-size: 0.85rem; margin-bottom: 20px; line-height: 1.4;">
-                  Salva o ripristina lo stato dei processi, dei verdetti e dei fascicoli del tribunale.
-                </p>
-                <div style="display: flex; flex-direction: column; gap: 10px;">
-                  <button class="btn" style="background: transparent; border: 1px solid var(--accent-gold); color: var(--accent-gold); padding: 10px; font-weight: bold; border-radius: 5px;" onclick="alert('Esportazione JSON in corso... (Mock)')"><i class="fa-solid fa-download"></i> Esporta Database JSON</button>
-                  <button class="btn" style="background: transparent; border: 1px solid var(--accent-gold); color: var(--accent-gold); padding: 10px; font-weight: bold; border-radius: 5px;" onclick="alert('Ripristino JSON in corso... (Mock)')"><i class="fa-solid fa-upload"></i> Ripristina Database JSON</button>
-                </div>
+            <!-- 1. Diagnostica e Notifiche -->
+            <div style="margin-bottom: 25px; padding: 15px; border: 1px solid rgba(212,175,55,0.25); border-radius: 12px; background: rgba(26,22,20,0.8);">
+              <h3 style="color: var(--accent-gold); margin-top:0; font-size: 1.05rem;"><i class="fa-solid fa-wrench"></i> Diagnostica &amp; Sistema</h3>
+              <p style="font-size: 0.85rem; color: #888; margin-bottom: 15px;">Strumenti di verifica connessione, gestione avvisi e backup del tribunale.</p>
+              <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                <button type="button" class="btn" style="background: rgba(255,255,255,0.1); color: var(--accent-gold); border: 1px solid var(--accent-gold); padding: 8px 16px; font-size: 0.85rem; border-radius: 6px;" onclick="window.testConnessioneAdmin()"><i class="fa-solid fa-satellite-dish"></i> Test Connessione Database</button>
+                <button type="button" class="btn" style="background: var(--accent-gold); color: #000; padding: 8px 16px; font-size: 0.85rem; font-weight: bold; border-radius: 6px;" onclick="window.resetNotificheLette()"><i class="fa-solid fa-bell-slash"></i> Reset Notifiche Non Lette</button>
               </div>
+            </div>
 
-              <!-- Hub Gestione Utenti -->
-              <div class="dark-panel" style="background: rgba(26,22,20,0.9); border: 1px solid var(--border-color); padding: 20px; border-radius: 8px;">
-                <h3 class="text-gold" style="font-family: 'Cinzel', serif; border-bottom: 1px solid var(--border-gold); padding-bottom: 10px; margin-bottom: 15px; text-transform: uppercase;"><i class="fa-solid fa-users-gear"></i> Gestione Utenti Ecosistema</h3>
-                <p style="color: #aaa; font-size: 0.85rem; line-height: 1.5; margin-bottom: 15px;">
-                  Tutti gli utenti (Docenti, Studenti, Pellegrini), l'approvazione degli accessi e le statistiche sono ora gestiti centralmente nell'<b>Hub Generale Didattico</b>.
-                </p>
-                <a href="https://prof-memmo.github.io/prof-memmo-gestione-siti/" target="_blank" class="btn" style="background: var(--accent-gold); color: black; font-weight: bold; text-decoration: none; padding: 10px 18px; border-radius: 6px; display: inline-block;">
-                  Apri Hub Amministrazione &rarr;
-                </a>
+            <!-- 2. Danger Zone: Gestione Punteggi Stagionali -->
+            <div style="margin-bottom: 25px; padding: 15px; border: 1px solid rgba(231, 76, 60, 0.3); border-radius: 12px; background: rgba(231, 76, 60, 0.05);">
+              <h3 style="color: #e74c3c; margin-top:0; font-size: 1.05rem;"><i class="fa-solid fa-rotate-left"></i> Reset Validazioni Stagione</h3>
+              <p style="font-size: 0.85rem; color: #888; margin-bottom: 15px;">Azzera contemporaneamente tutti i verdetti emessi e i processi completati per la nuova stagione mantenendo inalterati studenti, docenti e fascicoli.</p>
+              <button type="button" class="btn" style="background: #e74c3c; color: white; border: none; padding: 8px 18px; font-size: 0.85rem; border-radius: 6px; font-weight: bold;" onclick="window.azzeraValidazioniStagione()"><i class="fa-solid fa-rotate-left"></i> Azzera Tutti i Verdetti / Processi</button>
+            </div>
+
+            <!-- 3. Danger Zone: Archiviazione Annuale -->
+            <div style="margin-bottom: 25px; padding: 15px; border: 1px solid #e74c3c; border-radius: 12px; background: rgba(231, 76, 60, 0.1);">
+              <h3 style="color: #e74c3c; margin-top:0; font-size: 1.05rem;"><i class="fa-solid fa-box-archive"></i> Archiviazione Annuale La Corte della Commedia</h3>
+              <p style="font-size: 0.85rem; margin-bottom: 15px; color: #ddd;">Salva una "fotografia" della classifica finale e archivia i verdetti dell'anno scolastico in corso. Potrà essere ripristinata dall'Archivio Storico in caso di necessità.</p>
+              <button type="button" class="btn" style="background: transparent; border: 1px solid #e74c3c; color: #e74c3c; padding: 8px 18px; font-size: 0.85rem; border-radius: 6px; font-weight: bold;" onclick="window.archiviaAnnoCorrente()"><i class="fa-solid fa-box-archive"></i> Esegui Archiviazione Anno</button>
+            </div>
+
+            <!-- 4. Archivio Storico -->
+            <div style="padding: 15px; border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; background: rgba(26,22,20,0.8);">
+              <h3 style="color: var(--accent-gold); margin-top:0; font-size: 1.05rem;"><i class="fa-solid fa-clock-rotate-left"></i> Archivio Storico</h3>
+              <p style="font-size: 0.85rem; margin-bottom: 15px; color: #888;">Consulta le classifiche dei processi passati o ripristina un anno archiviato per errore.</p>
+              <div id="admin-historical-archives-list">
+                <p style="font-size: 0.85rem; color: #888;">Caricamento archivio in corso...</p>
               </div>
             </div>
           </div>
@@ -736,9 +746,9 @@
     <script src="js/mockData.js?v=12"></script>
     <script type="module" src="js/trials.js?v=12"></script>
     <script src="js/audio.js?v=12"></script>
-    <script type="module" src="js/dashboard/admin-logic.js?v=12"></script>
-    <script src="js/live-editor.js?v=17"></script>
-    <script type="module" src="js/app.js?v=17"></script>
+    <script type="module" src="js/dashboard/admin-logic.js?v=18"></script>
+    <script src="js/live-editor.js?v=18"></script>
+    <script type="module" src="js/app.js?v=18"></script>
       <!-- TUTORIAL MODAL (Miniguida) -->
     <div id="modal-miniguida" class="modal-overlay" style="display: none; align-items: center; justify-content: center; z-index: 9999; background: rgba(15,23,42,0.8); backdrop-filter: blur(4px); position: fixed; inset: 0; padding: 20px;">
         <div class="modal-content" style="background: white; border-radius: 24px; width: 100%; max-width: 900px; display: flex; overflow: hidden; position: relative; max-height: 90vh; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);">
