@@ -1,5 +1,5 @@
 window.switchAdminTab = function(tabName) {
-    ['utenti', 'scuole', 'sistema', 'fascicoli'].forEach(id => {
+    ['utenti', 'scuole', 'sistema', 'fascicoli', 'liveeditor'].forEach(id => {
         const btn = document.getElementById('a-btn-' + id);
         if (btn) {
             btn.classList.remove('active');
@@ -19,7 +19,11 @@ window.switchAdminTab = function(tabName) {
     const tabActive = document.getElementById('a-tab-' + tabName);
     if (tabActive) tabActive.style.display = 'block';
     
-    if (tabName === 'utenti') {
+    if (tabName === 'liveeditor' || tabName === 'sistema') {
+        if (window.LiveEditor && typeof window.LiveEditor.renderAdminPanel === 'function') {
+            window.LiveEditor.renderAdminPanel('admin-live-editor-container');
+        }
+    } else if (tabName === 'utenti') {
         loadAdminUsers();
     } else if (tabName === 'scuole') {
         renderAdminSchoolsList();

@@ -241,7 +241,13 @@
           
           <div class="tabs-header" style="display: flex; border-bottom: 1px solid #333; margin-top: 2rem; margin-bottom: 2rem;">
             <button class="tab-btn active" onclick="switchAdminTab('fascicoli')" id="a-btn-fascicoli" style="flex: 1; background: transparent; border: none; color: var(--accent-gold); padding: 15px; cursor: pointer; border-bottom: 2px solid var(--accent-gold);">Archivio Fascicoli</button>
+            <button class="tab-btn" onclick="switchAdminTab('liveeditor')" id="a-btn-liveeditor" style="flex: 1; background: transparent; border: none; color: #888; padding: 15px; cursor: pointer;">✏️ Live Editor</button>
             <button class="tab-btn" onclick="switchAdminTab('sistema')" id="a-btn-sistema" style="flex: 1; background: transparent; border: none; color: #888; padding: 15px; cursor: pointer;">Backup &amp; Hub</button>
+          </div>
+          
+          <!-- TAB LIVE EDITOR -->
+          <div id="a-tab-liveeditor" class="admin-tab-content" style="display: none;">
+            <div id="admin-live-editor-container"></div>
           </div>
           
           <!-- TAB FASCICOLI (ATTIVA) -->
@@ -262,6 +268,9 @@
 
           <!-- TAB SISTEMA & HUB -->
           <div id="a-tab-sistema" class="admin-tab-content" style="display: none;">
+            <!-- Live Editor Didattico (Correzioni al Volo) -->
+            <div id="admin-live-editor-container"></div>
+
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
               <!-- Backup e Ripristino -->
               <div class="dark-panel" style="background: rgba(26,22,20,0.9); border: 1px solid var(--border-color); padding: 20px; border-radius: 8px;">
@@ -728,8 +737,8 @@
     <script type="module" src="js/trials.js?v=12"></script>
     <script src="js/audio.js?v=12"></script>
     <script type="module" src="js/dashboard/admin-logic.js?v=12"></script>
-    <script src="js/live-editor.js?v=16"></script>
-    <script type="module" src="js/app.js?v=16"></script>
+    <script src="js/live-editor.js?v=17"></script>
+    <script type="module" src="js/app.js?v=17"></script>
       <!-- TUTORIAL MODAL (Miniguida) -->
     <div id="modal-miniguida" class="modal-overlay" style="display: none; align-items: center; justify-content: center; z-index: 9999; background: rgba(15,23,42,0.8); backdrop-filter: blur(4px); position: fixed; inset: 0; padding: 20px;">
         <div class="modal-content" style="background: white; border-radius: 24px; width: 100%; max-width: 900px; display: flex; overflow: hidden; position: relative; max-height: 90vh; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);">
