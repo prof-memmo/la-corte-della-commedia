@@ -41,7 +41,7 @@
 
         init: async function() {
             const db = window.fbDb || window.db || (typeof firebase !== 'undefined' && firebase.firestore ? firebase.firestore() : null);
-            if (!db) return;
+            if (!db || typeof db.collection !== 'function') return;
             try {
                 const snapshot = await db.collection('hub_didactic_overrides')
                     .where('platform', '==', this.platformKey)
