@@ -85,6 +85,67 @@ h6 { font-size: 1.05rem; }
   }
 }
 
+/* ==========================================================================
+   UNIFIED DASHBOARD STYLES (STILE PALESTRA DI RIFLESSIONE)
+   ========================================================================== */
+#view-teacher-dashboard, #view-admin-dashboard {
+  background: #f8fafc !important;
+  color: #1e293b !important;
+  border-radius: 24px !important;
+  padding: 2rem !important;
+  margin: 1.5rem auto !important;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.06) !important;
+}
+
+#view-teacher-dashboard .glass-panel, #view-admin-dashboard .glass-panel,
+#view-teacher-dashboard .dark-panel, #view-admin-dashboard .dark-panel {
+  background: #ffffff !important;
+  color: #1e293b !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 20px !important;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.03) !important;
+}
+
+#view-teacher-dashboard .stat-card-interactive, 
+#view-admin-dashboard .admin-stat-card,
+.stat-card-interactive, .admin-stat-card {
+  background: #ffffff !important;
+  border-radius: 20px !important;
+  padding: 1.2rem !important;
+  text-align: center !important;
+  border: 2px solid transparent !important;
+  cursor: pointer !important;
+  transition: all 0.25s ease !important;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.04) !important;
+}
+
+#view-teacher-dashboard .stat-card-interactive:hover,
+#view-admin-dashboard .admin-stat-card:hover {
+  transform: translateY(-3px) !important;
+  box-shadow: 0 15px 30px rgba(0,0,0,0.08) !important;
+  border-color: #cbd5e1 !important;
+}
+
+#view-teacher-dashboard .stat-card-interactive.active,
+#view-admin-dashboard .admin-stat-card.active {
+  border-color: var(--accent-gold) !important;
+  box-shadow: 0 12px 30px rgba(212, 175, 55, 0.18) !important;
+  transform: translateY(-3px) !important;
+}
+
+#view-teacher-dashboard .stat-card-interactive h4,
+#view-admin-dashboard .admin-stat-card h4 {
+  color: var(--accent-gold) !important;
+  font-weight: 900 !important;
+}
+
+#view-teacher-dashboard .stat-card-interactive span,
+#view-admin-dashboard .admin-stat-card span {
+  color: #64748b !important;
+  font-weight: 800 !important;
+  text-transform: uppercase !important;
+}
+
 .app-container {
   display: flex;
   flex-direction: column;
