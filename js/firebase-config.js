@@ -19,6 +19,13 @@ const db = getFirestore(app);
 const googleProvider = new GoogleAuthProvider();
 googleProvider.setCustomParameters({ prompt: 'select_account' });
 
+// Esponi per compatibilità globale, Hub Guard e Legal Modal
+if (typeof firebase !== 'undefined' && typeof firebase.initializeApp === 'function' && (!firebase.apps || !firebase.apps.length)) {
+    try {
+        firebase.initializeApp(firebaseConfig);
+    } catch(e) {}
+}
+
 function getPrefixedPath(path) {
   if (!path || typeof path !== 'string') return path;
   // Eccezioni per le collezioni globali dell'Hub o di altri giochi
