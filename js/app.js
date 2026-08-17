@@ -578,12 +578,14 @@ async function selectRole(role) {
 // Esponi per l'uso nell'HTML
 window.showView = showView;
 window.app = {
+  selectedCorteAvatar: 'assets/avatars/6.png',
   openEditProfileModal: function() {
     if (!firebase.auth().currentUser) return;
     const modal = document.getElementById('edit-profile-modal');
     const nameInput = document.getElementById('edit-profile-name');
     const schoolGroup = document.getElementById('edit-profile-school-group');
     const schoolInput = document.getElementById('edit-profile-school');
+    const avatarGrid = document.getElementById('corte-edit-avatar-grid');
     
     const profile = window.EroiDB && window.EroiDB.cache ? window.EroiDB.cache.userProfile : null;
     if (!profile) return;
@@ -598,9 +600,37 @@ window.app = {
     }
     
     nameInput.value = profile.displayName || '';
+    
+    const currentAvatar = profile.avatar || 'assets/avatars/6.png';
+    this.selectedCorteAvatar = currentAvatar;
+
+    if (avatarGrid) {
+        avatarGrid.innerHTML = [6,7,8,9,10,11,12,13,14,15,16].map(num => `
+            <div class="corte-avatar-opt ${currentAvatar === `assets/avatars/${num}.png` ? 'active' : ''}" 
+                 onclick="window.app.selectCorteAvatar(this, 'assets/avatars/${num}.png')"
+                 style="width:46px; height:46px; border-radius:50%; border:3px solid ${currentAvatar === `assets/avatars/${num}.png` ? 'var(--accent-gold)' : 'transparent'}; cursor:pointer; overflow:hidden; transition:transform 0.2s; box-shadow:0 2px 6px rgba(0,0,0,0.4);">
+                <img src="assets/avatars/${num}.png" alt="Avatar ${num}" style="width:100%; height:100%; object-fit:cover;">
+            </div>
+        `).join('');
+    }
+
     modal.classList.remove('hidden');
     const dropdown = document.getElementById('user-dropdown');
     if (dropdown) dropdown.classList.add('hidden');
+  },
+
+  selectCorteAvatar: function(el, avatarPath) {
+      this.selectedCorteAvatar = avatarPath;
+      document.querySelectorAll('.corte-avatar-opt').forEach(opt => {
+          opt.classList.remove('active');
+          opt.style.borderColor = 'transparent';
+          opt.style.transform = 'scale(1)';
+      });
+      if (el) {
+          el.classList.add('active');
+          el.style.borderColor = 'var(--accent-gold)';
+          el.style.transform = 'scale(1.1)';
+      }
   },
 
   saveProfileData: async function() {
@@ -619,15 +649,30 @@ window.app = {
     const isTeacher = (profile.role === 'teacher' || profile.role === 'admin');
     
     try {
-      const updateData = { displayName: nameInput };
+      const updateData = { 
+          displayName: nameInput,
+          avatar: this.selectedCorteAvatar || 'assets/avatars/6.png'
+      };
       if (isTeacher) {
         updateData.school = schoolInput;
       }
-      await updateDoc(doc(db, 'users', user.uid), updateData);
+      
+      // Salva nel database
+      await window.db.collection('corte_users').doc(user.email.toLowerCase()).set(updateData, { merge: true });
       
       // Update local cache
       profile.displayName = nameInput;
+      profile.avatar = this.selectedCorteAvatar;
       if (isTeacher) profile.school = schoolInput;
+      
+      alert('Profilo e avatar aggiornati con successo!');
+      document.getElementById('edit-profile-modal').classList.add('hidden');
+      if (window.renderHeader) window.renderHeader();
+    } catch (err) {
+      console.error(err);
+      alert('Errore durante il salvataggio: ' + err.message);
+    }
+  },
       
       document.getElementById('edit-profile-modal').classList.add('hidden');
       alert('Profilo aggiornato con successo!');
