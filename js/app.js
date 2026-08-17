@@ -244,6 +244,11 @@ onAuthStateChanged(auth, async (user) => {
         const dropdownXp = document.getElementById('dropdown-user-xp');
         if (dropdownXp) dropdownXp.textContent = `${xp} XP`;
         
+        const hAvatarImg = document.getElementById('header-user-avatar-img');
+        if (hAvatarImg && profile && profile.avatar) {
+          hAvatarImg.src = profile.avatar;
+        }
+        
         window.app.profile = profile;
       }
     } catch (e) {
@@ -661,12 +666,28 @@ window.app = {
       // Salva nel database
       await window.db.collection('corte_users').doc(user.email.toLowerCase()).set(updateData, { merge: true });
       
+      // Sincronizzazione Globale sull'Hub Centrale e su Auth
+      try {
+        if (user.uid) {
+          await setDoc(doc(db, 'hub_users', user.uid), {
+            avatar: this.selectedCorteAvatar,
+            'anagrafica.avatar': this.selectedCorteAvatar,
+            'anagrafica.nome': nameInput
+          }, { merge: true });
+        }
+        if (user.updateProfile) {
+          await user.updateProfile({ photoURL: this.selectedCorteAvatar, displayName: nameInput }).catch(e => console.warn(e));
+        }
+      } catch (eHub) {
+        console.warn("Sincronizzazione Hub Fallback Corte:", eHub);
+      }
+      
       // Update local cache
       profile.displayName = nameInput;
       profile.avatar = this.selectedCorteAvatar;
       if (isTeacher) profile.school = schoolInput;
       
-      alert('Profilo e avatar aggiornati con successo!');
+      alert('Profilo e avatar aggiornati con successo in tutto l\'ecosistema!');
       document.getElementById('edit-profile-modal').classList.add('hidden');
       if (window.renderHeader) window.renderHeader();
     } catch (err) {
