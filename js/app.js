@@ -14,7 +14,8 @@ const state = {
 // Gestione delle Viste (SPA manuale)
 function showView(viewId) {
   document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
-  document.getElementById(viewId).classList.add('active');
+  const target = document.getElementById(viewId);
+  if (target) target.classList.add('active');
   
   if (viewId === 'view-regolamento') {
     let currentRole = 'student';
