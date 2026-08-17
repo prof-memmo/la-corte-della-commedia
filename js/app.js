@@ -182,7 +182,7 @@ onAuthStateChanged(auth, async (user) => {
       hubRole = isSuperAdmin ? 'admin' : 'student';
     }
 
-    welcomeMessage.textContent = `Bentornato, Giudice ${hubName}`;
+    if (welcomeMessage) welcomeMessage.textContent = `Bentornato, Giudice ${hubName}`;
     
     // Mostra il menu utente
     const userMenu = document.getElementById('user-menu-container');
