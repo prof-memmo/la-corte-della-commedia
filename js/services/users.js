@@ -1,12 +1,12 @@
-import EroiDB from "../db.js";
+import { cache } from "./cache.js";
 import { db, doc, collection, getDoc, getDocs, setDoc, updateDoc, query, where, orderBy, or, arrayUnion } from "../firebase-config.js";
 
 export const getUserProfile = async function(uid) {
         try {
             const docSnap = await getDoc(doc(db, "users", uid));
             if (docSnap.exists()) {
-                EroiDB.cache.userProfile = docSnap.data();
-                return EroiDB.cache.userProfile;
+                cache.userProfile = docSnap.data();
+                return cache.userProfile;
             }
             return null;
         } catch (e) {
@@ -16,11 +16,11 @@ export const getUserProfile = async function(uid) {
     };
 
 export const updateXP = async function(uid, amount) {
-        if (!EroiDB.cache.userProfile) return;
-        const newXp = (EroiDB.cache.userProfile.xp || 0) + amount;
+        if (!cache.userProfile) return;
+        const newXp = (cache.userProfile.xp || 0) + amount;
         try {
             await updateDoc(doc(db, "users", uid), { xp: newXp });
-            EroiDB.cache.userProfile.xp = newXp;
+            cache.userProfile.xp = newXp;
             return newXp;
         } catch (e) {
             console.error("Errore aggiornamento XP:", e);

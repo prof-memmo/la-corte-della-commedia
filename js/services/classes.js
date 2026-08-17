@@ -1,4 +1,3 @@
-import EroiDB from "../db.js";
 import { db, doc, collection, getDoc, getDocs, setDoc, updateDoc, query, where, orderBy, or, arrayUnion } from "../firebase-config.js";
 
 export const saveClass = async function(classData) {

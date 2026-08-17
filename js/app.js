@@ -687,25 +687,18 @@ window.app = {
       profile.avatar = this.selectedCorteAvatar;
       if (isTeacher) profile.school = schoolInput;
       
+      // Refresh UI
+      const headerName = document.getElementById('header-user-name');
+      if (headerName) headerName.textContent = nameInput;
+      const hAvatarImg = document.getElementById('header-user-avatar-img');
+      if (hAvatarImg && profile.avatar) hAvatarImg.src = profile.avatar;
+      
       alert('Profilo e avatar aggiornati con successo in tutto l\'ecosistema!');
       document.getElementById('edit-profile-modal').classList.add('hidden');
       if (window.renderHeader) window.renderHeader();
     } catch (err) {
       console.error(err);
       alert('Errore durante il salvataggio: ' + err.message);
-    }
-  },
-      
-      document.getElementById('edit-profile-modal').classList.add('hidden');
-      alert('Profilo aggiornato con successo!');
-      
-      // Refresh UI
-      const headerName = document.getElementById('header-user-name');
-      if (headerName) headerName.textContent = nameInput;
-      
-    } catch (err) {
-      console.error(err);
-      alert('Errore durante il salvataggio.');
     }
   },
   switchMapTab,

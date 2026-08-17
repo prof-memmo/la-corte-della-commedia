@@ -1,8 +1,8 @@
-import EroiDB from "../db.js";
+import { cache } from "./cache.js";
 import { db, doc, collection, getDoc, getDocs, setDoc, updateDoc, query, where, orderBy, or, arrayUnion } from "../firebase-config.js";
 
 export const getCampaigns = async function() {
-        if (EroiDB.cache.campaigns.length > 0) return EroiDB.cache.campaigns;
+        if (cache.campaigns.length > 0) return cache.campaigns;
         
         try {
             const q = query(collection(db, "campaigns"), orderBy("order", "asc"));
@@ -11,7 +11,7 @@ export const getCampaigns = async function() {
             querySnapshot.forEach((doc) => {
                 campaigns.push({ id: doc.id, ...doc.data() });
             });
-            EroiDB.cache.campaigns = campaigns;
+            cache.campaigns = campaigns;
             return campaigns;
         } catch (e) {
             console.error("Errore fetch campagne:", e);
@@ -20,8 +20,8 @@ export const getCampaigns = async function() {
     };
 
 export const getCasesByCampaign = async function(campaignId) {
-        if (EroiDB.cache.cases && EroiDB.cache.cases.length > 0) {
-            const cachedCases = EroiDB.cache.cases.filter(c => c.campaignId === campaignId);
+        if (cache.cases && cache.cases.length > 0) {
+            const cachedCases = cache.cases.filter(c => c.campaignId === campaignId);
             if (cachedCases.length > 0) return cachedCases;
         }
 
@@ -32,11 +32,7 @@ export const getCasesByCampaign = async function(campaignId) {
             querySnapshot.forEach((doc) => {
                 cases.push({ id: doc.id, ...doc.data() });
             });
-            if (cases.length === 0 && campaignId === "inferno") {
-                EroiDB.cache.cases = EroiDB.cache.cases.concat(MOCK_CASES);
-                return MOCK_CASES;
-            }
-            EroiDB.cache.cases = EroiDB.cache.cases.concat(cases);
+            cache.cases = cache.cases.concat(cases);
             return cases;
         } catch (e) {
             console.error("Errore fetch casi:", e);

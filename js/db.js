@@ -1,5 +1,5 @@
 import { db, doc, collection, getDoc, getDocs, setDoc, updateDoc, query, where, orderBy, or, arrayUnion } from "./firebase-config.js";
-
+import { cache } from './services/cache.js';
 import { getUserProfile, updateXP, getAllUsers, updateUserRole } from './services/users.js';
 import { saveClass, getClassById, getClassByCode, getTeacherClasses, joinClassAsCollaborator, getStudentsByClass } from './services/classes.js';
 import { getCampaigns, getCasesByCampaign, saveSentence, getCaseStats, getUserSentences, getRawVerdicts } from './services/progress.js';
@@ -1460,12 +1460,7 @@ const EroiDB = {
     getCampaigns, getCasesByCampaign, saveSentence, getCaseStats, getUserSentences, getRawVerdicts,
 
     // Cache locale per i dati caricati
-    cache: {
-        campaigns: [],
-        cases: [],
-        activities: [],
-        userProfile: null
-    },
+    cache,
 
     // --- PROFILO UTENTE ---
     
