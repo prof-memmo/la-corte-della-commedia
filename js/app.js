@@ -605,10 +605,10 @@ window.app = {
     this.selectedCorteAvatar = currentAvatar;
 
     if (avatarGrid) {
-        avatarGrid.innerHTML = [6,7,8,9,10,11,12,13,14,15,16].map(num => `
+        avatarGrid.innerHTML = [6,7,8,9,10,11,12,13,14,15].map(num => `
             <div class="corte-avatar-opt ${currentAvatar === `assets/avatars/${num}.png` ? 'active' : ''}" 
                  onclick="window.app.selectCorteAvatar(this, 'assets/avatars/${num}.png')"
-                 style="width:46px; height:46px; border-radius:50%; border:3px solid ${currentAvatar === `assets/avatars/${num}.png` ? 'var(--accent-gold)' : 'transparent'}; cursor:pointer; overflow:hidden; transition:transform 0.2s; box-shadow:0 2px 6px rgba(0,0,0,0.4);">
+                 style="width:48px; height:48px; border-radius:50%; border:3px solid ${currentAvatar === `assets/avatars/${num}.png` ? 'var(--accent-gold)' : 'transparent'}; cursor:pointer; overflow:hidden; transition:transform 0.2s; box-shadow:0 2px 6px rgba(0,0,0,0.4); background:#ffffff; display:flex; align-items:center; justify-content:center;">
                 <img src="assets/avatars/${num}.png" alt="Avatar ${num}" style="width:100%; height:100%; object-fit:cover;">
             </div>
         `).join('');
