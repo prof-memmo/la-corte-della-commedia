@@ -734,6 +734,27 @@
           </div>
         </section>
 
+        <!-- VIEW: Pausa Obbligatoria Pomodoro -->
+        <section id="view-pausa-obbligatoria" class="view" style="text-align: center; padding: 40px 20px;">
+          <div style="background: rgba(255,255,255,0.95); border-radius: 24px; padding: 30px; max-width: 540px; margin: 0 auto; box-shadow: 0 15px 40px rgba(0,0,0,0.3); border: 2px solid var(--accent-gold);">
+            <svg width="0" height="0" style="position: absolute;">
+              <filter id="remove-white-corte" color-interpolation-filters="sRGB">
+                <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  -3 -3 -3 1 8" />
+              </filter>
+            </svg>
+            <div style="margin-bottom: 20px;">
+              <video id="corte-gatto-video" src="assets/Video/Gatto che dorme.mp4" autoplay loop muted playsinline style="filter: url(#remove-white-corte); max-width: 100%; max-height: 220px; border-radius: 16px;"></video>
+            </div>
+            <h2 style="color: #800020; font-family: 'Cinzel', serif; font-size: 1.8rem; margin-bottom: 15px;">Tempo di Riposo per la Corte!</h2>
+            <p style="font-size: 1.05rem; color: #444; line-height: 1.6; margin-bottom: 20px;">
+              Hai studiato per 45 minuti! È il momento di fare una pausa.<br>
+              Allontanati dallo schermo per riposare gli occhi e la mente.
+            </p>
+            <div id="corte-pausa-countdown" style="font-size: 3rem; font-family: monospace; font-weight: bold; color: #800020; margin-bottom: 20px;">
+              15:00
+            </div>
+          </div>
+        </section>
       </main>
 
       <!-- Bottom Nav (Solo dopo login) -->
@@ -778,17 +799,17 @@
     </div>
 
     <!-- Firebase SDKs via CDN -->
-    <script type="module" src="js/firebase-config.js?v=20260817d"></script>
-    <script type="module" src="js/db.js?v=20260817d"></script>
-    <script src="js/music.js?v=20260817d"></script>
-    <script type="module" src="js/game.js?v=20260817d"></script>
-    <script type="module" src="js/minigames.js?v=20260817d"></script>
-    <script src="js/mockData.js?v=20260817d"></script>
-    <script type="module" src="js/trials.js?v=20260817d"></script>
-    <script src="js/audio.js?v=20260817d"></script>
-    <script type="module" src="js/dashboard/admin-logic.js?v=20260817d"></script>
-    <script src="js/live-editor.js?v=20260817d"></script>
-    <script type="module" src="js/app.js?v=20260817d"></script>
+    <script type="module" src="js/firebase-config.js?v=20260817e"></script>
+    <script type="module" src="js/db.js?v=20260817e"></script>
+    <script src="js/music.js?v=20260817e"></script>
+    <script type="module" src="js/game.js?v=20260817e"></script>
+    <script type="module" src="js/minigames.js?v=20260817e"></script>
+    <script src="js/mockData.js?v=20260817e"></script>
+    <script type="module" src="js/trials.js?v=20260817e"></script>
+    <script src="js/audio.js?v=20260817e"></script>
+    <script type="module" src="js/dashboard/admin-logic.js?v=20260817e"></script>
+    <script src="js/live-editor.js?v=20260817e"></script>
+    <script type="module" src="js/app.js?v=20260817e"></script>
       <!-- TUTORIAL MODAL (Miniguida) -->
     <div id="modal-miniguida" class="modal-overlay" style="display: none; align-items: center; justify-content: center; z-index: 9999; background: rgba(15,23,42,0.8); backdrop-filter: blur(4px); position: fixed; inset: 0; padding: 20px;">
         <div class="modal-content" style="background: white; border-radius: 24px; width: 100%; max-width: 900px; display: flex; overflow: hidden; position: relative; max-height: 90vh; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);">
@@ -894,6 +915,6 @@
     </script>
 
     <!-- Modali condivisi ecosistema Prof. Memmo -->
-    <script src="https://prof-memmo.github.io/prof-memmo-gestione-siti/shared/legal-modal.js?v=20260817d"></script>
+    <script src="https://prof-memmo.github.io/prof-memmo-gestione-siti/shared/legal-modal.js?v=20260817e"></script>
 </body>
 </html>

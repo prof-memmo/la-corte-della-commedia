@@ -655,28 +655,34 @@ window.app = {
     const isTeacher = (profile.role === 'teacher' || profile.role === 'admin');
     
     try {
+      const chosenAvatar = this.selectedCorteAvatar || (profile && profile.avatar) || 'assets/avatars/6.png';
       const updateData = { 
           displayName: nameInput,
-          avatar: this.selectedCorteAvatar || 'assets/avatars/6.png'
+          avatar: chosenAvatar
       };
       if (isTeacher) {
         updateData.school = schoolInput;
       }
       
-      // Salva nel database
-      await window.db.collection('corte_users').doc(user.email.toLowerCase()).set(updateData, { merge: true });
+      // Salva nel database (modular)
+      try {
+        await setDoc(doc(db, 'users', user.uid), updateData, { merge: true });
+        await setDoc(doc(db, 'corte_users', user.email.toLowerCase()), updateData, { merge: true });
+      } catch (dbErr) {
+        console.warn("Salvataggio DB locale corte:", dbErr);
+      }
       
       // Sincronizzazione Globale sull'Hub Centrale e su Auth
       try {
         if (user.uid) {
           await setDoc(doc(db, 'hub_users', user.uid), {
-            avatar: this.selectedCorteAvatar,
-            'anagrafica.avatar': this.selectedCorteAvatar,
+            avatar: chosenAvatar,
+            'anagrafica.avatar': chosenAvatar,
             'anagrafica.nome': nameInput
           }, { merge: true });
         }
         if (user.updateProfile) {
-          await user.updateProfile({ photoURL: this.selectedCorteAvatar, displayName: nameInput }).catch(e => console.warn(e));
+          await user.updateProfile({ photoURL: chosenAvatar, displayName: nameInput }).catch(e => console.warn(e));
         }
       } catch (eHub) {
         console.warn("Sincronizzazione Hub Fallback Corte:", eHub);
@@ -684,7 +690,7 @@ window.app = {
       
       // Update local cache
       profile.displayName = nameInput;
-      profile.avatar = this.selectedCorteAvatar;
+      profile.avatar = chosenAvatar;
       if (isTeacher) profile.school = schoolInput;
       
       // Refresh UI
