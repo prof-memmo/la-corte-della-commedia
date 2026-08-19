@@ -149,6 +149,7 @@ onAuthStateChanged(auth, async (user) => {
     let isSuperAdmin = (userEmail === 'prof.memmo@gmail.com');
     let hubRole = 'student';
     let hubName = user.displayName || 'Giudice';
+    let hubAvatar = '';
 
     // 1. Verifica sull'Hub Centrale (Single Sign-On Auth)
     try {
@@ -168,6 +169,9 @@ onAuthStateChanged(auth, async (user) => {
         }
         if (hubData.anagrafica && hubData.anagrafica.nome) {
           hubName = hubData.anagrafica.nome;
+        }
+        if (hubData.avatar || (hubData.anagrafica && hubData.anagrafica.avatar)) {
+          hubAvatar = hubData.avatar || hubData.anagrafica.avatar;
         }
         if (!isSuperAdmin && hubData.statusAccount && (hubData.statusAccount === 'rejected' || hubData.statusAccount === 'suspended')) {
           alert("Accesso negato: L'account è stato sospeso nell'Hub.");
@@ -245,8 +249,10 @@ onAuthStateChanged(auth, async (user) => {
         if (dropdownXp) dropdownXp.textContent = `${xp} XP`;
         
         const hAvatarImg = document.getElementById('header-user-avatar-img');
-        if (hAvatarImg && profile && profile.avatar) {
-          hAvatarImg.src = profile.avatar;
+        const userAvatar = (profile && profile.avatar) || hubAvatar || user.photoURL || 'assets/avatars/6.png';
+        if (profile) profile.avatar = userAvatar;
+        if (hAvatarImg) {
+          hAvatarImg.src = userAvatar;
         }
         
         window.app.profile = profile;
