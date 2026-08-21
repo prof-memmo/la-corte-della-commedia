@@ -55,22 +55,7 @@ if (ageCheck) ageCheck.addEventListener('change', updateLoginButtons);
 if (privacyCheck) privacyCheck.addEventListener('change', updateLoginButtons);
 
 // Controllo del risultato del redirect (se veniamo da un login su Safari)
-getRedirectResult(auth).then(async (result) => {
-  if (result && result.user) {
-    const userDocRef = doc(db, 'users', result.user.uid);
-    const userDoc = await getDoc(userDocRef);
-    if (!userDoc.exists()) {
-      await setDoc(userDocRef, {
-        uid: result.user.uid,
-        email: result.user.email,
-        displayName: result.user.displayName,
-        xp: 0,
-        level: 1,
-        role: 'pending'
-      });
-    }
-  }
-}).catch((error) => {
+getRedirectResult(auth).catch((error) => {
   console.error("Errore di login da redirect", error);
 });
 
@@ -78,25 +63,7 @@ getRedirectResult(auth).then(async (result) => {
 if (loginGoogleBtn) {
   loginGoogleBtn.addEventListener('click', async () => {
     try {
-      const result = await signInWithPopup(auth, googleProvider);
-      if (result && result.user) {
-        const userDocRef = doc(db, 'users', result.user.uid);
-        try {
-          const userDoc = await getDoc(userDocRef);
-          if (!userDoc.exists()) {
-            await setDoc(userDocRef, {
-              uid: result.user.uid,
-              email: result.user.email,
-              displayName: result.user.displayName,
-              xp: 0,
-              level: 1,
-              role: 'pending'
-            });
-          }
-        } catch (e) {
-          console.warn("Impossibile leggere/creare il documento utente.", e);
-        }
-      }
+      await signInWithPopup(auth, googleProvider);
     } catch (error) {
       console.error("Errore avvio login Google", error);
       if (error.code !== 'auth/popup-closed-by-user' && error.code !== 'auth/cancelled-popup-request') {
