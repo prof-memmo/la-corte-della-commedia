@@ -12,7 +12,39 @@ const state = {
 };
 
 // Gestione delle Viste (SPA manuale)
-function showView(viewId) {
+async function showView(viewId) {
+  const publicViews = ['view-login', 'view-regolamento'];
+  const isPublic = publicViews.includes(viewId);
+
+  // Se l'utente non è autenticato e la vista è privata, forza il login
+  if (!state.user && !isPublic) {
+    viewId = 'view-login';
+  }
+
+  const isFinalPublic = publicViews.includes(viewId);
+  if (window.HubSubscriptionGuard) {
+    if (isFinalPublic) {
+      window.HubSubscriptionGuard.hideBlockOverlay();
+    } else {
+      let checkUser = state.user;
+      const profile = (window.EroiDB && window.EroiDB.cache) ? window.EroiDB.cache.userProfile : null;
+      const role = profile ? profile.role : 'student';
+
+      if (role === 'student' && profile && profile.teacherId) {
+        checkUser = { ...state.user, uid: profile.teacherId, email: profile.teacherEmail };
+      }
+
+      const isAllowed = await window.HubSubscriptionGuard.verifyAccess({
+        user: checkUser,
+        role: role,
+        isPublicView: false
+      });
+      if (!isAllowed) {
+        return; // Interrompi: blocco attivo, la vista protetta non viene attivata
+      }
+    }
+  }
+
   document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
   const target = document.getElementById(viewId);
   if (target) target.classList.add('active');
@@ -521,6 +553,8 @@ async function selectRole(role) {
                 }
                 updateData.classCode = code;
                 updateData.classId = classObj.id;
+                if (classObj.teacherId) updateData.teacherId = classObj.teacherId;
+                if (classObj.teacher) updateData.teacherEmail = classObj.teacher;
             }
         }
     }
@@ -530,7 +564,7 @@ async function selectRole(role) {
     
     // Aggiorna cache locale
     if (window.EroiDB && window.EroiDB.cache && window.EroiDB.cache.userProfile) {
-        window.EroiDB.cache.userProfile.role = role;
+        Object.assign(window.EroiDB.cache.userProfile, updateData);
     }
     
     // Mostra nav bar
