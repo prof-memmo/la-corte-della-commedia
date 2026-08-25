@@ -93,7 +93,7 @@ export const MinigamesEngine = {
                     </ul>
                     <div style="display: flex; gap: 10px; flex-wrap: wrap;">
                         <button class="btn btn-secondary" id="ho-hint-btn" style="background: rgba(212,175,55,0.2); border: 1px solid var(--accent-gold); color: var(--accent-gold); font-size: 0.85rem;"><i class="fa-solid fa-lightbulb"></i> Evidenzia Indizio (-2 💰)</button>
-                        <button class="btn btn-secondary" id="ho-skip-btn" style="background: rgba(255,255,255,0.05); color: #aaa; font-size: 0.85rem;"><i class="fa-solid fa-forward-step"></i> Passa Indagine (BES)</button>
+                        <button class="btn btn-secondary" id="ho-skip-btn" style="background: rgba(255,255,255,0.05); color: #aaa; font-size: 0.85rem;"><i class="fa-solid fa-forward-step"></i> Passa Indagine</button>
                     </div>
                 </div>
             </div>
@@ -193,7 +193,7 @@ export const MinigamesEngine = {
                 
                 <div style="display: flex; justify-content: center; gap: 10px; margin-top: 15px; flex-wrap: wrap;">
                     <button class="btn btn-secondary" id="jigsaw-hint-btn" style="background: rgba(212,175,55,0.2); border: 1px solid var(--accent-gold); color: var(--accent-gold); font-size: 0.85rem;"><i class="fa-solid fa-lightbulb"></i> Piazza 1 Tassello (-2 💰)</button>
-                    <button class="btn btn-secondary" id="jigsaw-skip-btn" style="background: rgba(255,255,255,0.05); color: #aaa; font-size: 0.85rem;"><i class="fa-solid fa-forward-step"></i> Passa Indagine (BES)</button>
+                    <button class="btn btn-secondary" id="jigsaw-skip-btn" style="background: rgba(255,255,255,0.05); color: #aaa; font-size: 0.85rem;"><i class="fa-solid fa-forward-step"></i> Passa Indagine</button>
                 </div>
             </div>
         `;
@@ -283,7 +283,7 @@ export const MinigamesEngine = {
                 <div style="text-align: center; margin-top: 15px; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
                     <button class="btn btn-primary" id="seq-check-btn">Sblocca</button>
                     <button class="btn btn-secondary" id="seq-hint-btn" style="background: rgba(212,175,55,0.2); border: 1px solid var(--accent-gold); color: var(--accent-gold); font-size: 0.85rem;"><i class="fa-solid fa-lightbulb"></i> Aiuto (-2 💰)</button>
-                    <button class="btn btn-secondary" id="seq-skip-btn" style="background: rgba(255,255,255,0.05); color: #aaa; font-size: 0.85rem;"><i class="fa-solid fa-forward-step"></i> Passa (BES)</button>
+                    <button class="btn btn-secondary" id="seq-skip-btn" style="background: rgba(255,255,255,0.05); color: #aaa; font-size: 0.85rem;"><i class="fa-solid fa-forward-step"></i> Passa</button>
                 </div>
                 <p id="seq-feedback" style="text-align: center; margin-top: 10px; display: none;"></p>
             </div>
@@ -338,7 +338,7 @@ export const MinigamesEngine = {
                     <input type="text" id="crypto-input" class="form-input" placeholder="Scrivi la parola..." style="width: 200px; text-transform: uppercase; text-align: center; font-weight: bold;">
                     <button class="btn btn-primary" id="crypto-check-btn">Decodifica</button>
                     <button class="btn btn-secondary" id="crypto-hint-btn" style="background: rgba(212,175,55,0.2); border: 1px solid var(--accent-gold); color: var(--accent-gold);"><i class="fa-solid fa-lightbulb"></i> Aiuto (-2 <i class="fa-solid fa-coins"></i>)</button>
-                    <button class="btn btn-secondary" id="crypto-skip-btn" style="background: rgba(255,255,255,0.05); color: #aaa;"><i class="fa-solid fa-forward-step"></i> Passa (BES)</button>
+                    <button class="btn btn-secondary" id="crypto-skip-btn" style="background: rgba(255,255,255,0.05); color: #aaa;"><i class="fa-solid fa-forward-step"></i> Passa</button>
                 </div>
                 <p id="crypto-feedback" style="text-align: center; margin-top: 10px; display: none; font-size: 0.95rem;"></p>
             </div>
