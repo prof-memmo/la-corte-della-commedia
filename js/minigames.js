@@ -4,6 +4,46 @@ export const MinigamesEngine = {
     init: function() {
         console.log("MinigamesEngine initialized");
     },
+
+    async useFioriniForHint(cost = 2) {
+        if (window.commediaApp && window.commediaApp.profile) {
+            if (window.commediaApp.profile.fiorini >= cost) {
+                const newFiorini = window.commediaApp.profile.fiorini - cost;
+                window.commediaApp.profile.fiorini = newFiorini;
+                if (window.commediaDb && window.commediaApp.user && window.commediaApp.user.uid) {
+                    try {
+                        await window.commediaDb.updateUserProfile(window.commediaApp.user.uid, { fiorini: newFiorini });
+                    } catch(e) { console.warn("Errore aggiornamento fiorini:", e); }
+                }
+                if (window.commediaApp.updateUI) window.commediaApp.updateUI();
+                if (window.showToast) window.showToast(`Indizio rivelato! (-${cost} Fiorini)`, 'success');
+                return true;
+            } else {
+                if (window.showToast) window.showToast(`Fiorini insufficienti, ma l'indizio viene concesso per supporto didattico!`, 'info');
+                return true;
+            }
+        }
+        return true;
+    },
+
+    skipMinigame: function(nextBtn, gameName) {
+        if (window.showToast) window.showToast(`Indagine '${gameName}' superata con successo!`, 'info');
+        if (nextBtn) {
+            nextBtn.disabled = false;
+            nextBtn.classList.add('glow');
+        }
+        const area = document.getElementById('active-minigame-area');
+        if (area) {
+            area.innerHTML = `
+                <div style="background: rgba(22,163,74,0.15); border: 1px solid #16a34a; border-radius: 8px; padding: 20px; text-align: center; margin-top: 15px;">
+                    <h5 style="color: #16a34a; margin-bottom: 10px;">✅ Prova Acquisita agli Atti</h5>
+                    <p style="color: #ddd; font-size: 0.95rem; margin-bottom: 12px;">Hai completato l'indagine. Puoi procedere alla fase successiva del processo.</p>
+                    <div style="background: rgba(212,175,55,0.1); border-left: 3px solid var(--accent-gold); padding: 10px 14px; border-radius: 4px; text-align: left; font-size: 0.85rem; color: #f5f5f0; margin-top: 10px;">
+                        <strong>💡 Pillola Giuridica Medievale:</strong> Nella Firenze trecentesca, le prove documentali e le testimonianze giurate avevano valore decisivo davanti al Podestà.
+                    </div>
+                </div>`;
+        }
+    },
     
     loadMinigame: function(caseData, containerElement) {
         // Mostriamo un menu per scegliere il minigioco da testare
@@ -48,9 +88,13 @@ export const MinigamesEngine = {
                     <!-- Hitbox generate dinamicamente -->
                 </div>
                 
-                <div style="padding: 10px; background: rgba(0,0,0,0.8);">
+                <div style="padding: 10px; background: rgba(0,0,0,0.8); display: flex; flex-direction: column; gap: 10px; align-items: center;">
                     <ul id="ho-collected" style="list-style-type: none; padding-left: 0; margin: 0; min-height: 25px; color: #a89f91; font-size: 0.9rem; display: flex; gap: 15px; justify-content: center;">
                     </ul>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        <button class="btn btn-secondary" id="ho-hint-btn" style="background: rgba(212,175,55,0.2); border: 1px solid var(--accent-gold); color: var(--accent-gold); font-size: 0.85rem;"><i class="fa-solid fa-lightbulb"></i> Evidenzia Indizio (-2 💰)</button>
+                        <button class="btn btn-secondary" id="ho-skip-btn" style="background: rgba(255,255,255,0.05); color: #aaa; font-size: 0.85rem;"><i class="fa-solid fa-forward-step"></i> Passa Indagine (BES)</button>
+                    </div>
                 </div>
             </div>
         `;
@@ -61,16 +105,14 @@ export const MinigamesEngine = {
         const collectedList = document.getElementById('ho-collected');
         const imgContainer = document.getElementById('ho-image-container');
         
-        // Genera 3 hitbox casuali
+        const hitboxes = [];
         for (let i = 1; i <= 3; i++) {
             const hb = document.createElement('div');
             hb.className = 'ho-hitbox';
             hb.dataset.clue = `Indizio ${i}`;
-            // Posizioni casuali ma non troppo vicine ai bordi
             const top = 10 + Math.random() * 80;
             const left = 10 + Math.random() * 80;
             
-            // Effetto scintilla/glitch leggero per renderli visibili se si presta attenzione
             hb.style.cssText = `
                 position: absolute; 
                 left: ${left}%; top: ${top}%; 
@@ -82,9 +124,23 @@ export const MinigamesEngine = {
                 animation: pulse 2s infinite alternate;
             `;
             imgContainer.appendChild(hb);
+            hitboxes.push(hb);
         }
 
-        // Gestione Click Sbagliati (sull'immagine intera)
+        document.getElementById('ho-hint-btn').onclick = async () => {
+            await this.useFioriniForHint(2);
+            const remaining = hitboxes.filter(h => h.style.display !== 'none');
+            if (remaining.length > 0) {
+                const target = remaining[0];
+                target.style.outline = '4px solid #f5c53c';
+                target.style.transform = 'translate(-50%, -50%) scale(1.6)';
+            }
+        };
+
+        document.getElementById('ho-skip-btn').onclick = () => {
+            this.skipMinigame(nextBtn, "Occhio dell'Inquisitore");
+        };
+
         imgContainer.addEventListener('click', (e) => {
             if (e.target.id === 'ho-image-container') {
                 errors--;
@@ -93,34 +149,24 @@ export const MinigamesEngine = {
                     alert("Indagine fallita! Hai perso la lucidità. Riprova.");
                     this.loadHiddenObject(container, nextBtn, caseData);
                 } else {
-                    // Feedback visivo di errore (flash rosso)
                     e.target.style.boxShadow = "inset 0 0 50px rgba(255,0,0,0.5)";
                     setTimeout(() => e.target.style.boxShadow = "none", 300);
                 }
             }
         });
 
-        // Gestione Click Corretti (sulle hitbox)
-        const hitboxes = container.querySelectorAll('.ho-hitbox');
         hitboxes.forEach(hb => {
             hb.addEventListener('click', (e) => {
-                e.stopPropagation(); // Evita di contare come errore
-                if (hb.dataset.found === "true") return;
-                
-                hb.dataset.found = "true";
+                e.stopPropagation();
+                if (hb.style.display === 'none') return;
                 found++;
-                
-                // Evidenzia visivamente l'area e ferma l'animazione
-                hb.style.animation = 'none';
-                hb.style.border = "2px solid var(--accent-gold)";
-                hb.style.backgroundColor = "rgba(212,175,55,0.8)";
+                hb.style.display = 'none';
                 
                 const li = document.createElement('li');
                 li.innerHTML = `✅ ${hb.dataset.clue}`;
-                li.style.animation = 'fadeIn 0.3s ease forwards';
                 collectedList.appendChild(li);
                 
-                if (found === hitboxes.length) {
+                if (found === 3) {
                     if (nextBtn) {
                         nextBtn.disabled = false;
                         nextBtn.classList.add('glow');
@@ -143,39 +189,26 @@ export const MinigamesEngine = {
                     <p style="margin:5px 0 0 0; font-size: 0.8rem; color: #ccc;">Ricostruisci il dipinto. Clicca su due tessere per scambiarle di posizione.</p>
                 </div>
                 
-                <div id="jigsaw-board" style="
-                    display: grid; 
-                    grid-template-columns: repeat(3, 1fr); 
-                    grid-template-rows: repeat(3, 1fr); 
-                    gap: 2px; 
-                    width: 300px; 
-                    height: 300px; 
-                    margin: 0 auto; 
-                    border: 2px solid #444; 
-                    background: #222;
-                "></div>
+                <div id="jigsaw-board" style="display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 1fr); gap: 2px; width: 300px; height: 300px; margin: 0 auto; border: 2px solid #444; background: #222;"></div>
+                
+                <div style="display: flex; justify-content: center; gap: 10px; margin-top: 15px; flex-wrap: wrap;">
+                    <button class="btn btn-secondary" id="jigsaw-hint-btn" style="background: rgba(212,175,55,0.2); border: 1px solid var(--accent-gold); color: var(--accent-gold); font-size: 0.85rem;"><i class="fa-solid fa-lightbulb"></i> Piazza 1 Tassello (-2 💰)</button>
+                    <button class="btn btn-secondary" id="jigsaw-skip-btn" style="background: rgba(255,255,255,0.05); color: #aaa; font-size: 0.85rem;"><i class="fa-solid fa-forward-step"></i> Passa Indagine (BES)</button>
+                </div>
             </div>
         `;
 
         const board = document.getElementById('jigsaw-board');
-        const size = 3; // 3x3 grid
+        const size = 3; 
         let pieces = [];
         let selectedPiece = null;
 
-        // Inizializza i pezzi (0 a 8)
-        for (let i = 0; i < size * size; i++) {
-            pieces.push(i);
-        }
+        for (let i = 0; i < size * size; i++) pieces.push(i);
         
-        // Mescola l'array garantendo che non sia già risolto
-        do {
-            pieces.sort(() => Math.random() - 0.5);
-        } while(isSolved());
+        do { pieces.sort(() => Math.random() - 0.5); } while(isSolved());
 
         function isSolved() {
-            for (let i = 0; i < pieces.length; i++) {
-                if (pieces[i] !== i) return false;
-            }
+            for (let i = 0; i < pieces.length; i++) if (pieces[i] !== i) return false;
             return true;
         }
 
@@ -186,53 +219,45 @@ export const MinigamesEngine = {
                 const row = Math.floor(pieceIndex / size);
                 const col = pieceIndex % size;
                 
-                cell.style.cssText = `
-                    width: 100%; height: 100%; 
-                    background-image: url('${imgSrc}');
-                    background-size: 300px 300px;
-                    background-position: -${col * 100}px -${row * 100}px;
-                    cursor: pointer;
-                    transition: transform 0.2s, border 0.2s;
-                    box-sizing: border-box;
-                `;
-                
-                if (selectedPiece === gridIndex) {
-                    cell.style.border = "3px solid var(--accent-gold)";
-                    cell.style.transform = "scale(0.95)";
-                } else {
-                    cell.style.border = "1px solid rgba(0,0,0,0.5)";
-                }
+                cell.style.cssText = `width: 100%; height: 100%; background-image: url('${imgSrc}'); background-size: 300px 300px; background-position: -${col * 100}px -${row * 100}px; cursor: pointer; border: ${selectedPiece === gridIndex ? "3px solid var(--accent-gold)" : "1px solid rgba(0,0,0,0.5)"}; box-sizing: border-box;`;
 
                 cell.onclick = () => {
                     if (selectedPiece === null) {
                         selectedPiece = gridIndex;
                         renderBoard();
                     } else {
-                        // Swap
                         const temp = pieces[selectedPiece];
                         pieces[selectedPiece] = pieces[gridIndex];
                         pieces[gridIndex] = temp;
                         selectedPiece = null;
                         renderBoard();
-                        
                         if (isSolved()) {
-                            // Rimuovi i bordi
                             board.childNodes.forEach(c => c.style.border = 'none');
-                            if (nextBtn) {
-                                nextBtn.disabled = false;
-                                nextBtn.classList.add('glow');
-                            }
-                            setTimeout(() => alert("Il mosaico è completo. La verità è svelata!"), 300);
+                            if (nextBtn) { nextBtn.disabled = false; nextBtn.classList.add('glow'); }
+                            setTimeout(() => alert("Il mosaico è completo!"), 300);
                         }
                     }
                 };
-                
                 board.appendChild(cell);
             });
         }
 
-        // Aspettiamo che l'immagine sia caricata prima di renderizzare se necessario, 
-        // ma in questo caso possiamo renderizzare subito
+        document.getElementById('jigsaw-hint-btn').onclick = async () => {
+            await this.useFioriniForHint(2);
+            for (let i = 0; i < pieces.length; i++) {
+                if (pieces[i] !== i) {
+                    const idx = pieces.indexOf(i);
+                    [pieces[i], pieces[idx]] = [pieces[idx], pieces[i]];
+                    break;
+                }
+            }
+            renderBoard();
+            if (isSolved()) {
+                if (nextBtn) { nextBtn.disabled = false; nextBtn.classList.add('glow'); }
+            }
+        };
+
+        document.getElementById('jigsaw-skip-btn').onclick = () => this.skipMinigame(nextBtn, "Mosaico della Verità");
         renderBoard();
     },
 
@@ -242,86 +267,60 @@ export const MinigamesEngine = {
         container.innerHTML = `
             <div class="minigame-wrapper animate-fade-in" style="background: rgba(0,0,0,0.4); border-radius: 8px; padding: 20px; border: 1px solid var(--accent-gold);">
                 <h5 class="text-gold" style="text-align: center; margin-bottom: 10px;">L'Enigma della Serratura</h5>
-                <p style="text-align: center; font-size: 0.9rem; margin-bottom: 20px;">
-                    Per sbloccare il diario dell'imputato, ordina gli elementi chiave della sua storia. (La soluzione corretta per Paolo e Francesca è: Amore, Libro, Tragedia).
-                </p>
-                
+                <p style="text-align: center; font-size: 0.9rem; margin-bottom: 20px;">Ordina gli elementi chiave: Amore, Libro, Tragedia.</p>
                 <div style="display: flex; justify-content: center; gap: 15px; margin-bottom: 20px;">
-                    <!-- Slot della soluzione -->
-                    <div class="seq-slot" data-index="0" style="width: 80px; height: 80px; border: 2px dashed #666; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 2rem; cursor: pointer; transition: 0.2s;"></div>
-                    <div class="seq-slot" data-index="1" style="width: 80px; height: 80px; border: 2px dashed #666; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 2rem; cursor: pointer; transition: 0.2s;"></div>
-                    <div class="seq-slot" data-index="2" style="width: 80px; height: 80px; border: 2px dashed #666; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 2rem; cursor: pointer; transition: 0.2s;"></div>
+                    <div class="seq-slot" data-index="0" style="width: 80px; height: 80px; border: 2px dashed #666; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 2rem; cursor: pointer;"></div>
+                    <div class="seq-slot" data-index="1" style="width: 80px; height: 80px; border: 2px dashed #666; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 2rem; cursor: pointer;"></div>
+                    <div class="seq-slot" data-index="2" style="width: 80px; height: 80px; border: 2px dashed #666; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 2rem; cursor: pointer;"></div>
                 </div>
-                
                 <div style="text-align: center; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 8px;">
-                    <p style="margin-bottom: 10px; font-size: 0.8rem; color: #aaa;">Simboli disponibili (Clicca per inserirli):</p>
-                    <div id="seq-options" style="display: flex; justify-content: center; gap: 10px;">
-                        <button class="btn btn-secondary seq-option" data-val="1">💖 (Amore)</button>
-                        <button class="btn btn-secondary seq-option" data-val="2">📖 (Libro)</button>
-                        <button class="btn btn-secondary seq-option" data-val="3">⚔️ (Tragedia)</button>
-                        <button class="btn btn-secondary seq-option" data-val="4">⛰️ (Montagna)</button>
+                    <div id="seq-options" style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
+                        <button class="btn btn-secondary seq-option" data-val="1">💖</button>
+                        <button class="btn btn-secondary seq-option" data-val="2">📖</button>
+                        <button class="btn btn-secondary seq-option" data-val="3">⚔️</button>
                     </div>
                 </div>
-                
-                <div style="text-align: center; margin-top: 15px;">
-                    <button class="btn btn-primary" id="seq-check-btn">Sblocca Serratura</button>
-                    <p id="seq-feedback" style="margin-top: 10px; font-size: 0.9rem; display: none;"></p>
+                <div style="text-align: center; margin-top: 15px; display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
+                    <button class="btn btn-primary" id="seq-check-btn">Sblocca</button>
+                    <button class="btn btn-secondary" id="seq-hint-btn" style="background: rgba(212,175,55,0.2); border: 1px solid var(--accent-gold); color: var(--accent-gold); font-size: 0.85rem;"><i class="fa-solid fa-lightbulb"></i> Aiuto (-2 💰)</button>
+                    <button class="btn btn-secondary" id="seq-skip-btn" style="background: rgba(255,255,255,0.05); color: #aaa; font-size: 0.85rem;"><i class="fa-solid fa-forward-step"></i> Passa (BES)</button>
                 </div>
+                <p id="seq-feedback" style="text-align: center; margin-top: 10px; display: none;"></p>
             </div>
         `;
 
         let currentSequence = [null, null, null];
         let currentSlot = 0;
-        
         const slots = container.querySelectorAll('.seq-slot');
-        const options = container.querySelectorAll('.seq-option');
-        const checkBtn = document.getElementById('seq-check-btn');
-        const feedback = document.getElementById('seq-feedback');
         
-        options.forEach(opt => {
+        container.querySelectorAll('.seq-option').forEach(opt => {
             opt.onclick = () => {
                 if (currentSlot < 3) {
                     currentSequence[currentSlot] = opt.dataset.val;
-                    slots[currentSlot].textContent = opt.textContent.split(' ')[0]; // Prende solo l'emoji
+                    slots[currentSlot].textContent = opt.textContent;
                     slots[currentSlot].style.borderColor = 'var(--accent-gold)';
                     currentSlot++;
                 }
             };
         });
         
-        slots.forEach(slot => {
-            slot.onclick = () => {
-                // Reset manuale
-                currentSequence = [null, null, null];
-                currentSlot = 0;
-                slots.forEach(s => { s.textContent = ''; s.style.borderColor = '#666'; });
-                feedback.style.display = 'none';
-            };
-        });
+        document.getElementById('seq-hint-btn').onclick = async () => {
+            await this.useFioriniForHint(2);
+            ["1", "2", "3"].forEach((v, i) => {
+                currentSequence[i] = v;
+                slots[i].textContent = ["💖", "📖", "⚔️"][i];
+                slots[i].style.borderColor = 'var(--accent-gold)';
+            });
+            currentSlot = 3;
+        };
+
+        document.getElementById('seq-skip-btn').onclick = () => this.skipMinigame(nextBtn, "Enigma della Serratura");
         
-        checkBtn.onclick = () => {
-            if (currentSlot < 3) {
-                feedback.textContent = "Riempi tutti gli spazi prima di sbloccare.";
-                feedback.style.color = "var(--text-secondary)";
-                feedback.style.display = "block";
-                return;
-            }
-            
-            // Soluzione corretta: 1 (Amore), 2 (Libro), 3 (Tragedia)
+        document.getElementById('seq-check-btn').onclick = () => {
             if (currentSequence[0] === "1" && currentSequence[1] === "2" && currentSequence[2] === "3") {
-                feedback.textContent = "Serratura Sbloccata! Prove acquisite.";
-                feedback.style.color = "#4CAF50";
-                feedback.style.display = "block";
-                checkBtn.disabled = true;
-                if (nextBtn) {
-                    nextBtn.disabled = false;
-                    nextBtn.classList.add('glow');
-                }
-            } else {
-                feedback.textContent = "Sequenza errata. La serratura è bloccata. (Clicca sui quadrati per resettare)";
-                feedback.style.color = "var(--danger-color)";
-                feedback.style.display = "block";
-            }
+                if (nextBtn) { nextBtn.disabled = false; nextBtn.classList.add('glow'); }
+                alert("Serratura Sbloccata!");
+            } else alert("Sequenza errata.");
         };
     },
 
@@ -329,23 +328,19 @@ export const MinigamesEngine = {
         if (nextBtn) nextBtn.disabled = true;
         
         container.innerHTML = `
-            <div class="minigame-wrapper animate-fade-in" style="background: rgba(0,0,0,0.4); border-radius: 8px; padding: 20px; border: 1px solid var(--accent-gold);">
+            <div class="minigame-wrapper animate-fade-in" style="background: rgba(0,0,0,0.4); padding: 20px; border: 1px solid var(--accent-gold); border-radius: 8px;">
                 <h5 class="text-gold" style="text-align: center; margin-bottom: 10px;">Analisi Criptata</h5>
-                <p style="text-align: center; font-size: 0.9rem; margin-bottom: 20px;">
-                    La testimonianza è parzialmente censurata. Usa il decodificatore per ricostruire la parola mancante.<br>
-                    <strong>Indizio:</strong> "Cosa condannò i due amanti?" (Anagramma: OBRLI)
-                </p>
-                
-                <div style="background: url('assets/Immagini/parchment_bg.png') center; padding: 25px; border-radius: 5px; color: #333; font-family: 'Times New Roman', serif; font-size: 1.2rem; text-align: center; line-height: 1.6; margin-bottom: 20px; box-shadow: inset 0 0 20px rgba(0,0,0,0.5);">
-                    "E non ci fu alcun dubbio, la colpa fu tutta di quel maledetto <br>
-                    <span id="crypto-word" style="display: inline-block; padding: 5px 15px; margin-top: 10px; background: rgba(0,0,0,0.8); color: var(--accent-gold); letter-spacing: 5px; font-weight: bold; border-radius: 4px;">_ _ _ _ _</span>"
+                <p style="text-align: center; font-size: 0.9rem; margin-bottom: 15px; color: #ccc;">Decifra la parola chiave che condannò i due amanti (Anagramma: OBRLI).</p>
+                <div style="text-align: center; margin: 15px 0;">
+                    <span id="crypto-word" style="background: rgba(0,0,0,0.8); padding: 10px 20px; color: var(--accent-gold); font-size: 1.5rem; letter-spacing: 5px; border-radius: 4px; font-weight: bold;">_ _ _ _ _</span>
                 </div>
-                
-                <div style="display: flex; justify-content: center; gap: 10px;">
-                    <input type="text" id="crypto-input" class="form-input" placeholder="Scrivi la parola..." style="width: 200px; text-transform: uppercase; text-align: center; font-weight: bold; letter-spacing: 2px;">
+                <div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
+                    <input type="text" id="crypto-input" class="form-input" placeholder="Scrivi la parola..." style="width: 200px; text-transform: uppercase; text-align: center; font-weight: bold;">
                     <button class="btn btn-primary" id="crypto-check-btn">Decodifica</button>
+                    <button class="btn btn-secondary" id="crypto-hint-btn" style="background: rgba(212,175,55,0.2); border: 1px solid var(--accent-gold); color: var(--accent-gold);"><i class="fa-solid fa-lightbulb"></i> Aiuto (-2 <i class="fa-solid fa-coins"></i>)</button>
+                    <button class="btn btn-secondary" id="crypto-skip-btn" style="background: rgba(255,255,255,0.05); color: #aaa;"><i class="fa-solid fa-forward-step"></i> Passa (BES)</button>
                 </div>
-                <p id="crypto-feedback" style="text-align: center; margin-top: 10px; display: none;"></p>
+                <p id="crypto-feedback" style="text-align: center; margin-top: 10px; display: none; font-size: 0.95rem;"></p>
             </div>
         `;
 
@@ -353,43 +348,45 @@ export const MinigamesEngine = {
         const checkBtn = document.getElementById('crypto-check-btn');
         const feedback = document.getElementById('crypto-feedback');
         const wordDisplay = document.getElementById('crypto-word');
-        
+
+        document.getElementById('crypto-hint-btn').onclick = async () => {
+            await this.useFioriniForHint(2);
+            input.value = "LIB";
+            if (window.showToast) window.showToast('Iniziali suggerite: LIB...', 'info');
+        };
+
+        document.getElementById('crypto-skip-btn').onclick = () => {
+            this.skipMinigame(nextBtn, "Analisi Criptata");
+        };
+
         checkBtn.onclick = () => {
             const guess = input.value.trim().toUpperCase();
             if (guess === "LIBRO") {
                 wordDisplay.textContent = "L I B R O";
-                wordDisplay.style.background = "none";
-                wordDisplay.style.color = "#8b0000"; // Rosso sangue
-                
+                wordDisplay.style.color = "#16a34a";
                 feedback.textContent = "Testimonianza decodificata con successo!";
-                feedback.style.color = "#4CAF50";
+                feedback.style.color = "#16a34a";
                 feedback.style.display = "block";
-                
                 input.disabled = true;
                 checkBtn.disabled = true;
-                
                 if (nextBtn) {
                     nextBtn.disabled = false;
                     nextBtn.classList.add('glow');
                 }
             } else {
                 feedback.textContent = "Decodifica errata, riprova.";
-                feedback.style.color = "var(--danger-color)";
+                feedback.style.color = "#ef4444";
                 feedback.style.display = "block";
-                input.value = "";
             }
         };
-        
-        // Permetti Invio da tastiera
-        input.addEventListener("keypress", function(event) {
+
+        input.addEventListener("keypress", (event) => {
             if (event.key === "Enter") {
                 event.preventDefault();
                 checkBtn.click();
             }
         });
-    }
-
-    ,
+    },
 
     loadCrossExamination: function(container, nextBtn, caseData) {
         if (nextBtn) nextBtn.disabled = true;
