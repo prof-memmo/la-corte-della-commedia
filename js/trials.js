@@ -52,7 +52,14 @@ export class CommediaTrials {
                 ? window.LiveEditor.renderBtn(qKey, { text: qData.text, hint: qData.hint })
                 : '';
 
-            let html = `<h4 style="color: var(--accent-crimson); margin-bottom: 15px; font-family: 'Julius Sans One', sans-serif; display: flex; justify-content: space-between; align-items: center;"><span>Fase ${index + 1}: ${qData.text}</span> ${editBtn}</h4>`;
+            const phaseBadges = [
+                '<span style="font-size:0.72rem; font-weight:700; background:rgba(34,197,94,0.15); color:#16a34a; border:1px solid rgba(34,197,94,0.4); padding:2px 7px; border-radius:4px; margin-left:8px; vertical-align:middle;">🟢 Facile</span>',
+                '<span style="font-size:0.72rem; font-weight:700; background:rgba(234,179,8,0.15); color:#ca8a04; border:1px solid rgba(234,179,8,0.4); padding:2px 7px; border-radius:4px; margin-left:8px; vertical-align:middle;">🟡 Intermedio</span>',
+                '<span style="font-size:0.72rem; font-weight:700; background:rgba(59,130,246,0.15); color:#2563eb; border:1px solid rgba(59,130,246,0.4); padding:2px 7px; border-radius:4px; margin-left:8px; vertical-align:middle;">🔵 Avanzato</span>',
+                '<span style="font-size:0.72rem; font-weight:700; background:rgba(168,85,247,0.15); color:#9333ea; border:1px solid rgba(168,85,247,0.4); padding:2px 7px; border-radius:4px; margin-left:8px; vertical-align:middle;">🟣 Sfida</span>'
+            ];
+            const lvlBadge = phaseBadges[index] || phaseBadges[0];
+            let html = `<h4 style="color: var(--accent-crimson); margin-bottom: 15px; font-family: 'Julius Sans One', sans-serif; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px;"><span>Fase ${index + 1}: ${qData.text} ${lvlBadge}</span> ${editBtn}</h4>`;
             html += `<div style="display: flex; flex-direction: column; gap: 10px;">`;
             
             qData.options.forEach((opt, optIndex) => {

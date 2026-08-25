@@ -51,10 +51,10 @@ export const MinigamesEngine = {
             <div style="text-align: center; margin-bottom: 20px;">
                 <h4 class="text-gold">Scegli il Metodo di Indagine</h4>
                 <div style="display: flex; justify-content: center; gap: 10px; margin-top: 15px; flex-wrap: wrap;">
-                    <button class="btn btn-secondary" id="btn-mg-hidden">👁️ Occhio dell'Inquisitore</button>
-                    <button class="btn btn-secondary" id="btn-mg-jigsaw">🧩 Mosaico della Verità</button>
-                    <button class="btn btn-secondary" id="btn-mg-sequence">🗝️ Enigma della Serratura</button>
-                    <button class="btn btn-secondary" id="btn-mg-crypto">📜 Analisi Criptata</button>
+                    <button class="btn btn-secondary" id="btn-mg-hidden">👁️ Occhio dell'Inquisitore <span style="font-size:0.72rem; color:#4ade80; font-weight:700; margin-left:4px;">🟢 Facile</span></button>
+                    <button class="btn btn-secondary" id="btn-mg-jigsaw">🧩 Mosaico della Verità <span style="font-size:0.72rem; color:#fde047; font-weight:700; margin-left:4px;">🟡 Intermedio</span></button>
+                    <button class="btn btn-secondary" id="btn-mg-sequence">🗝️ Enigma della Serratura <span style="font-size:0.72rem; color:#fde047; font-weight:700; margin-left:4px;">🟡 Intermedio</span></button>
+                    <button class="btn btn-secondary" id="btn-mg-crypto">📜 Analisi Criptata <span style="font-size:0.72rem; color:#60a5fa; font-weight:700; margin-left:4px;">🔵 Avanzato</span></button>
                 </div>
             </div>
             <div id="active-minigame-area" style="min-height: 250px;">
