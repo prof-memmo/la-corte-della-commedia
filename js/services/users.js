@@ -29,22 +29,60 @@ export const updateXP = async function(uid, amount) {
 
 export const getAllUsers = async function() {
         try {
-            const querySnapshot = await getDocs(collection(db, "users"));
-            const users = [];
-            querySnapshot.forEach((doc) => {
-                users.push({ id: doc.id, ...doc.data() });
-            });
-            // --- Aggiunta MOCK DATA ---
-            const mockUsers = [
-                { id: "mock-teacher", uid: "mock-teacher", email: "prof.memmo@lacorte.it", displayName: "Prof Memmo", role: "teacher" },
-                { id: "mock-student", uid: "mock-student", email: "studente.test@lacorte.it", displayName: "Studente Test", role: "student", classId: "TEST-CLASS", level: 1, xp: 0 },
-                { id: "mock-external", uid: "mock-external", email: "esterno.test@lacorte.it", displayName: "Visitatore", role: "external" }
-            ];
-            const existingEmails = users.map(u => u.email);
-            for (let mu of mockUsers) {
-                if (!existingEmails.includes(mu.email)) users.push(mu);
+            // Priorità su hub_users
+            let querySnapshot;
+            try {
+                querySnapshot = await getDocs(collection(db, "hub_users"));
+            } catch (_) {
+                querySnapshot = await getDocs(collection(db, "users"));
             }
-            // --- FINE MOCK DATA ---
+
+            const users = [];
+            const mockTestEmails = [
+                'testhero12345@gmail.com',
+                'test@example.com',
+                'docente.aurora@gmail.com',
+                'studente.test@lacorte.it',
+                'esterno.test@lacorte.it',
+                'prof.memmo@lacorte.it'
+            ];
+
+            querySnapshot.forEach((doc) => {
+                const d = doc.data() || {};
+                const email = (d.email || '').toLowerCase().trim();
+                if (!email || mockTestEmails.includes(email)) return;
+                if (email.includes('studenti.prof-memmo.local') || email.includes('@studenti.profmemmo.internal')) return;
+                if (d.role === 'pending' || d.statusAccount === 'pending') return;
+
+                const userPlan = (d.plan || d.abbonamento || d.subscription || 'base').toLowerCase();
+                const userGioco = (d.gioco || d.game || '').toLowerCase();
+                const isAdmin = d.role === 'admin' || email === 'prof.memmo@gmail.com';
+                const hasEcosystemPlan = userPlan.includes('ecosistema') || userPlan.includes('didattic');
+                const isCommediaGame = userGioco.includes('commedia') || userGioco.includes('corte');
+
+                // Filtra solo utenti con accesso a La Corte della Commedia
+                if (!isAdmin && !hasEcosystemPlan && !isCommediaGame) return;
+
+                let role = 'teacher';
+                if (isAdmin) role = 'admin';
+                else if (d.role === 'external' || d.role === 'viandante' || d.role === 'forestiero') role = 'external';
+
+                users.push({
+                    id: doc.id,
+                    uid: doc.id,
+                    email: email,
+                    name: (d.anagrafica && (d.anagrafica.nome || d.anagrafica.cognome))
+                        ? `${d.anagrafica.nome || ''} ${d.anagrafica.cognome || ''}`.trim()
+                        : (d.displayName || d.nome || email.split('@')[0]),
+                    displayName: (d.anagrafica && (d.anagrafica.nome || d.anagrafica.cognome))
+                        ? `${d.anagrafica.nome || ''} ${d.anagrafica.cognome || ''}`.trim()
+                        : (d.displayName || d.nome || email.split('@')[0]),
+                    role: role,
+                    school: (d.anagrafica && d.anagrafica.istituto) || d.school || d.scuola || '',
+                    createdAt: d.createdAt ? (d.createdAt.toDate ? d.createdAt.toDate() : new Date(d.createdAt)) : new Date()
+                });
+            });
+
             return users;
         } catch (e) {
             console.error("Errore getAllUsers:", e);
