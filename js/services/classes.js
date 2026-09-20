@@ -51,13 +51,6 @@ export const getTeacherClasses = async function(teacherEmail) {
             querySnapshot.forEach((doc) => {
                 classes.push(doc.data());
             });
-            // --- MOCK CLASS ---
-            if (teacherEmail === "prof.memmo@lacorte.it") {
-                if (!classes.find(c => c.id === "TEST-CLASS")) {
-                    classes.push({ id: "TEST-CLASS", name: "Classe di Test (3^A)", code: "TEST1234", teacher: "prof.memmo@lacorte.it" });
-                }
-            }
-            // --- FINE MOCK CLASS ---
             return classes;
         } catch (e) {
             console.error("Errore getTeacherClasses:", e);
@@ -97,13 +90,6 @@ export const getStudentsByClass = async function(classId) {
             querySnapshot.forEach((doc) => {
                 students.push(doc.data());
             });
-            // --- MOCK STUDENTS ---
-            if (classId === "TEST-CLASS") {
-                if (!students.find(s => s.email === "studente.test@lacorte.it")) {
-                    students.push({ id: "mock-student", uid: "mock-student", email: "studente.test@lacorte.it", displayName: "Studente Test", role: "student", classId: "TEST-CLASS", level: 1, xp: 0 });
-                }
-            }
-            // --- FINE MOCK STUDENTS ---
             return students;
         } catch (e) {
             console.error("Errore getStudentsByClass:", e);
