@@ -23,6 +23,9 @@ window.switchAdminTab = function(tabName) {
         if (window.LiveEditor && typeof window.LiveEditor.renderAdminPanel === 'function') {
             window.LiveEditor.renderAdminPanel('admin-live-editor-container');
         }
+        if (window.CommediaRulesService && typeof window.CommediaRulesService.renderAdminEditor === 'function') {
+            window.CommediaRulesService.renderAdminEditor('admin-rules-editor-container');
+        }
     } else if (tabName === 'sistema') {
         if (window.loadHistoricalArchives) window.loadHistoricalArchives();
     } else if (tabName === 'utenti') {
