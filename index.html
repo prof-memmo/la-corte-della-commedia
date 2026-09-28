@@ -254,37 +254,96 @@
         </section>
 
         <section id="view-admin-dashboard" class="view animate-fade-in">
-          <div class="glass-panel" style="margin-bottom: 25px;">
-            <div style="margin-bottom: 20px; border-bottom: 1px solid #e2e8f0; padding-bottom: 15px;">
-              <h2 style="margin: 0; color: #1e293b; font-size: 1.8rem;"><i class="fa-solid fa-shield-halved" style="color: var(--accent-gold);"></i> DASHBOARD AMMINISTRATORE</h2>
-              <p style="margin: 5px 0 0 0; color: #64748b; font-size: 0.9rem;">Pannello di controllo globale, fascicoli, verdetti e impostazioni della Corte della Commedia.</p>
-            </div>
+          <!-- ADMIN HEADER -->
+          <div style="margin-bottom: 25px; border-bottom: 1px solid #e2e8f0; padding-bottom: 15px;">
+            <h2 style="margin: 0; color: #1e293b; font-size: 1.8rem; font-family: 'Julius Sans One', sans-serif;"><i class="fa-solid fa-shield-halved" style="color: var(--accent-gold);"></i> DASHBOARD AMMINISTRATORE</h2>
+            <p style="margin: 5px 0 0 0; color: #64748b; font-size: 0.9rem;">Pannello di controllo globale, fascicoli, verdetti, regolamento e impostazioni della Corte della Commedia.</p>
+          </div>
 
-            <!-- STAT CARDS ROW (STILE PALESTRA) -->
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
-              <div class="admin-stat-card active" onclick="switchAdminTab('fascicoli')" id="a-btn-fascicoli">
-                <div style="font-size: 1.6rem; font-weight: 900; color: var(--accent-gold);" id="admin-count-fascicoli">--</div>
-                <div style="font-size: 0.75rem; color: #64748b; font-weight: 800; text-transform: uppercase;">Archivio Fascicoli</div>
+          <!-- STAT CARDS / TABS ROW -->
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+            <div class="admin-stat-card active" onclick="switchAdminTab('fascicoli')" id="a-btn-fascicoli">
+              <div style="font-size: 1.6rem; font-weight: 900; color: var(--accent-gold);" id="admin-count-fascicoli">--</div>
+              <div style="font-size: 0.75rem; color: #64748b; font-weight: 800; text-transform: uppercase;">Archivio Fascicoli</div>
+            </div>
+            <div class="admin-stat-card" onclick="switchAdminTab('utenti')" id="a-btn-utenti">
+              <div style="font-size: 1.6rem; font-weight: 900; color: #16a34a;" id="admin-count-utenti">--</div>
+              <div style="font-size: 0.75rem; color: #64748b; font-weight: 800; text-transform: uppercase;">Utenti Iscritti</div>
+            </div>
+            <div class="admin-stat-card" onclick="switchAdminTab('scuole')" id="a-btn-scuole">
+              <div style="font-size: 1.6rem; font-weight: 900; color: #db2777;" id="admin-count-scuole">--</div>
+              <div style="font-size: 0.75rem; color: #64748b; font-weight: 800; text-transform: uppercase;">Scuole Attive</div>
+            </div>
+            <div class="admin-stat-card" onclick="switchAdminTab('liveeditor')" id="a-btn-liveeditor">
+              <div style="font-size: 1.6rem; font-weight: 900; color: #2563eb;">✏️</div>
+              <div style="font-size: 0.75rem; color: #64748b; font-weight: 800; text-transform: uppercase;">Live Editor</div>
+            </div>
+            <div class="admin-stat-card" onclick="switchAdminTab('regolamento')" id="a-btn-regolamento">
+              <div style="font-size: 1.6rem; font-weight: 900; color: var(--accent-gold);">📜</div>
+              <div style="font-size: 0.75rem; color: #64748b; font-weight: 800; text-transform: uppercase;">Regolamento</div>
+            </div>
+            <div class="admin-stat-card" onclick="switchAdminTab('sistema')" id="a-btn-sistema">
+              <div style="font-size: 1.6rem; font-weight: 900; color: #9333ea;">⚙️</div>
+              <div style="font-size: 0.75rem; color: #64748b; font-weight: 800; text-transform: uppercase;">Sistema &amp; Backup</div>
+            </div>
+          </div>
+          
+          <!-- TAB FASCICOLI (ATTIVA DI DEFAULT) -->
+          <div id="a-tab-fascicoli" class="admin-tab-content active" style="display: block;">
+            <div class="dark-panel" style="position: relative; padding: 20px; border-radius: 12px;">
+              <h3 class="text-gold" style="font-family: 'Julius Sans One', sans-serif; border-bottom: 1px solid var(--border-gold); padding-bottom: 10px; margin-bottom: 20px;">
+                <img src="assets/Immagini/4.png" style="width: 30px; vertical-align: middle; margin-right: 10px;">Archivio Segreto dei Fascicoli
+              </h3>
+              <ul id="admin-cases-list" style="list-style: none; padding: 0;">
+                <li style="padding: 1rem; text-align: center; color: #888;">Caricamento casi in corso...</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- TAB UTENTI ISCRITTI -->
+          <div id="a-tab-utenti" class="admin-tab-content" style="display: none;">
+            <div class="dark-panel" style="padding: 20px; border-radius: 12px;" id="admin-users-table-wrapper">
+              <h3 class="text-gold" style="font-family: 'Julius Sans One', sans-serif; border-bottom: 1px solid var(--border-gold); padding-bottom: 10px; margin-bottom: 15px;">
+                <i class="fa-solid fa-users" style="color: var(--accent-gold); margin-right: 8px;"></i> Registro Giudici e Pellegrini
+              </h3>
+              <div style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse;">
+                  <thead>
+                    <tr style="border-bottom: 2px solid rgba(212,175,55,0.3); text-align: left; font-size: 0.85rem; color: var(--accent-gold);">
+                      <th style="padding: 10px;">Email / Classe</th>
+                      <th style="padding: 10px;">Ruolo</th>
+                      <th style="padding: 10px;">Data Iscrizione</th>
+                      <th style="padding: 10px; text-align: right;">Azioni</th>
+                    </tr>
+                  </thead>
+                  <tbody id="admin-users-list">
+                    <tr><td colspan="4" style="padding: 1rem; text-align: center; color: #888;">Caricamento utenti in corso...</td></tr>
+                  </tbody>
+                </table>
               </div>
-              <div class="admin-stat-card" onclick="switchAdminTab('utenti')" id="a-btn-utenti">
-                <div style="font-size: 1.6rem; font-weight: 900; color: #16a34a;" id="admin-count-utenti">--</div>
-                <div style="font-size: 0.75rem; color: #64748b; font-weight: 800; text-transform: uppercase;">Utenti Iscritti</div>
-              </div>
-              <div class="admin-stat-card" onclick="switchAdminTab('scuole')" id="a-btn-scuole">
-                <div style="font-size: 1.6rem; font-weight: 900; color: #db2777;" id="admin-count-scuole">--</div>
-                <div style="font-size: 0.75rem; color: #64748b; font-weight: 800; text-transform: uppercase;">Scuole Attive</div>
-              </div>
-              <div class="admin-stat-card" onclick="switchAdminTab('liveeditor')" id="a-btn-liveeditor">
-                <div style="font-size: 1.6rem; font-weight: 900; color: #2563eb;">✏️</div>
-                <div style="font-size: 0.75rem; color: #64748b; font-weight: 800; text-transform: uppercase;">Live Editor</div>
-              </div>
-              <div class="admin-stat-card" onclick="switchAdminTab('regolamento')" id="a-btn-regolamento">
-                <div style="font-size: 1.6rem; font-weight: 900; color: var(--accent-gold);">📜</div>
-                <div style="font-size: 0.75rem; color: #64748b; font-weight: 800; text-transform: uppercase;">Regolamento</div>
-              </div>
-              <div class="admin-stat-card" onclick="switchAdminTab('sistema')" id="a-btn-sistema">
-                <div style="font-size: 1.6rem; font-weight: 900; color: #9333ea;">⚙️</div>
-                <div style="font-size: 0.75rem; color: #64748b; font-weight: 800; text-transform: uppercase;">Sistema &amp; Backup</div>
+            </div>
+          </div>
+
+          <!-- TAB SCUOLE ATTIVE -->
+          <div id="a-tab-scuole" class="admin-tab-content" style="display: none;">
+            <div class="dark-panel" style="padding: 20px; border-radius: 12px;" id="admin-schools-table-wrapper">
+              <h3 class="text-gold" style="font-family: 'Julius Sans One', sans-serif; border-bottom: 1px solid var(--border-gold); padding-bottom: 10px; margin-bottom: 15px;">
+                <i class="fa-solid fa-school" style="color: var(--accent-gold); margin-right: 8px;"></i> Scuole e Istituti Registrati
+              </h3>
+              <div style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse;">
+                  <thead>
+                    <tr style="border-bottom: 2px solid rgba(212,175,55,0.3); text-align: left; font-size: 0.85rem; color: var(--accent-gold);">
+                      <th style="padding: 10px;">Nome Istituto</th>
+                      <th style="padding: 10px;">Città</th>
+                      <th style="padding: 10px;">Referente</th>
+                      <th style="padding: 10px; text-align: right;">Contatta</th>
+                    </tr>
+                  </thead>
+                  <tbody id="admin-schools-list">
+                    <tr><td colspan="4" style="padding: 1rem; text-align: center; color: #888;">Caricamento scuole in corso...</td></tr>
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>
@@ -297,22 +356,6 @@
           <!-- TAB REGOLAMENTO UFFICIALE -->
           <div id="a-tab-regolamento" class="admin-tab-content" style="display: none;">
             <div id="admin-rules-editor-container"></div>
-          </div>
-          
-          <!-- TAB FASCICOLI (ATTIVA) -->
-          <div id="a-tab-fascicoli" class="admin-tab-content active" style="display: block;">
-            <div style="display: grid; grid-template-columns: 1fr; gap: 2rem;">
-              <div class="dark-panel" style="position: relative;">
-                <div style="position: relative; z-index: 1;">
-                  <h3 class="text-gold" style="font-family: 'Julius Sans One', sans-serif; border-bottom: 1px solid var(--border-gold); padding-bottom: 10px; margin-bottom: 20px;">
-                    <img src="assets/Immagini/4.png" style="width: 30px; vertical-align: middle; margin-right: 10px;">Archivio Segreto dei Fascicoli
-                  </h3>
-                  <ul id="admin-cases-list" style="list-style: none; padding: 0;">
-                    <li style="padding: 1rem; text-align: center; color: #888;">Caricamento casi in corso...</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
           </div>
 
           <!-- TAB SISTEMA & IMPOSTAZIONI -->

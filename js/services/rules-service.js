@@ -392,39 +392,39 @@ Sei tu il giudice ultimo dell'argomentazione espressa dai ragazzi. Nel Dossier t
             const isAuthAdmin = userEmail.toLowerCase() === SUPER_ADMIN_EMAIL.toLowerCase();
 
             container.innerHTML = `
-                <div class="dark-panel" style="margin-bottom: 25px; padding: 25px; border-radius: 12px; border: 1.5px solid var(--accent-gold);">
-                    <div style="margin-bottom: 18px; display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 10px;">
+                <div style="background: #ffffff; padding: 25px; border-radius: 16px; border: 1.5px solid rgba(212,175,55,0.4); box-shadow: 0 4px 20px rgba(0,0,0,0.05); margin-bottom: 25px;">
+                    <div style="margin-bottom: 18px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; border-bottom: 1px solid #f1f5f9; padding-bottom: 15px;">
                         <div>
-                            <h3 class="text-gold" style="margin: 0 0 6px 0; font-size: 1.25rem; font-family: 'Julius Sans One', sans-serif; display: flex; align-items: center; gap: 8px;">
-                                📜 Regolamento della Corte • Live Editor Cloud
+                            <h3 style="margin: 0 0 6px 0; font-size: 1.25rem; font-family: 'Julius Sans One', sans-serif; color: #1e293b; display: flex; align-items: center; gap: 8px;">
+                                <span style="font-size: 1.4rem;">📜</span> Regolamento della Corte • Editor Cloud
                             </h3>
-                            <p style="margin: 0; font-size: 0.85rem; color: #94a3b8; line-height: 1.4;">
+                            <p style="margin: 0; font-size: 0.85rem; color: #64748b; line-height: 1.4;">
                                 Modifica le pergamene del regolamento ([PROCEDIMENTO], [STUDENTE], [PELLEGRINO], [DOCENTE]).
                             </p>
                         </div>
                         <div>
                             ${isAuthAdmin ? `
-                                <span style="font-size: 0.75rem; background: rgba(34, 197, 94, 0.15); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.3); padding: 4px 10px; border-radius: 20px; display: inline-flex; align-items: center; gap: 5px;">
-                                    <i class="fa-solid fa-circle-check"></i> Super-Admin Autenticato (${userEmail})
+                                <span style="font-size: 0.75rem; background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; padding: 6px 12px; border-radius: 20px; display: inline-flex; align-items: center; gap: 5px; font-weight: 600;">
+                                    <i class="fa-solid fa-circle-check" style="color: #22c55e;"></i> Super-Admin Autenticato (${userEmail})
                                 </span>
                             ` : `
-                                <span style="font-size: 0.75rem; background: rgba(212, 175, 55, 0.15); color: var(--accent-gold); border: 1px solid rgba(212, 175, 55, 0.3); padding: 4px 10px; border-radius: 20px; display: inline-flex; align-items: center; gap: 5px;">
-                                    <i class="fa-solid fa-cloud-arrow-up"></i> Cloud Sync (${SUPER_ADMIN_EMAIL})
+                                <span style="font-size: 0.75rem; background: #fef9c3; color: #854d0e; border: 1px solid #fde047; padding: 6px 12px; border-radius: 20px; display: inline-flex; align-items: center; gap: 5px; font-weight: 600;">
+                                    <i class="fa-solid fa-cloud-arrow-up" style="color: #ca8a04;"></i> Cloud Sync (${SUPER_ADMIN_EMAIL})
                                 </span>
                             `}
                         </div>
                     </div>
 
                     <div style="margin-bottom: 18px;">
-                        <textarea id="commedia-rules-textarea" rows="20" style="width: 100%; box-sizing: border-box; background: rgba(0,0,0,0.5); border: 1px solid rgba(212,175,55,0.4); border-radius: 8px; color: #fff; padding: 14px; font-size: 0.9rem; line-height: 1.6; font-family: inherit; resize: vertical; outline: none;">${text}</textarea>
+                        <textarea id="commedia-rules-textarea" rows="22" style="width: 100%; box-sizing: border-box; background: #0f172a; border: 1.5px solid #cbd5e1; border-radius: 10px; color: #f8fafc; padding: 16px; font-size: 0.92rem; line-height: 1.65; font-family: 'Fira Code', monospace, sans-serif; resize: vertical; outline: none; box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);">${text}</textarea>
                     </div>
 
                     <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
-                        <button type="button" id="btn-save-commedia-rules" onclick="window.CommediaRulesService.handleSaveButton()" style="background: var(--accent-gold); color: #000; border: none; padding: 10px 22px; border-radius: 20px; font-weight: 800; font-size: 0.85rem; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; text-transform: uppercase;">
+                        <button type="button" id="btn-save-commedia-rules" onclick="window.CommediaRulesService.handleSaveButton()" style="background: var(--accent-gold); color: #000; border: none; padding: 10px 24px; border-radius: 20px; font-weight: 800; font-size: 0.85rem; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; text-transform: uppercase; box-shadow: 0 4px 12px rgba(212,175,55,0.3); transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">
                             <i class="fa-solid fa-floppy-disk"></i> SALVA REGOLAMENTO
                         </button>
                         
-                        <button type="button" onclick="window.CommediaRulesService.handleResetButton()" style="background: transparent; color: #94a3b8; border: 1px solid rgba(255,255,255,0.2); padding: 10px 18px; border-radius: 20px; font-size: 0.82rem; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
+                        <button type="button" onclick="window.CommediaRulesService.handleResetButton()" style="background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; padding: 10px 20px; border-radius: 20px; font-size: 0.82rem; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; transition: background 0.2s;" onmouseover="this.style.background='#e2e8f0'" onmouseout="this.style.background='#f1f5f9'">
                             <i class="fa-solid fa-rotate-left"></i> Ripristina Predefinito
                         </button>
                     </div>
