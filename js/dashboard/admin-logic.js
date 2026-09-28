@@ -1,5 +1,5 @@
 window.switchAdminTab = function(tabName) {
-    ['utenti', 'scuole', 'sistema', 'fascicoli', 'liveeditor'].forEach(id => {
+    ['utenti', 'scuole', 'sistema', 'fascicoli', 'liveeditor', 'regolamento'].forEach(id => {
         const btn = document.getElementById('a-btn-' + id);
         if (btn) {
             btn.classList.remove('active');
@@ -23,6 +23,7 @@ window.switchAdminTab = function(tabName) {
         if (window.LiveEditor && typeof window.LiveEditor.renderAdminPanel === 'function') {
             window.LiveEditor.renderAdminPanel('admin-live-editor-container');
         }
+    } else if (tabName === 'regolamento') {
         if (window.CommediaRulesService && typeof window.CommediaRulesService.renderAdminEditor === 'function') {
             window.CommediaRulesService.renderAdminEditor('admin-rules-editor-container');
         }

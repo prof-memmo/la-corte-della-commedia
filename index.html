@@ -278,6 +278,10 @@
                 <div style="font-size: 1.6rem; font-weight: 900; color: #2563eb;">✏️</div>
                 <div style="font-size: 0.75rem; color: #64748b; font-weight: 800; text-transform: uppercase;">Live Editor</div>
               </div>
+              <div class="admin-stat-card" onclick="switchAdminTab('regolamento')" id="a-btn-regolamento">
+                <div style="font-size: 1.6rem; font-weight: 900; color: var(--accent-gold);">📜</div>
+                <div style="font-size: 0.75rem; color: #64748b; font-weight: 800; text-transform: uppercase;">Regolamento</div>
+              </div>
               <div class="admin-stat-card" onclick="switchAdminTab('sistema')" id="a-btn-sistema">
                 <div style="font-size: 1.6rem; font-weight: 900; color: #9333ea;">⚙️</div>
                 <div style="font-size: 0.75rem; color: #64748b; font-weight: 800; text-transform: uppercase;">Sistema &amp; Backup</div>
@@ -288,7 +292,11 @@
           <!-- TAB LIVE EDITOR -->
           <div id="a-tab-liveeditor" class="admin-tab-content" style="display: none;">
             <div id="admin-live-editor-container"></div>
-            <div id="admin-rules-editor-container" style="margin-top: 25px;"></div>
+          </div>
+
+          <!-- TAB REGOLAMENTO UFFICIALE -->
+          <div id="a-tab-regolamento" class="admin-tab-content" style="display: none;">
+            <div id="admin-rules-editor-container"></div>
           </div>
           
           <!-- TAB FASCICOLI (ATTIVA) -->
