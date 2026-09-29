@@ -444,6 +444,9 @@ Sei tu il giudice ultimo dell'argomentazione espressa dai ragazzi. Nel Dossier t
                 </div>
               </div>
             </div>
+
+            <!-- Live Editor Miniguida -->
+            <div id="admin-miniguida-editor-container" style="margin-top: 25px;"></div>
           </div>
 
           <!-- TAB SISTEMA & IMPOSTAZIONI -->
@@ -949,6 +952,7 @@ Sei tu il giudice ultimo dell'argomentazione espressa dai ragazzi. Nel Dossier t
     <script src="js/audio.js?v=20260928_rules_v3"></script>
     <script type="module" src="js/dashboard/admin-logic.js?v=20260928_rules_v3"></script>
     <script src="js/services/rules-service.js?v=20260928_rules_v3"></script>
+    <script src="js/services/miniguida-service.js?v=20260929_miniguida_v1"></script>
     <script src="js/live-editor.js?v=20260928_rules_v3"></script>
     <script type="module" src="js/app.js?v=20260928_rules_v3"></script>
     <!-- TUTORIAL MODAL (Miniguida) -->
@@ -1012,16 +1016,28 @@ Sei tu il giudice ultimo dell'argomentazione espressa dai ragazzi. Nel Dossier t
         const totalMiniguidaSteps = 4;
         
         function openMiniguida() {
+            if (window.CommediaMiniguidaService) {
+                window.CommediaMiniguidaService.openModal();
+                return;
+            }
             document.getElementById('modal-miniguida').style.display = 'flex';
             currentMiniguidaStep = 0;
             updateMiniguidaView();
         }
         
         function closeMiniguida() {
+            if (window.CommediaMiniguidaService) {
+                window.CommediaMiniguidaService.closeModal();
+                return;
+            }
             document.getElementById('modal-miniguida').style.display = 'none';
         }
         
         function nextMiniguidaStep() {
+            if (window.CommediaMiniguidaService) {
+                window.CommediaMiniguidaService.nextStep();
+                return;
+            }
             if (currentMiniguidaStep < totalMiniguidaSteps - 1) {
                 currentMiniguidaStep++;
                 updateMiniguidaView();
@@ -1032,11 +1048,13 @@ Sei tu il giudice ultimo dell'argomentazione espressa dai ragazzi. Nel Dossier t
         
         function updateMiniguidaView() {
             for (let i = 0; i < totalMiniguidaSteps; i++) {
-                document.getElementById('miniguida-step-' + i).style.display = i === currentMiniguidaStep ? 'flex' : 'none';
-                const dot = document.getElementById('miniguida-dots').children[i];
-                dot.style.background = i === currentMiniguidaStep ? '#ef4444' : '#e2e8f0';
+                const el = document.getElementById('miniguida-step-' + i);
+                if (el) el.style.display = i === currentMiniguidaStep ? 'flex' : 'none';
+                const dot = document.getElementById('miniguida-dots')?.children[i];
+                if (dot) dot.style.background = i === currentMiniguidaStep ? '#ef4444' : '#e2e8f0';
             }
-            document.getElementById('miniguida-next-btn').innerText = currentMiniguidaStep === totalMiniguidaSteps - 1 ? 'GIOCA!' : 'AVANTI';
+            const nextBtn = document.getElementById('miniguida-next-btn');
+            if (nextBtn) nextBtn.innerText = currentMiniguidaStep === totalMiniguidaSteps - 1 ? 'GIOCA!' : 'AVANTI';
         }
     </script>
 

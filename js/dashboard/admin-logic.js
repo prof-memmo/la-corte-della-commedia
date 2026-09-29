@@ -25,6 +25,9 @@ window.switchAdminTab = function(tabName) {
         } else if (window.CommediaRulesService && typeof window.CommediaRulesService.renderAdminEditor === 'function') {
             window.CommediaRulesService.renderAdminEditor('admin-rules-editor-container');
         }
+        if (window.CommediaMiniguidaService && typeof window.CommediaMiniguidaService.renderAdminEditor === 'function') {
+            window.CommediaMiniguidaService.renderAdminEditor('admin-miniguida-editor-container');
+        }
     } else if (tabName === 'sistema') {
         if (window.loadHistoricalArchives) window.loadHistoricalArchives();
     } else if (tabName === 'utenti') {
