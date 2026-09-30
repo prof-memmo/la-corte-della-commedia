@@ -503,3 +503,249 @@ h6 { font-size: 1.05rem; }
         color: var(--accent-crimson, #ef4444);
     }
 }
+
+/* =====================================================
+   MINIGIOCHI DANTESCHI & ESERCIZI INTERATTIVI
+   ===================================================== */
+.mission-minigames-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.minigame-pill-btn {
+    padding: 6px 10px;
+    font-size: 0.74rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    justify-content: flex-start;
+    background: rgba(212, 175, 55, 0.06);
+    border: 1px solid rgba(212, 175, 55, 0.22);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: left;
+    color: #f5f5f0;
+}
+
+.minigame-pill-btn:hover {
+    background: rgba(212, 175, 55, 0.18);
+    border-color: var(--accent-gold, #d4af37);
+    transform: translateY(-1px);
+}
+
+.minigame-pill-btn img {
+    width: 22px;
+    height: 22px;
+    object-fit: contain;
+    aspect-ratio: 1/1;
+    filter: drop-shadow(0 1px 3px rgba(0,0,0,0.4));
+    flex-shrink: 0;
+}
+
+/* Griglia 12 Carte Metodi d'Indagine */
+.investigation-grid-12 {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 12px;
+    margin: 15px 0;
+}
+
+.investigation-card-12 {
+    background: rgba(26, 22, 20, 0.85);
+    border: 1px solid rgba(212, 175, 55, 0.25);
+    border-radius: 10px;
+    padding: 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+}
+
+.investigation-card-12:hover {
+    border-color: var(--accent-gold, #d4af37);
+    background: rgba(212, 175, 55, 0.12);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2);
+}
+
+.investigation-card-12 img {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+    aspect-ratio: 1/1;
+    filter: drop-shadow(0 2px 6px rgba(0,0,0,0.6));
+    margin-bottom: 4px;
+}
+
+/* Memory Dantesco */
+.memory-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    max-width: 500px;
+    margin: 0 auto;
+}
+.memory-card {
+    aspect-ratio: 1/1;
+    background: rgba(20, 18, 16, 0.9);
+    border: 2px solid rgba(212, 175, 55, 0.3);
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    user-select: none;
+    padding: 6px;
+    text-align: center;
+}
+.memory-card:hover {
+    border-color: var(--accent-gold, #d4af37);
+    transform: scale(1.02);
+}
+.memory-card.flipped {
+    background: rgba(212, 175, 55, 0.15);
+    border-color: var(--accent-gold, #d4af37);
+}
+.memory-card.matched {
+    background: rgba(34, 197, 94, 0.2);
+    border-color: #22c55e;
+    cursor: default;
+}
+
+/* Cruciverba Dantesco */
+.cw-grid {
+    display: inline-grid;
+    gap: 2px;
+    background: #333;
+    padding: 3px;
+    border-radius: 4px;
+    margin: 0 auto;
+}
+.cw-cell {
+    width: 34px;
+    height: 34px;
+    aspect-ratio: 1/1;
+    background: #1e1b18;
+    color: #f5f5f0;
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.95rem;
+    position: relative;
+}
+.cw-cell input {
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    text-transform: uppercase;
+    background: transparent;
+    border: none;
+    color: #f5f5f0;
+    font-weight: 700;
+    font-size: 0.95rem;
+    outline: none;
+}
+.cw-cell.cw-black {
+    background: #0f0d0c;
+    border-color: #0f0d0c;
+}
+.cw-num {
+    position: absolute;
+    top: 1px;
+    left: 2px;
+    font-size: 0.55rem;
+    color: var(--accent-gold, #d4af37);
+}
+
+/* Rebus & Crittografia */
+.rebus-box, .crypto-box {
+    background: rgba(20, 18, 16, 0.85);
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    border-radius: 8px;
+    padding: 16px;
+    text-align: center;
+    margin: 10px 0;
+}
+
+.crypto-letter-slot {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 2px 4px;
+}
+.crypto-code {
+    font-size: 0.72rem;
+    color: var(--accent-gold, #d4af37);
+    margin-bottom: 2px;
+    font-weight: 700;
+}
+.crypto-char-box {
+    width: 32px;
+    height: 36px;
+    background: rgba(0,0,0,0.5);
+    border: 1px solid rgba(212, 175, 55, 0.4);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #fff;
+}
+
+/* Anagrammi & Chips */
+.anagram-chip {
+    display: inline-block;
+    padding: 6px 14px;
+    background: rgba(212, 175, 55, 0.15);
+    border: 1px solid var(--accent-gold, #d4af37);
+    border-radius: 6px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.2s;
+    user-select: none;
+}
+.anagram-chip:hover {
+    background: rgba(212, 175, 55, 0.3);
+    transform: translateY(-2px);
+}
+
+/* Differenze / Trova Prove */
+.diff-container {
+    position: relative;
+    max-width: 500px;
+    margin: 0 auto;
+    border: 2px solid var(--accent-gold, #d4af37);
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: crosshair;
+}
+.diff-target {
+    position: absolute;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    cursor: pointer;
+    background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(212,175,55,0.4) 40%, transparent 70%);
+    animation: pulse 2s infinite alternate;
+}
+.diff-target.found {
+    border: 2px solid #22c55e;
+    background: rgba(34, 197, 94, 0.3);
+    animation: none;
+}
+
