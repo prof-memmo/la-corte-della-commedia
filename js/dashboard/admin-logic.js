@@ -1,10 +1,8 @@
 window.switchAdminTab = function(tabName) {
-    ['utenti', 'scuole', 'sistema', 'fascicoli', 'liveeditor'].forEach(id => {
+    ['utenti', 'scuole', 'sistema', 'fascicoli', 'liveeditor', 'regolamento'].forEach(id => {
         const btn = document.getElementById('a-btn-' + id);
         if (btn) {
             btn.classList.remove('active');
-            btn.style.borderBottom = 'none';
-            btn.style.color = '#888';
         }
         const tab = document.getElementById('a-tab-' + id);
         if (tab) tab.style.display = 'none';
@@ -13,8 +11,6 @@ window.switchAdminTab = function(tabName) {
     const btnActive = document.getElementById('a-btn-' + tabName);
     if (btnActive) {
         btnActive.classList.add('active');
-        btnActive.style.borderBottom = '2px solid var(--accent-gold)';
-        btnActive.style.color = 'var(--accent-gold)';
     }
     const tabActive = document.getElementById('a-tab-' + tabName);
     if (tabActive) tabActive.style.display = 'block';
@@ -23,12 +19,21 @@ window.switchAdminTab = function(tabName) {
         if (window.LiveEditor && typeof window.LiveEditor.renderAdminPanel === 'function') {
             window.LiveEditor.renderAdminPanel('admin-live-editor-container');
         }
+    } else if (tabName === 'regolamento') {
+        if (window.RulesService && typeof window.RulesService.renderAdminEditor === 'function') {
+            window.RulesService.renderAdminEditor('admin-rules-editor-container');
+        } else if (window.CommediaRulesService && typeof window.CommediaRulesService.renderAdminEditor === 'function') {
+            window.CommediaRulesService.renderAdminEditor('admin-rules-editor-container');
+        }
+        if (window.CommediaMiniguidaService && typeof window.CommediaMiniguidaService.renderAdminEditor === 'function') {
+            window.CommediaMiniguidaService.renderAdminEditor('admin-miniguida-editor-container');
+        }
     } else if (tabName === 'sistema') {
         if (window.loadHistoricalArchives) window.loadHistoricalArchives();
     } else if (tabName === 'utenti') {
-        loadAdminUsers();
+        if (window.loadAdminUsers) window.loadAdminUsers();
     } else if (tabName === 'scuole') {
-        renderAdminSchoolsList();
+        if (window.renderAdminSchoolsList) window.renderAdminSchoolsList();
     }
 };
 

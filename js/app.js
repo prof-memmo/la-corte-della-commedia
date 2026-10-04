@@ -50,6 +50,9 @@ async function showView(viewId) {
   if (target) target.classList.add('active');
   
   if (viewId === 'view-regolamento') {
+    if (window.CommediaRulesService) {
+      window.CommediaRulesService.renderPublicView();
+    }
     let currentRole = 'student';
     if (window.EroiDB && window.EroiDB.cache && window.EroiDB.cache.userProfile) {
         currentRole = window.EroiDB.cache.userProfile.role || 'student';
