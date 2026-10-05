@@ -94,18 +94,17 @@ getRedirectResult(auth).catch((error) => {
   console.error("Errore di login da redirect", error);
 });
 
+window.handleCorteGoogleLogin = function() {
+    const isPreview = window.location.pathname.includes('/preview');
+    const portalUrl = isPreview
+        ? 'https://gestionesiti.profmemmo.it/preview/portal.html?redirect=corte_della_commedia'
+        : 'https://gestionesiti.profmemmo.it/portal.html?redirect=corte_della_commedia';
+    window.location.href = portalUrl;
+};
+
 // Event Listeners Autenticazione legacy
 if (loginGoogleBtn) {
-  loginGoogleBtn.addEventListener('click', async () => {
-    try {
-      await signInWithPopup(auth, googleProvider);
-    } catch (error) {
-      console.error("Errore avvio login Google", error);
-      if (error.code !== 'auth/popup-closed-by-user' && error.code !== 'auth/cancelled-popup-request') {
-        alert("Errore login: " + error.message);
-      }
-    }
-  });
+  loginGoogleBtn.addEventListener('click', window.handleCorteGoogleLogin);
 }
 
 if (loginEmailBtn) {
@@ -177,7 +176,7 @@ onAuthStateChanged(auth, async (user) => {
         }
         if (!isSuperAdmin && hubData.statusAccount && (hubData.statusAccount === 'rejected' || hubData.statusAccount === 'suspended')) {
           alert("Accesso negato: L'account è stato sospeso nell'Hub.");
-          window.location.href = 'https://prof-memmo.github.io/prof-memmo-gestione-siti/portal.html';
+          window.location.href = 'https://gestionesiti.profmemmo.it/portal.html';
           return;
         }
       } else {
@@ -1287,7 +1286,7 @@ window.updateUserRole = async function(uid, newRole) {
 
 
 window.showContattiModal = function() {
-    window.open('https://prof-memmo.github.io/games/contatti.html', '_blank');
+    window.open('https://profmemmo.it/contatti.html', '_blank');
 };
 
 async function renderArchivio() {

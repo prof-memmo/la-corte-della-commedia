@@ -18,7 +18,7 @@
   <!-- Icone per Safari e Dispositivi Mobili -->
   <link rel="manifest" href="manifest.json">
   <script>window.HUB_GAME_ID = "la-corte-della-commedia";</script>
-  <script src="https://prof-memmo.github.io/prof-memmo-gestione-siti/shared/hub-subscription-guard.js?v=20260824_corte_guard"></script>
+  <script src="https://gestionesiti.profmemmo.it/shared/hub-subscription-guard.js?v=20260824_corte_guard"></script>
 </head>
   <body>
     
@@ -63,7 +63,7 @@
                     <i class="fa-solid fa-globe"></i> Profilo Globale Ecosistema
                 </div>
                 <p style="font-size: 0.75rem; color: #cbd5e1; margin: 0 0 10px 0;">Il tuo account è sincronizzato con l'Ecosistema Prof. Memmo. Gestisci abbonamenti e impostazioni generali dall'Hub.</p>
-                <a href="https://prof-memmo.github.io/games/profilo.html" target="_blank" class="btn" style="width: 100%; border-radius: 20px; font-weight: 700; font-size: 0.8rem; display: inline-flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; padding: 8px 12px; background: #6366f1; color: white;">
+                <a href="https://profmemmo.it/profilo.html" target="_blank" class="btn" style="width: 100%; border-radius: 20px; font-weight: 700; font-size: 0.8rem; display: inline-flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; padding: 8px 12px; background: #6366f1; color: white;">
                     Gestisci Profilo Globale <i class="fa-solid fa-arrow-up-right-from-square"></i>
                 </a>
             </div>
@@ -73,20 +73,20 @@
     <!-- App Header (Visibile solo dopo il login) -->
     <header class="app-header" id="main-app-header" style="display: none; z-index: 1000; position: relative; justify-content: space-between; align-items: center;">
         <div style="display: flex; align-items: center; gap: 1rem;">
-          <img src="https://prof-memmo.github.io/prof-memmo-gestione-siti/shared/assets/branding/games/corte-commedia-header.png" alt="Logo La Corte" style="height: 75px; object-fit: contain;">
+          <img src="https://gestionesiti.profmemmo.it/shared/assets/branding/games/corte-commedia-header.png" alt="Logo La Corte" style="height: 75px; object-fit: contain;">
         </div>
         
         <!-- Logo Avatar Centrato -->
         <div class="header-center-logo" style="position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); display: flex; align-items: center; justify-content: center; pointer-events: none;">
           <div class="header-prof-logo-wrapper" style="background: transparent; border-radius: 0; padding: 0; display: flex; align-items: center; justify-content: center; border: none; box-shadow: none; pointer-events: auto; transition: transform 0.3s ease;">
-             <img src="https://prof-memmo.github.io/prof-memmo-gestione-siti/shared/assets/branding/prof-memmo/prof-memmo-avatar.png" alt="Prof. Memmo" class="header-prof-logo" style="height: 48px; width: auto; object-fit: contain; opacity: 0.95; filter: none; transition: opacity 0.3s ease;">
+             <img src="https://gestionesiti.profmemmo.it/shared/assets/branding/prof-memmo/prof-memmo-avatar.png" alt="Prof. Memmo" class="header-prof-logo" style="height: 48px; width: auto; object-fit: contain; opacity: 0.95; filter: none; transition: opacity 0.3s ease;">
           </div>
         </div>
         <div style="display: flex; align-items: center; gap: 1rem;">
           <div id="user-menu-container" style="display: none; position: relative; z-index: 1001;">
             <div id="user-menu-trigger" onclick="event.stopPropagation(); const dd = document.getElementById('user-dropdown'); dd.classList.toggle('hidden'); if(!dd.classList.contains('hidden')) dd.style.display='flex'; else dd.style.display='none';" style="display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.3); padding: 5px 15px 5px 5px; border-radius: 30px; border: 1px solid var(--accent-gold); cursor: pointer; color: white; transition: all 0.2s;">
               <div style="width: 32px; height: 32px; border-radius: 50%; background: #ffffff; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 1.5px solid var(--accent-gold);">
-                <img id="header-user-avatar-img" src="https://prof-memmo.github.io/prof-memmo-gestione-siti/shared/assets/avatars/6.png" style="width:100%; height:100%; object-fit:cover;">
+                <img id="header-user-avatar-img" src="https://gestionesiti.profmemmo.it/shared/assets/avatars/6.png" style="width:100%; height:100%; object-fit:cover;">
               </div>
               <span id="header-user-name" style="font-size: 0.9rem; font-weight: bold; max-width: 120px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Giudice</span>
               <span style="font-size: 0.7rem;">▼</span>
@@ -150,7 +150,7 @@
               </div>
               
               <div style="text-align: center; margin: 20px 0;">
-                <button type="button" class="btn btn-primary" style="background: var(--accent-gold); color: #1a1a2e; font-size: 1.15rem; font-weight: 800; padding: 14px 28px; border-radius: 50px; box-shadow: 0 4px 15px rgba(0,0,0,0.4); border: none; cursor: pointer; width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px;" onclick="window.location.href='https://prof-memmo.github.io/prof-memmo-gestione-siti/portal.html?redirect=corte_della_commedia'">
+                <button type="button" class="btn btn-primary" style="background: var(--accent-gold); color: #1a1a2e; font-size: 1.15rem; font-weight: 800; padding: 14px 28px; border-radius: 50px; box-shadow: 0 4px 15px rgba(0,0,0,0.4); border: none; cursor: pointer; width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px;" onclick="window.handleCorteGoogleLogin()">
                   <i class="fa-solid fa-right-to-bracket"></i> Accedi tramite Hub
                 </button>
               </div>
@@ -887,7 +887,7 @@ Sei tu il giudice ultimo dell'argomentazione espressa dai ragazzi. Nel Dossier t
               </filter>
             </svg>
             <div style="margin-bottom: 20px;">
-              <video id="corte-gatto-video" src="https://prof-memmo.github.io/prof-memmo-gestione-siti/shared/assets/video/gatto-che-dorme.mp4" autoplay loop muted playsinline style="filter: url(#remove-white-corte); max-width: 100%; max-height: 220px; border-radius: 16px;"></video>
+              <video id="corte-gatto-video" src="https://gestionesiti.profmemmo.it/shared/assets/video/gatto-che-dorme.mp4" autoplay loop muted playsinline style="filter: url(#remove-white-corte); max-width: 100%; max-height: 220px; border-radius: 16px;"></video>
             </div>
             <h2 style="color: #800020; font-family: 'Cinzel', serif; font-size: 1.8rem; margin-bottom: 15px;">Tempo di Riposo per la Corte!</h2>
             <p style="font-size: 1.05rem; color: #444; line-height: 1.6; margin-bottom: 20px;">
@@ -935,7 +935,11 @@ Sei tu il giudice ultimo dell'argomentazione espressa dai ragazzi. Nel Dossier t
 
       <!-- Global Footer -->
       <footer id="main-footer" style="display: none; padding: 2rem; width: 100%; box-sizing: border-box; font-size: 0.75rem; color: #888; margin-top: 20px; margin-bottom: 70px; line-height: 1.5; text-transform: uppercase; letter-spacing: 0.5px;">
-        <div style="display: flex; align-items: center; justify-content: flex-start; gap: 20px; width: 100%; flex-wrap: nowrap; flex-direction: row;">
+        <div class="footer-legal-links" style="margin-bottom: 8px; display: flex; justify-content: center; gap: 15px; font-size: 0.85rem;">
+        <a href="#" onclick="event.preventDefault(); openSharedModal('privacy');" style="color: var(--accent-gold, #f59e0b); text-decoration: underline;">Privacy Policy</a>
+        <a href="#" onclick="event.preventDefault(); openSharedModal('termini');" style="color: var(--accent-gold, #f59e0b); text-decoration: underline;">Termini e Condizioni</a>
+      </div>
+      <div style="display: flex; align-items: center; justify-content: flex-start; gap: 20px; width: 100%; flex-wrap: nowrap; flex-direction: row;">
             <img src="public/assets/patamu_pencil.png" alt="Patamu" style="height: 65px; object-fit: contain; flex-shrink: 0;">
             <p style="text-align: left; margin: 0; flex: 1; max-width: none;">© 2026 Guglielmo Piersanti. Tutti i contenuti presenti su questo sito sono di proprietà dell'autore e sono protetti tramite deposito e marcatura temporale presso Patamu. I contenuti sono inoltre distribuiti con licenza Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0).</p>
         </div>
@@ -960,7 +964,7 @@ Sei tu il giudice ultimo dell'argomentazione espressa dai ragazzi. Nel Dossier t
     <div id="modal-miniguida" class="modal-overlay" style="display: none; align-items: center; justify-content: center; z-index: 9999; background: rgba(15,23,42,0.8); backdrop-filter: blur(4px); position: fixed; inset: 0; padding: 20px;">
         <div class="modal-content" style="background: white; border-radius: 24px; width: 100%; max-width: 900px; display: flex; overflow: hidden; position: relative; max-height: 90vh; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);">
             <div style="width: 33%; background: #f8fafc; display: flex; align-items: flex-end; justify-content: center; border-right: 2px solid #f1f5f9; padding-top: 20px;" class="hide-mobile">
-                <img src="assets/prof_memmo_full.jpg" onerror="this.src='https://prof-memmo.github.io/prof-memmo-gestione-siti/shared/assets/branding/prof-memmo/prof-memmo-full.jpg';" alt="Prof Memmo" style="width: 120%; object-fit: contain; mix-blend-mode: multiply; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.2));">
+                <img src="assets/prof_memmo_full.jpg" onerror="this.src='https://gestionesiti.profmemmo.it/shared/assets/branding/prof-memmo/prof-memmo-full.jpg';" alt="Prof Memmo" style="width: 120%; object-fit: contain; mix-blend-mode: multiply; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.2));">
             </div>
             <div style="flex: 1; padding: 30px 40px; display: flex; flex-direction: column; position: relative; min-height: 450px;">
                 <button onclick="closeMiniguida()" style="position: absolute; top: 15px; right: 15px; width: 36px; height: 36px; border-radius: 50%; border: none; background: #f1f5f9; color: #475569; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.2s;"><i class="fa-solid fa-xmark"></i></button>
@@ -1075,6 +1079,6 @@ Sei tu il giudice ultimo dell'argomentazione espressa dai ragazzi. Nel Dossier t
     </script>
 
     <!-- Modali condivisi ecosistema Prof. Memmo -->
-    <script src="https://prof-memmo.github.io/prof-memmo-gestione-siti/shared/legal-modal.js?v=20260819a"></script>
+    <script src="https://gestionesiti.profmemmo.it/shared/legal-modal.js?v=20260819a"></script>
 </body>
 </html>
