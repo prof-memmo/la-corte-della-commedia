@@ -94,9 +94,7 @@ getRedirectResult(auth).catch((error) => {
   console.error("Errore di login da redirect", error);
 });
 
-// Event Listeners Autenticazione legacy
-if (loginGoogleBtn) {
-  loginGoogleBtn.addEventListener('click', async () => {
+window.handleCorteGoogleLogin = async function() {
     try {
       await signInWithPopup(auth, googleProvider);
     } catch (error) {
@@ -105,7 +103,11 @@ if (loginGoogleBtn) {
         alert("Errore login: " + error.message);
       }
     }
-  });
+};
+
+// Event Listeners Autenticazione legacy
+if (loginGoogleBtn) {
+  loginGoogleBtn.addEventListener('click', window.handleCorteGoogleLogin);
 }
 
 if (loginEmailBtn) {
@@ -177,7 +179,7 @@ onAuthStateChanged(auth, async (user) => {
         }
         if (!isSuperAdmin && hubData.statusAccount && (hubData.statusAccount === 'rejected' || hubData.statusAccount === 'suspended')) {
           alert("Accesso negato: L'account è stato sospeso nell'Hub.");
-          window.location.href = 'https://prof-memmo.github.io/prof-memmo-gestione-siti/portal.html';
+          window.location.href = 'https://gestionesiti.profmemmo.it/portal.html';
           return;
         }
       } else {
@@ -1287,7 +1289,7 @@ window.updateUserRole = async function(uid, newRole) {
 
 
 window.showContattiModal = function() {
-    window.open('https://prof-memmo.github.io/games/contatti.html', '_blank');
+    window.open('https://profmemmo.it/contatti.html', '_blank');
 };
 
 async function renderArchivio() {
