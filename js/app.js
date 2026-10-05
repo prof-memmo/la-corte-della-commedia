@@ -134,27 +134,54 @@ if (loginEmailBtn) {
   });
 }
 
+// Inizializzazione Ricevitore SSO da Hub
+let ssoUser = null;
+try {
+  if (window.location.hash && window.location.hash.includes('pm_sso=')) {
+    const match = window.location.hash.match(/pm_sso=([^&]+)/);
+    if (match && match[1]) {
+      ssoUser = JSON.parse(decodeURIComponent(match[1]));
+      if (ssoUser && ssoUser.uid) {
+        localStorage.setItem('pm_sso_corte', JSON.stringify(ssoUser));
+        history.replaceState(null, '', window.location.pathname + window.location.search);
+      }
+    }
+  }
+} catch (e) {
+  console.warn("Errore parsing SSO Corte:", e);
+}
+
+if (!ssoUser) {
+  try {
+    const cached = localStorage.getItem('pm_sso_corte');
+    if (cached) ssoUser = JSON.parse(cached);
+  } catch (e) {}
+}
+
 if (logoutBtn) {
   logoutBtn.addEventListener('click', () => {
+    localStorage.removeItem('pm_sso_corte');
     signOut(auth);
+    showView('view-login');
   });
 }
 
 onAuthStateChanged(auth, async (user) => {
   if (state.user && state.user.uid && state.user.uid.startsWith("mock-")) return; // ignora se è un account mock già loggato
-  state.user = user;
-  window.app.user = user;
+  const effectiveUser = user || ssoUser;
+  state.user = effectiveUser;
+  window.app.user = effectiveUser;
   
-  if (user) {
-    const userEmail = user.email ? user.email.toLowerCase() : '';
+  if (effectiveUser) {
+    const userEmail = effectiveUser.email ? effectiveUser.email.toLowerCase() : '';
     let isSuperAdmin = (userEmail === 'prof.memmo@gmail.com');
-    let hubRole = 'student';
-    let hubName = user.displayName || 'Giudice';
-    let hubAvatar = '';
+    let hubRole = (effectiveUser.role === 'admin' || isSuperAdmin) ? 'admin' : (effectiveUser.role === 'docente' ? 'teacher' : (effectiveUser.role === 'viandante' ? 'external' : 'student'));
+    let hubName = effectiveUser.name || effectiveUser.displayName || 'Giudice';
+    let hubAvatar = effectiveUser.avatar || '';
 
     // 1. Verifica sull'Hub Centrale (Single Sign-On Auth)
     try {
-      const hubDocRef = doc(db, 'hub_users', user.uid);
+      const hubDocRef = doc(db, 'hub_users', effectiveUser.uid);
       const hubDoc = await getDoc(hubDocRef);
       if (hubDoc.exists()) {
         const hubData = hubDoc.data();
@@ -180,11 +207,11 @@ onAuthStateChanged(auth, async (user) => {
           return;
         }
       } else {
-        hubRole = isSuperAdmin ? 'admin' : 'student';
+        hubRole = isSuperAdmin ? 'admin' : hubRole;
       }
     } catch (err) {
       console.warn("Verifica Hub (fallback locale):", err);
-      hubRole = isSuperAdmin ? 'admin' : 'student';
+      hubRole = isSuperAdmin ? 'admin' : hubRole;
     }
 
     if (welcomeMessage) welcomeMessage.textContent = `Bentornato, Giudice ${hubName}`;
@@ -208,10 +235,10 @@ onAuthStateChanged(auth, async (user) => {
     let role = isSuperAdmin ? 'admin' : hubRole;
     try {
       if (EroiDB) {
-        let profile = await EroiDB.getUserProfile(user.uid);
+        let profile = await EroiDB.getUserProfile(effectiveUser.uid);
         if (!profile) {
           profile = {
-            uid: user.uid,
+            uid: effectiveUser.uid,
             email: userEmail,
             displayName: hubName,
             role: role,
@@ -221,7 +248,7 @@ onAuthStateChanged(auth, async (user) => {
             completedCases: []
           };
           try {
-            await setDoc(doc(db, "users", user.uid), profile);
+            await setDoc(doc(db, "users", effectiveUser.uid), profile);
             EroiDB.cache.userProfile = profile;
           } catch(errSet) {
             console.warn("Impossibile salvare profilo locale iniziale:", errSet);
@@ -234,7 +261,7 @@ onAuthStateChanged(auth, async (user) => {
           role = 'admin';
           if (profile && profile.role !== 'admin') {
             try {
-              await window.EroiDB.updateUserRole(user.uid, 'admin');
+              await window.EroiDB.updateUserRole(effectiveUser.uid, 'admin');
               profile.role = 'admin';
             } catch(e) {}
           }
@@ -250,7 +277,7 @@ onAuthStateChanged(auth, async (user) => {
         if (dropdownXp) dropdownXp.textContent = `${xp} XP`;
         
         const hAvatarImg = document.getElementById('header-user-avatar-img');
-        const userAvatar = (profile && profile.avatar) || hubAvatar || user.photoURL || 'assets/avatars/6.png';
+        const userAvatar = (profile && profile.avatar) || hubAvatar || effectiveUser.photoURL || 'assets/avatars/6.png';
         if (profile) profile.avatar = userAvatar;
         if (hAvatarImg) {
           hAvatarImg.src = userAvatar;
