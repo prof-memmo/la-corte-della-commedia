@@ -94,15 +94,12 @@ getRedirectResult(auth).catch((error) => {
   console.error("Errore di login da redirect", error);
 });
 
-window.handleCorteGoogleLogin = async function() {
-    try {
-      await signInWithPopup(auth, googleProvider);
-    } catch (error) {
-      console.error("Errore avvio login Google", error);
-      if (error.code !== 'auth/popup-closed-by-user' && error.code !== 'auth/cancelled-popup-request') {
-        alert("Errore login: " + error.message);
-      }
-    }
+window.handleCorteGoogleLogin = function() {
+    const isPreview = window.location.pathname.includes('/preview');
+    const portalUrl = isPreview
+        ? 'https://gestionesiti.profmemmo.it/preview/portal.html?redirect=corte_della_commedia'
+        : 'https://gestionesiti.profmemmo.it/portal.html?redirect=corte_della_commedia';
+    window.location.href = portalUrl;
 };
 
 // Event Listeners Autenticazione legacy
