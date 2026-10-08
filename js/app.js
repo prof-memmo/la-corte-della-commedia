@@ -304,6 +304,34 @@ onAuthStateChanged(auth, async (user) => {
     }
 
   } else {
+    // Controlla se abbiamo una sessione SSO attiva dall'Hub
+    const ssoRaw = localStorage.getItem('hub_user_session');
+    if (ssoRaw) {
+      try {
+        const ssoSession = JSON.parse(ssoRaw);
+        if (ssoSession && ssoSession.email) {
+          state.user = {
+            uid: ssoSession.uid || 'sso_' + Math.random().toString(36).substr(2, 9),
+            email: ssoSession.email,
+            displayName: ssoSession.displayName || 'Prof. Memmo'
+          };
+          window.app.user = state.user;
+          const userMenu = document.getElementById('user-menu-container');
+          if (userMenu) userMenu.style.display = 'block';
+          const mainHeader = document.getElementById('main-app-header');
+          if (mainHeader) mainHeader.style.display = 'flex';
+          const bottomNav = document.getElementById('mobile-bottom-nav');
+          if (bottomNav) bottomNav.style.display = 'flex';
+          const mainFooter = document.getElementById('main-footer');
+          if (mainFooter) mainFooter.style.display = 'flex';
+          const headerName = document.getElementById('header-user-name');
+          if (headerName) headerName.textContent = ssoSession.displayName || 'Prof. Memmo';
+          window.goToDashboard(ssoSession.role === 'admin' || ssoSession.email.toLowerCase() === 'prof.memmo@gmail.com');
+          return;
+        }
+      } catch(e) {}
+    }
+
     // Nascondi il menu utente, header, nav e footer
     const userMenu = document.getElementById('user-menu-container');
     if (userMenu) userMenu.style.display = 'none';
