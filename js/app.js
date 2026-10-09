@@ -177,7 +177,7 @@ onAuthStateChanged(auth, async (user) => {
         }
         if (!isSuperAdmin && hubData.statusAccount && (hubData.statusAccount === 'rejected' || hubData.statusAccount === 'suspended')) {
           alert("Accesso negato: L'account è stato sospeso nell'Hub.");
-          window.location.href = 'https://prof-memmo.github.io/prof-memmo-gestione-siti/portal.html';
+          window.location.href = 'https://profmemmo.it/portal.html';
           return;
         }
       } else {
