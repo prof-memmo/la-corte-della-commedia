@@ -16,6 +16,19 @@ async function showView(viewId) {
   const publicViews = ['view-login', 'view-regolamento'];
   const isPublic = publicViews.includes(viewId);
 
+  // Se l'utente non è in memory, tenta recupero da sessione locale prima di forzare il login
+  if (!state.user) {
+    try {
+      const stored = JSON.parse(localStorage.getItem('currentUser') || '{}');
+      if (stored && stored.email) {
+        state.user = { email: stored.email, uid: stored.uid || 'admin-local', displayName: stored.name || 'Prof. Memmo' };
+      }
+    } catch(e) {}
+    if (!state.user && localStorage.getItem('adminLoggedIn') === 'true') {
+      state.user = { email: 'prof.memmo@gmail.com', uid: 'admin-local', displayName: 'Prof. Memmo' };
+    }
+  }
+
   // Se l'utente non è autenticato e la vista è privata, forza il login
   if (!state.user && !isPublic) {
     viewId = 'view-login';
