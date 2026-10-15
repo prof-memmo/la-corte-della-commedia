@@ -89,10 +89,46 @@ Sei tu il giudice ultimo dell'argomentazione espressa dai ragazzi. Nel Dossier t
             return DEFAULT_COMMEDIA_RULES_TEXT.trim();
         },
 
-        isSuperAdmin(email) {
+        _resolveUserEmail(providedEmail) {
+            if (providedEmail && typeof providedEmail === 'string' && providedEmail.trim()) {
+                return providedEmail.trim().toLowerCase();
+            }
             const fbUser = (window.hubApp && window.hubApp.auth && window.hubApp.auth().currentUser) ||
                            (window.firebase && window.firebase.auth && window.firebase.auth().currentUser);
-            const userEmail = (email || (fbUser && fbUser.email) || (window.currentUser && window.currentUser.email) || window.currentUserEmail || '').toLowerCase();
+            if (fbUser && fbUser.email) {
+                return fbUser.email.trim().toLowerCase();
+            }
+            if (window.currentUser && window.currentUser.email) {
+                return window.currentUser.email.trim().toLowerCase();
+            }
+            if (window.EroiDB && window.EroiDB.cache && window.EroiDB.cache.userProfile && window.EroiDB.cache.userProfile.email) {
+                return window.EroiDB.cache.userProfile.email.trim().toLowerCase();
+            }
+            if (window.currentUserEmail && typeof window.currentUserEmail === 'string') {
+                return window.currentUserEmail.trim().toLowerCase();
+            }
+            try {
+                const stored = JSON.parse(localStorage.getItem('currentUser') || '{}');
+                if (stored && stored.email) return stored.email.trim().toLowerCase();
+            } catch (e) {}
+            try {
+                const storedHub = JSON.parse(localStorage.getItem('hub_user') || '{}');
+                if (storedHub && storedHub.email) return storedHub.email.trim().toLowerCase();
+            } catch (e) {}
+            return '';
+        },
+
+        _getFirestoreDb() {
+            if (window.hubDb && typeof window.hubDb.collection === 'function') return window.hubDb;
+            if (window.db && typeof window.db.collection === 'function') return window.db;
+            if (typeof firebase !== 'undefined' && firebase.firestore && typeof firebase.firestore === 'function') {
+                return firebase.firestore();
+            }
+            return null;
+        },
+
+        isSuperAdmin(email) {
+            const userEmail = this._resolveUserEmail(email);
             return userEmail === SUPER_ADMIN_EMAIL.toLowerCase();
         },
 
@@ -188,14 +224,12 @@ Sei tu il giudice ultimo dell'argomentazione espressa dai ragazzi. Nel Dossier t
         },
 
         async saveToCloud(newText) {
-            const db = window.hubDb || window.db || (typeof firebase !== 'undefined' && firebase.firestore ? firebase.firestore() : null);
+            const db = this._getFirestoreDb();
             if (!db) {
                 throw new Error("Firestore non disponibile. Verifica la connessione a Internet.");
             }
 
-            const fbUser = (window.hubApp && window.hubApp.auth && window.hubApp.auth().currentUser) ||
-                           (window.firebase && window.firebase.auth && window.firebase.auth().currentUser);
-            const userEmail = (fbUser && fbUser.email ? fbUser.email : (window.currentUserEmail || '')).toLowerCase();
+            const userEmail = this._resolveUserEmail();
 
             if (!this.isSuperAdmin(userEmail)) {
                 throw new Error("Accesso negato: solo il Super-Admin (" + SUPER_ADMIN_EMAIL + ") può salvare il regolamento.");
@@ -386,10 +420,8 @@ Sei tu il giudice ultimo dell'argomentazione espressa dai ragazzi. Nel Dossier t
             if (!container) return;
 
             const text = this.getRawText();
-            const fbUser = (window.hubApp && window.hubApp.auth && window.hubApp.auth().currentUser) || 
-                           (window.firebase && window.firebase.auth && window.firebase.auth().currentUser);
-            const userEmail = fbUser ? (fbUser.email || '') : (window.currentUserEmail || '');
-            const isAuthAdmin = userEmail.toLowerCase() === SUPER_ADMIN_EMAIL.toLowerCase();
+            const userEmail = this._resolveUserEmail();
+            const isAuthAdmin = this.isSuperAdmin(userEmail);
 
             container.innerHTML = `
                 <div style="background: #ffffff; padding: 25px; border-radius: 16px; border: 1.5px solid rgba(212,175,55,0.4); box-shadow: 0 4px 20px rgba(0,0,0,0.05); margin-bottom: 25px;">
