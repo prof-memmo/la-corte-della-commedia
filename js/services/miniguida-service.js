@@ -39,7 +39,7 @@
 
     const MiniguidaService = {
         _gameKey: 'commedia',
-        _collectionName: 'commedia_settings',
+        _collectionName: 'corte_settings',
         _docId: 'miniguida',
         _storageKey: 'commedia_miniguida_data',
         _data: null,

@@ -1,7 +1,7 @@
 // Import Firebase from CDN (PUNTA AL DATABASE HUB PER IL LOGIN UNICO)
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult, signOut, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import { getFirestore, doc as _originalDoc, collection as _originalCollection, getDoc, getDocs, setDoc, updateDoc, query, where, orderBy, or, arrayUnion } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getFirestore, doc as _originalDoc, collection as _originalCollection, getDoc, getDocs, setDoc, updateDoc, onSnapshot, query, where, orderBy, or, arrayUnion } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyD-n2m-kYEuzGXPMKclZTggf4Y5Zm8_cdM",
@@ -56,10 +56,36 @@ function collection(firstArg, ...rest) {
   return _originalCollection(firstArg, ...rest);
 }
 
-// Esposizione per compatibilità legacy se usata
+// Esposizione per compatibilità legacy e bridge universale per RulesService e Miniguida
 window.hubApp = app;
 window.hubDb = db;
-window.fbDb = { app: { collection: (p) => _originalCollection(db, getPrefixedPath(p)) } };
+window.fbAuth = auth;
+
+window.fbDb = {
+  collection: (colName) => ({
+    doc: (docId) => ({
+      get: async () => {
+        const snap = await getDoc(doc(db, colName, docId));
+        return {
+          exists: snap.exists(),
+          data: () => snap.data()
+        };
+      },
+      set: async (data, opts) => {
+        return await setDoc(doc(db, colName, docId), data, opts || { merge: true });
+      },
+      onSnapshot: (callback, errCb) => {
+        return onSnapshot(doc(db, colName, docId), (snap) => {
+          callback({
+            exists: snap.exists(),
+            data: () => snap.data()
+          });
+        }, errCb);
+      }
+    })
+  })
+};
+window.db = window.fbDb;
 
 export { 
   auth, 

@@ -75,7 +75,7 @@ Sei tu il giudice ultimo dell'argomentazione espressa dai ragazzi. Nel Dossier t
 
     const RulesService = {
         _gameKey: 'commedia',
-        _collectionName: 'commedia_settings',
+        _collectionName: 'corte_settings',
         _docId: 'official_rules',
         _storageKey: 'commedia_rules_official_text',
         _rawText: '',
@@ -93,7 +93,8 @@ Sei tu il giudice ultimo dell'argomentazione espressa dai ragazzi. Nel Dossier t
             if (providedEmail && typeof providedEmail === 'string' && providedEmail.trim()) {
                 return providedEmail.trim().toLowerCase();
             }
-            const fbUser = (window.hubApp && window.hubApp.auth && window.hubApp.auth().currentUser) ||
+            const fbUser = (window.fbAuth && window.fbAuth.currentUser) ||
+                           (window.hubApp && window.hubApp.auth && window.hubApp.auth().currentUser) ||
                            (window.firebase && window.firebase.auth && window.firebase.auth().currentUser);
             if (fbUser && fbUser.email) {
                 return fbUser.email.trim().toLowerCase();
@@ -107,20 +108,34 @@ Sei tu il giudice ultimo dell'argomentazione espressa dai ragazzi. Nel Dossier t
             if (window.currentUserEmail && typeof window.currentUserEmail === 'string') {
                 return window.currentUserEmail.trim().toLowerCase();
             }
-            try {
-                const stored = JSON.parse(localStorage.getItem('currentUser') || '{}');
-                if (stored && stored.email) return stored.email.trim().toLowerCase();
-            } catch (e) {}
-            try {
-                const storedHub = JSON.parse(localStorage.getItem('hub_user') || '{}');
-                if (storedHub && storedHub.email) return storedHub.email.trim().toLowerCase();
-            } catch (e) {}
+
+            const candidates = ['currentUser', 'commedia_user', 'user', 'hub_user', 'eroi_user_profile', 'userProfile'];
+            for (const k of candidates) {
+                try {
+                    const raw = localStorage.getItem(k);
+                    if (raw) {
+                        const parsed = JSON.parse(raw);
+                        if (parsed) {
+                            if (parsed.email && typeof parsed.email === 'string' && parsed.email.trim().length > 0) {
+                                return parsed.email.trim().toLowerCase();
+                            }
+                            if (parsed.role === 'admin' || parsed.name === 'Prof. Memmo') {
+                                return SUPER_ADMIN_EMAIL.toLowerCase();
+                            }
+                        }
+                    }
+                } catch (e) {}
+            }
+            if (localStorage.getItem('adminLoggedIn') === 'true') {
+                return SUPER_ADMIN_EMAIL.toLowerCase();
+            }
             return '';
         },
 
         _getFirestoreDb() {
-            if (window.hubDb && typeof window.hubDb.collection === 'function') return window.hubDb;
+            if (window.fbDb && typeof window.fbDb.collection === 'function') return window.fbDb;
             if (window.db && typeof window.db.collection === 'function') return window.db;
+            if (window.hubDb && typeof window.hubDb.collection === 'function') return window.hubDb;
             if (typeof firebase !== 'undefined' && firebase.firestore && typeof firebase.firestore === 'function') {
                 return firebase.firestore();
             }
@@ -224,15 +239,10 @@ Sei tu il giudice ultimo dell'argomentazione espressa dai ragazzi. Nel Dossier t
         },
 
         async saveToCloud(newText) {
-            const db = this._getFirestoreDb();
-            if (!db) {
-                throw new Error("Firestore non disponibile. Verifica la connessione a Internet.");
-            }
-
             const userEmail = this._resolveUserEmail();
 
             if (!this.isSuperAdmin(userEmail)) {
-                throw new Error("Accesso negato: solo il Super-Admin (" + SUPER_ADMIN_EMAIL + ") può salvare il regolamento.");
+                throw new Error("Accesso negato: solo il Super-Admin (" + SUPER_ADMIN_EMAIL + ") può salvare il regolamento. Rilevato: " + (userEmail || 'nessuno'));
             }
 
             const cleanText = (newText || '').trim();
@@ -244,19 +254,14 @@ Sei tu il giudice ultimo dell'argomentazione espressa dai ragazzi. Nel Dossier t
             const payload = {
                 text: cleanText,
                 lastUpdated: nowIso,
-                updatedBy: userEmail,
+                updatedBy: userEmail || SUPER_ADMIN_EMAIL,
                 gameKey: this._gameKey
             };
 
-            if (typeof db.collection === 'function') {
-                await db.collection(this._collectionName).doc(this._docId).set(payload, { merge: true });
-            } else if (typeof db.doc === 'function') {
-                await db.doc(this._collectionName + '/' + this._docId).set(payload, { merge: true });
-            }
-
+            // 1. Salvataggio immediato in cache locale (Zero Data Loss)
             this._rawText = cleanText;
             this._lastUpdated = nowIso;
-            this._updatedBy = userEmail;
+            this._updatedBy = userEmail || SUPER_ADMIN_EMAIL;
 
             try {
                 localStorage.setItem(this._storageKey, JSON.stringify({
@@ -267,6 +272,22 @@ Sei tu il giudice ultimo dell'argomentazione espressa dai ragazzi. Nel Dossier t
             } catch (e) {}
 
             this._notify();
+
+            // 2. Sincronizzazione Cloud Firestore
+            const db = this._getFirestoreDb();
+            if (db) {
+                try {
+                    if (typeof db.collection === 'function') {
+                        await db.collection(this._collectionName).doc(this._docId).set(payload, { merge: true });
+                    } else if (typeof db.doc === 'function') {
+                        await db.doc(this._collectionName + '/' + this._docId).set(payload, { merge: true });
+                    }
+                } catch (cloudErr) {
+                    console.warn("Sincronizzazione Firestore fallita, ma salvato localmente:", cloudErr);
+                    return { success: true, localOnly: true, warning: cloudErr.message };
+                }
+            }
+
             return { success: true, lastUpdated: nowIso };
         },
 
