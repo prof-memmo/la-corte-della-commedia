@@ -171,27 +171,39 @@ In conformità con le linee guida pedagogiche di Prof. Memmo, dopo 45 minuti di 
 
             this._notify();
 
-            // 2. Setup listener Firestore
+            // 2. Setup listener Firestore Realtime
             if (this._isInitialized) return;
             this._isInitialized = true;
 
-            const db = window.hubDb || window.db || (typeof firebase !== 'undefined' && firebase.firestore ? firebase.firestore() : null);
+            const db = this._getFirestoreDb();
             if (!db) {
-                console.info("Firestore non ancora disponibile per Commedia. Uso cache locale.");
+                console.info("Firestore non ancora pronto per Commedia. Riprovo a breve...");
+                setTimeout(() => {
+                    const retryDb = this._getFirestoreDb();
+                    if (retryDb && !this._unsubscribeFirestore) {
+                        this._setupFirestoreListener(retryDb);
+                    }
+                }, 1000);
                 return;
             }
 
-            try {
-                // Collezione commedia_settings o settings (con prefisso corte_)
-                const docRef = (typeof db.doc === 'function') 
-                    ? db.doc(this._collectionName + '/' + this._docId)
-                    : (typeof db.collection === 'function' ? db.collection(this._collectionName).doc(this._docId) : null);
+            this._setupFirestoreListener(db);
+        },
 
-                if (docRef && typeof docRef.onSnapshot === 'function') {
-                    this._unsubscribeFirestore = docRef.onSnapshot(docSnap => {
-                        if (docSnap.exists) {
-                            const data = docSnap.data();
-                            if (data && data.text) {
+        _setupFirestoreListener(db) {
+            try {
+                const attachListener = (colName, isPrimary) => {
+                    const docRef = (typeof db.collection === 'function')
+                        ? db.collection(colName).doc(this._docId)
+                        : (typeof db.doc === 'function' ? db.doc(colName + '/' + this._docId) : null);
+
+                    if (!docRef || typeof docRef.onSnapshot !== 'function') return null;
+
+                    return docRef.onSnapshot(docSnap => {
+                        const exists = typeof docSnap.exists === 'function' ? docSnap.exists() : docSnap.exists;
+                        if (exists) {
+                            const data = typeof docSnap.data === 'function' ? docSnap.data() : docSnap.data;
+                            if (data && data.text && data.text.trim().length > 0) {
                                 this._rawText = data.text;
                                 this._lastUpdated = data.lastUpdated || null;
                                 this._updatedBy = data.updatedBy || '';
@@ -206,11 +218,19 @@ In conformità con le linee guida pedagogiche di Prof. Memmo, dopo 45 minuti di 
 
                                 this._notify();
                             }
+                        } else if (isPrimary) {
+                            // Se corte_settings non ha ancora il testo, prova commedia_settings (compatibilità storica)
+                            attachListener('commedia_settings', false);
                         }
                     }, err => {
-                        console.warn("Firestore snapshot regolamento Commedia (normale se offline):", err.message);
+                        console.warn("Firestore snapshot " + colName + " Commedia (normale se offline):", err.message);
+                        if (isPrimary) {
+                            attachListener('commedia_settings', false);
+                        }
                     });
-                }
+                };
+
+                this._unsubscribeFirestore = attachListener(this._collectionName, true);
             } catch (err) {
                 console.warn("Inizializzazione Firestore listener regolamento Commedia fallita:", err);
             }
@@ -236,7 +256,7 @@ In conformità con le linee guida pedagogiche di Prof. Memmo, dopo 45 minuti di 
                 gameKey: this._gameKey
             };
 
-            // 1. Salvataggio immediato in cache locale (Zero Data Loss)
+            // 1. Salvataggio immediato in cache locale (Zero Data Loss garantito)
             this._rawText = cleanText;
             this._lastUpdated = nowIso;
             this._updatedBy = userEmail || SUPER_ADMIN_EMAIL;
@@ -251,18 +271,42 @@ In conformità con le linee guida pedagogiche di Prof. Memmo, dopo 45 minuti di 
 
             this._notify();
 
-            // 2. Sincronizzazione Cloud Firestore
+            // 2. Sincronizzazione Cloud Firestore con doppio salvataggio (corte_settings e commedia_settings) e fallback hub_settings
             const db = this._getFirestoreDb();
             if (db) {
+                let saved = false;
                 try {
                     if (typeof db.collection === 'function') {
-                        await db.collection(this._collectionName).doc(this._docId).set(payload, { merge: true });
+                        await db.collection('corte_settings').doc(this._docId).set(payload, { merge: true });
                     } else if (typeof db.doc === 'function') {
-                        await db.doc(this._collectionName + '/' + this._docId).set(payload, { merge: true });
+                        await db.doc('corte_settings/' + this._docId).set(payload, { merge: true });
                     }
-                } catch (cloudErr) {
-                    console.warn("Sincronizzazione Firestore fallita, ma salvato localmente:", cloudErr);
-                    return { success: true, localOnly: true, warning: cloudErr.message };
+                    saved = true;
+                } catch (e1) {
+                    console.warn("Salvataggio su corte_settings respinto:", e1.message);
+                }
+
+                try {
+                    if (typeof db.collection === 'function') {
+                        await db.collection('commedia_settings').doc(this._docId).set(payload, { merge: true });
+                    } else if (typeof db.doc === 'function') {
+                        await db.doc('commedia_settings/' + this._docId).set(payload, { merge: true });
+                    }
+                    saved = true;
+                } catch (e2) {
+                    console.warn("Salvataggio su commedia_settings respinto:", e2.message);
+                }
+
+                if (!saved) {
+                    try {
+                        if (typeof db.collection === 'function') {
+                            await db.collection('hub_settings').doc('corte_rules').set(payload, { merge: true });
+                        }
+                        saved = true;
+                    } catch (e3) {
+                        console.warn("Salvataggio cloud non completato, ma salvato localmente:", e3.message);
+                        return { success: true, localOnly: true, warning: e3.message };
+                    }
                 }
             }
 
@@ -398,28 +442,69 @@ In conformità con le linee guida pedagogiche di Prof. Memmo, dopo 45 minuti di 
         // Stile nativo de La Corte della Commedia: .parchment-panel, Julius Sans One, oro/cremisi
         // ===================================================================
         renderPublicView() {
-            const items = this.parseTextToItems();
-
-            // 1. Regolamento Ufficiale Unico
             const elComune = document.getElementById('reg-comune');
-            if (elComune && items.length > 0) {
-                elComune.innerHTML = `
-                    <ul style="list-style-type: none; padding-left: 0; margin-bottom: 0;" class="text-on-parchment-muted">
-                        ${items.map(i => `
-                            <li style="margin-bottom: 1.25rem; line-height: 1.65; color: #2c241b;">
-                                <strong style="color: var(--accent-crimson); font-size: 1.05rem; display: block; margin-bottom: 4px;">${i.index}. ${i.title}</strong>
-                                <span style="color: #3b2f20; font-size: 0.96rem;">${i.text}</span>
-                            </li>
-                        `).join('')}
-                    </ul>
-                `;
-            }
+            if (!elComune) return;
 
             // Rimuovi card residue non più necessarie
             ['reg-studente', 'reg-pellegrino', 'reg-docente'].forEach(id => {
                 const el = document.getElementById(id);
                 if (el) el.remove();
             });
+
+            const rawText = this.getRawText();
+            if (!rawText || !rawText.trim()) {
+                elComune.innerHTML = `<p class="text-on-parchment-muted" style="text-align: center; font-style: italic; color: #5c4a38;">Nessun regolamento inserito.</p>`;
+                return;
+            }
+
+            // Renderizza fedelmente il testo inserito dall'utente dal pannello admin
+            const escapeHtml = (str) => {
+                const div = document.createElement('div');
+                div.textContent = str;
+                return div.innerHTML;
+            };
+
+            const blocks = rawText.trim().split(/\n\s*\n/).filter(Boolean);
+
+            let html = '<div class="rules-user-content" style="color: #2c241b; line-height: 1.7; font-size: 1.05rem;">';
+
+            blocks.forEach((block) => {
+                const lines = block.split('\n').map(l => l.trim()).filter(Boolean);
+                if (lines.length === 0) return;
+
+                const firstLine = lines[0];
+                const isHeading = /^(\d+[\.\)]\s*|[A-Z0-9\.\-\s]{2,50}:)/i.test(firstLine);
+
+                if (isHeading) {
+                    html += `
+                        <div style="margin-bottom: 1.3rem; padding-bottom: 0.6rem; border-bottom: 1px dashed rgba(212,175,55,0.3);">
+                            <div style="color: var(--accent-crimson, #8b0000); font-weight: 800; font-size: 1.1rem; margin-bottom: 6px; font-family: 'Cinzel', 'Julius Sans One', serif;">
+                                ${escapeHtml(firstLine)}
+                            </div>
+                            ${lines.slice(1).map(l => {
+                                if (l.startsWith('•') || l.startsWith('-')) {
+                                    return `<div style="padding-left: 14px; margin-bottom: 4px; color: #2c241b;">${escapeHtml(l)}</div>`;
+                                }
+                                return `<p style="margin: 0 0 6px 0; color: #2c241b;">${escapeHtml(l)}</p>`;
+                            }).join('')}
+                        </div>
+                    `;
+                } else {
+                    html += `
+                        <div style="margin-bottom: 1.1rem;">
+                            ${lines.map(l => {
+                                if (l.startsWith('•') || l.startsWith('-')) {
+                                    return `<div style="padding-left: 14px; margin-bottom: 4px; color: #2c241b;">${escapeHtml(l)}</div>`;
+                                }
+                                return `<p style="margin: 0 0 8px 0; color: #2c241b;">${escapeHtml(l)}</p>`;
+                            }).join('')}
+                        </div>
+                    `;
+                }
+            });
+
+            html += '</div>';
+            elComune.innerHTML = html;
         },
 
         // ===================================================================
@@ -486,9 +571,13 @@ In conformità con le linee guida pedagogiche di Prof. Memmo, dopo 45 minuti di 
             }
 
             try {
-                await this.saveToCloud(textarea.value);
+                const res = await this.saveToCloud(textarea.value);
                 if (btn) {
-                    btn.innerHTML = `<i class="fa-solid fa-check"></i> SALVATO CON SUCCESSO!`;
+                    if (res && res.localOnly) {
+                        btn.innerHTML = `<i class="fa-solid fa-check"></i> SALVATO LOCALMENTE!`;
+                    } else {
+                        btn.innerHTML = `<i class="fa-solid fa-check"></i> SALVATO CON SUCCESSO!`;
+                    }
                     btn.style.background = '#22c55e';
                     btn.style.color = '#fff';
                 }
@@ -501,6 +590,31 @@ In conformità con le linee guida pedagogiche di Prof. Memmo, dopo 45 minuti di 
                     }
                 }, 2000);
             } catch (err) {
+                // Zero data loss fallback
+                try {
+                    localStorage.setItem(this._storageKey, JSON.stringify({
+                        text: textarea.value,
+                        lastUpdated: new Date().toISOString(),
+                        updatedBy: SUPER_ADMIN_EMAIL
+                    }));
+                    this._rawText = textarea.value;
+                    this._notify();
+                    if (btn) {
+                        btn.innerHTML = `<i class="fa-solid fa-check"></i> SALVATO (OFFLINE)!`;
+                        btn.style.background = '#d97706';
+                        btn.style.color = '#fff';
+                    }
+                    setTimeout(() => {
+                        if (btn) {
+                            btn.disabled = false;
+                            btn.innerHTML = originalHtml;
+                            btn.style.background = 'var(--accent-gold)';
+                            btn.style.color = '#000';
+                        }
+                    }, 2000);
+                    return;
+                } catch (e) {}
+
                 alert("Errore salvataggio: " + (err.message || err));
                 if (btn) {
                     btn.disabled = false;
