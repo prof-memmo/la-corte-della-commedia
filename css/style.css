@@ -196,6 +196,36 @@ h6 { font-size: 1.05rem; }
   line-height: 1.7;
 }
 
+/* REGOLAMENTO: Stile Pergamena ad alto contrasto per tutti gli schermi (Desktop, Tablet, Smartphone) */
+#view-regolamento .parchment-panel {
+  background-color: var(--bg-parchment) !important;
+  color: var(--text-on-parchment) !important;
+  border: 1.5px solid #dcd0b3 !important;
+  border-radius: var(--radius-md) !important;
+  padding: 2rem 1.8rem !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25) !important;
+  max-width: 800px !important;
+  margin: 0 auto 2rem auto !important;
+  font-size: 1.05rem !important;
+  line-height: 1.65 !important;
+}
+
+#view-regolamento .parchment-panel li {
+  color: #2c241b !important;
+  font-size: 1rem !important;
+  line-height: 1.65 !important;
+  margin-bottom: 1.2rem !important;
+}
+
+#view-regolamento .parchment-panel strong {
+  color: var(--accent-crimson) !important;
+  font-weight: 800 !important;
+}
+
+#view-regolamento .parchment-panel span {
+  color: #3b2f20 !important;
+}
+
 .dark-panel {
   background-color: var(--bg-secondary);
   border: 1px solid var(--border-color);
@@ -422,8 +452,8 @@ h6 { font-size: 1.05rem; }
         padding-right: 5px !important;
     }
     
-    /* Su smartphone non usiamo "card" nei contenuti interni, ma preserviamo la schermata di login */
-    .app-content .parchment-panel, .dark-panel {
+    /* Su smartphone non usiamo "card" nei contenuti interni, ma preserviamo la schermata di login e il regolamento */
+    .app-content .parchment-panel:not(#reg-comune), .dark-panel {
         background: transparent !important;
         border: none !important;
         box-shadow: none !important;
@@ -431,6 +461,29 @@ h6 { font-size: 1.05rem; }
         -webkit-backdrop-filter: none !important;
         padding: 10px 5px !important;
         margin-bottom: 15px !important;
+    }
+
+    #view-regolamento .parchment-panel {
+        background-color: var(--bg-parchment) !important;
+        color: var(--text-on-parchment) !important;
+        border: 1px solid #dcd0b3 !important;
+        border-radius: 12px !important;
+        padding: 1.25rem 1rem !important;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3) !important;
+        margin: 0 auto 1.5rem auto !important;
+    }
+    #view-regolamento .parchment-panel li {
+        color: #2c241b !important;
+        font-size: 0.95rem !important;
+        line-height: 1.55 !important;
+        margin-bottom: 1rem !important;
+    }
+    #view-regolamento .parchment-panel strong {
+        color: #8b0000 !important;
+        font-size: 1rem !important;
+    }
+    #view-regolamento .parchment-panel span {
+        color: #2c241b !important;
     }
 
     #view-login .parchment-panel {

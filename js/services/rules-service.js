@@ -15,8 +15,7 @@
 
     const SUPER_ADMIN_EMAIL = 'prof.memmo@gmail.com';
 
-    const DEFAULT_COMMEDIA_RULES_TEXT = `[PROCEDIMENTO]
-1. Apertura del fascicolo
+    const DEFAULT_COMMEDIA_RULES_TEXT = `1. Apertura del fascicolo
 Analisi iniziale del ritratto, del peccato e degli obiettivi del caso dantesco.
 
 2. Ricostruzione dei fatti
@@ -46,32 +45,11 @@ Risoluzione autonoma di un enigma storico-logico per validare definitivamente la
 10. La Sentenza
 Generazione della pergamena finale con il risultato, XP e badge, custodita per sempre nell'Archivio.
 
-[STUDENTE]
-1. I Tre Livelli di Indagine
-Il tuo Docente imposterà per la tua Classe uno dei tre livelli di difficoltà, a seconda del grado scolastico: Esploratore (per un approccio guidato), Giurista (per una maggiore autonomia e interpretazione), o Magistrato (per le sfide più ardue, ricche di collegamenti storici e filosofici).
+11. La Giuria e la Progressione
+Al termine di ogni procedimento vengono mostrati i risultati aggregati della tua Giuria. Tutte le tue azioni ti faranno guadagnare XP, livelli, badge e collezioni per scalare le classifiche del tribunale.
 
-2. La Valutazione dei Docenti
-Le tue sentenze e le tue motivazioni verranno lette e valutate dal tuo Docente (il Sommo Giudice). Se l'argomentazione è ritenuta valida, sarai ricompensato con XP e Fiorini d'oro, che ti permetteranno di ottenere nuovi e prestigiosi titoli nobiliari.
-
-3. Diritto al Riposo e Pausa Cognitiva
-A tutela del benessere visivo ed emotivo, dopo 45 minuti di dibattito in tribunale la sessione si sospende per una pausa di decompressione e confronto tra pari.
-
-[PELLEGRINO]
-1. Giocatore Unico o Corti Private (Multiplayer)
-Come pellegrino (Giurato) hai due scelte: affrontare il viaggio in solitaria, oppure creare una Corte Privata. In quest'ultimo caso potrai generare un link e invitare amici, compagni di lettura o familiari per vivere un'esperienza multiplayer, confrontando le vostre sentenze e visualizzando le statistiche della vostra Corte.
-
-2. Il Ruolo del Presidente di Corte
-Se decidi di creare tu la Corte Privata, ne diventi il "Presidente". Come Presidente potrai scegliere il livello di difficoltà per il tuo gruppo (Esploratore, Giurista o Magistrato), decidere quali casi sbloccare e amministrare l'ingresso dei nuovi giurati.
-
-[DOCENTE]
-1. Il Pannello del Docente (Dossier e Classi)
-In veste di Sommo Docente, hai il pieno controllo sulle tue aule e sui tuoi studenti. Dal tuo pannello puoi creare nuove "Classi", ottenere un Codice univoco da condividere con i tuoi alunni per l'iscrizione, e monitorare l'andamento didattico e la Classifica della classe in tempo reale.
-
-2. Assegnazione Livelli e Nodi
-Per ogni classe devi stabilire il target di profondità (Esploratore per la sec. di I grado; Giurista per il biennio; Magistrato per il triennio). Puoi anche decidere il ritmo del gioco, impostando uno sblocco "Automatico" per i casi successivi o "Manuale" per allinearli alle lezioni in classe.
-
-3. La Valutazione dei Verdetti
-Sei tu il giudice ultimo dell'argomentazione espressa dai ragazzi. Nel Dossier troverai le sentenze: approvandole garantirai XP e badge, mentre respingendole potrai fornire un feedback formativo obbligando lo studente a rielaborare la motivazione.`;
+12. Benessere Visivo e Pause
+In conformità con le linee guida pedagogiche di Prof. Memmo, dopo 45 minuti di dibattito in tribunale la sessione prevede una pausa di decompressione e confronto non mediato da schermi.`;
 
     const RulesService = {
         _gameKey: 'commedia',
@@ -367,70 +345,81 @@ Sei tu il giudice ultimo dell'argomentazione espressa dai ragazzi. Nel Dossier t
             return result;
         },
 
+        parseTextToItems(text) {
+            let src = (text || this.getRawText()).trim();
+            src = src.replace(/\[(PROCEDIMENTO|STUDENTE|PELLEGRINO|DOCENTE)\]/gi, '').trim();
+            if (!src) return [];
+
+            const blocks = src.split(/\n\s*\n/).map(b => b.trim()).filter(Boolean);
+            const items = [];
+
+            blocks.forEach((block, index) => {
+                const lines = block.split('\n').map(l => l.trim()).filter(Boolean);
+                if (lines.length === 0) return;
+
+                let firstLine = lines[0].replace(/^[\u2022\*\-]\s*/, '').trim();
+                let title = '';
+                let content = '';
+
+                const matchNumbered = firstLine.match(/^(\d+[\.\)]\s*)(.*)$/);
+                if (matchNumbered) {
+                    firstLine = matchNumbered[2].trim();
+                }
+
+                if (lines.length > 1) {
+                    title = firstLine;
+                    content = lines.slice(1).join(' ').trim();
+                } else {
+                    const colonMatch = firstLine.match(/^([^:]{3,60}):\s*(.+)$/);
+                    if (colonMatch) {
+                        title = colonMatch[1].trim();
+                        content = colonMatch[2].trim();
+                    } else {
+                        content = firstLine;
+                    }
+                }
+
+                if (title) {
+                    title = title.replace(/:\s*$/, '').trim();
+                }
+
+                items.push({
+                    index: index + 1,
+                    title: title || `Articolo ${index + 1}`,
+                    text: content || title
+                });
+            });
+
+            return items;
+        },
+
         // ===================================================================
         // VISTA PUBBLICA / GIOCO (#view-regolamento in index.html)
         // Stile nativo de La Corte della Commedia: .parchment-panel, Julius Sans One, oro/cremisi
         // ===================================================================
         renderPublicView() {
-            const sections = this.parseSections();
+            const items = this.parseTextToItems();
 
-            // 1. Procedimento Comune
+            // 1. Regolamento Ufficiale Unico
             const elComune = document.getElementById('reg-comune');
-            if (elComune && sections.procedimento.length > 0) {
+            if (elComune && items.length > 0) {
                 elComune.innerHTML = `
-                    <h2 style="color: var(--accent-gold); font-family: 'Julius Sans One', sans-serif; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 20px; text-align: center;">Il Procedimento Giudiziario</h2>
-                    <p class="text-on-parchment-muted" style="margin-bottom: 1.5rem; line-height: 1.6;">
-                        Ogni caso affrontato nella Corte rappresenta un procedimento giudiziario (Campagna &rarr; Fascicolo &rarr; Missioni &rarr; Prove &rarr; Verdetto &rarr; Archivio) ed è strutturato in <strong>fasi fondamentali</strong>:
-                    </p>
-                    <ul style="list-style-type: none; padding-left: 0; margin-bottom: 1.5rem;" class="text-on-parchment-muted">
-                        ${sections.procedimento.map(i => `
-                            <li style="margin-bottom: 1rem;">
-                                <strong style="color: var(--accent-crimson);">${i.index}. ${i.title}:</strong> ${i.text}
+                    <ul style="list-style-type: none; padding-left: 0; margin-bottom: 0;" class="text-on-parchment-muted">
+                        ${items.map(i => `
+                            <li style="margin-bottom: 1.25rem; line-height: 1.65; color: #2c241b;">
+                                <strong style="color: var(--accent-crimson); font-size: 1.05rem; display: block; margin-bottom: 4px;">${i.index}. ${i.title}</strong>
+                                <span style="color: #3b2f20; font-size: 0.96rem;">${i.text}</span>
                             </li>
                         `).join('')}
                     </ul>
-                    <h3 style="color: var(--accent-crimson); font-family: 'Julius Sans One', sans-serif; margin-top: 2rem;">La Giuria e la Progressione</h3>
-                    <p class="text-on-parchment-muted" style="margin-bottom: 1.5rem; line-height: 1.6;">
-                        Al termine di ogni procedimento verranno mostrati i risultati aggregati della tua <strong>Giuria</strong>: la tua Classe (nella modalità Scuola) o la tua Corte Privata (nella modalità Comunità). Tutte le tue azioni ti faranno guadagnare <strong>XP, livelli, badge e collezioni</strong>.
-                    </p>
                 `;
             }
 
-            // 2. Studente
-            const elStud = document.getElementById('reg-studente');
-            if (elStud && sections.studente.length > 0) {
-                elStud.innerHTML = `
-                    <h2 style="color: var(--accent-gold); font-family: 'Julius Sans One', sans-serif; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 20px; text-align: center;">Regolamento dello Studente (Modalità Scuola)</h2>
-                    ${sections.studente.map(i => `
-                        <h3 style="color: var(--accent-crimson); font-family: 'Julius Sans One', sans-serif;">${i.index}. ${i.title}</h3>
-                        <p class="text-on-parchment-muted" style="margin-bottom: 1.5rem; line-height: 1.6;">${i.text}</p>
-                    `).join('')}
-                `;
-            }
-
-            // 3. Pellegrino
-            const elPell = document.getElementById('reg-pellegrino');
-            if (elPell && sections.pellegrino.length > 0) {
-                elPell.innerHTML = `
-                    <h2 style="color: var(--accent-gold); font-family: 'Julius Sans One', sans-serif; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 20px; text-align: center;">Regolamento del Pellegrino (Modalità Comunità)</h2>
-                    ${sections.pellegrino.map(i => `
-                        <h3 style="color: var(--accent-crimson); font-family: 'Julius Sans One', sans-serif;">${i.index}. ${i.title}</h3>
-                        <p class="text-on-parchment-muted" style="margin-bottom: 1.5rem; line-height: 1.6;">${i.text}</p>
-                    `).join('')}
-                `;
-            }
-
-            // 4. Docente
-            const elDoc = document.getElementById('reg-docente');
-            if (elDoc && sections.docente.length > 0) {
-                elDoc.innerHTML = `
-                    <h2 style="color: var(--accent-gold); font-family: 'Julius Sans One', sans-serif; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 20px; text-align: center;">Regolamento del Docente (Modalità Scuola)</h2>
-                    ${sections.docente.map(i => `
-                        <h3 style="color: var(--accent-crimson); font-family: 'Julius Sans One', sans-serif;">${i.index}. ${i.title}</h3>
-                        <p class="text-on-parchment-muted" style="margin-bottom: 1.5rem; line-height: 1.6;">${i.text}</p>
-                    `).join('')}
-                `;
-            }
+            // Rimuovi card residue non più necessarie
+            ['reg-studente', 'reg-pellegrino', 'reg-docente'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.remove();
+            });
         },
 
         // ===================================================================
@@ -452,7 +441,7 @@ Sei tu il giudice ultimo dell'argomentazione espressa dai ragazzi. Nel Dossier t
                                 <span style="font-size: 1.4rem;">📜</span> Regolamento della Corte • Editor Cloud
                             </h3>
                             <p style="margin: 0; font-size: 0.85rem; color: #64748b; line-height: 1.4;">
-                                Modifica le pergamene del regolamento ([PROCEDIMENTO], [STUDENTE], [PELLEGRINO], [DOCENTE]).
+                                Modifica il testo ufficiale del Regolamento de La Corte della Commedia.
                             </p>
                         </div>
                         <div>
