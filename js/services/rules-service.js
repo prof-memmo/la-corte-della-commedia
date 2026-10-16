@@ -397,6 +397,28 @@ In conformità con le linee guida pedagogiche di Prof. Memmo, dopo 45 minuti di 
             return result;
         },
 
+        _formatLinks(str, linkColor = '#8b0000') {
+            if (!str || typeof str !== 'string') return '';
+            // 1. Markdown link: [Label](https://url)
+            let res = str.replace(/\[([^\]]+)\]\((https?:\/\/[^\s\)]+)\)/g, (m, label, url) => {
+                const cleanHref = url.replace(/&amp;/g, '&');
+                return `<a href="${cleanHref}" target="_blank" rel="noopener noreferrer" style="color: ${linkColor}; text-decoration: underline; font-weight: 700; word-break: break-all;">${label} <span style="font-size: 0.8em; margin-left: 2px;">↗</span></a>`;
+            });
+            // 2. Plain URL: https://...
+            res = res.replace(/(^|[\s(>])(https?:\/\/[^\s<]+)/g, (m, prefix, url) => {
+                let cleanUrl = url;
+                let trailing = '';
+                const trailMatch = url.match(/([.,;:!?)]+)$/);
+                if (trailMatch) {
+                    trailing = trailMatch[1];
+                    cleanUrl = url.substring(0, url.length - trailing.length);
+                }
+                const cleanHref = cleanUrl.replace(/&amp;/g, '&');
+                return `${prefix}<a href="${cleanHref}" target="_blank" rel="noopener noreferrer" style="color: ${linkColor}; text-decoration: underline; font-weight: 700; word-break: break-all;">${cleanUrl} <span style="font-size: 0.8em; margin-left: 2px;">↗</span></a>${trailing}`;
+            });
+            return res;
+        },
+
         parseTextToItems(text) {
             let src = (text || this.getRawText()).trim();
             src = src.replace(/\[(PROCEDIMENTO|STUDENTE|PELLEGRINO|DOCENTE)\]/gi, '').trim();
@@ -413,8 +435,10 @@ In conformità con le linee guida pedagogiche di Prof. Memmo, dopo 45 minuti di 
                 let title = '';
                 let content = '';
 
-                const matchNumbered = firstLine.match(/^(\d+[\.\)]\s*)(.*)$/);
+                let detectedNumber = null;
+                const matchNumbered = firstLine.match(/^(\d+)[\.\)]\s*(.*)$/);
                 if (matchNumbered) {
+                    detectedNumber = parseInt(matchNumbered[1], 10);
                     firstLine = matchNumbered[2].trim();
                 }
 
@@ -436,8 +460,8 @@ In conformità con le linee guida pedagogiche di Prof. Memmo, dopo 45 minuti di 
                 }
 
                 items.push({
-                    index: index + 1,
-                    title: title || `Articolo ${index + 1}`,
+                    index: detectedNumber !== null ? detectedNumber : index + 1,
+                    title: title || `Articolo ${detectedNumber !== null ? detectedNumber : index + 1}`,
                     text: content || title
                 });
             });
@@ -487,13 +511,13 @@ In conformità con le linee guida pedagogiche di Prof. Memmo, dopo 45 minuti di 
                     html += `
                         <div style="margin-bottom: 1.3rem; padding-bottom: 0.6rem; border-bottom: 1px dashed rgba(212,175,55,0.3);">
                             <div style="color: var(--accent-crimson, #8b0000); font-weight: 800; font-size: 1.1rem; margin-bottom: 6px; font-family: 'Cinzel', 'Julius Sans One', serif;">
-                                ${escapeHtml(firstLine)}
+                                ${this._formatLinks(escapeHtml(firstLine), '#8b0000')}
                             </div>
                             ${lines.slice(1).map(l => {
                                 if (l.startsWith('•') || l.startsWith('-')) {
-                                    return `<div style="padding-left: 14px; margin-bottom: 4px; color: #2c241b;">${escapeHtml(l)}</div>`;
+                                    return `<div style="padding-left: 14px; margin-bottom: 4px; color: #2c241b;">${this._formatLinks(escapeHtml(l), '#8b0000')}</div>`;
                                 }
-                                return `<p style="margin: 0 0 6px 0; color: #2c241b;">${escapeHtml(l)}</p>`;
+                                return `<p style="margin: 0 0 6px 0; color: #2c241b;">${this._formatLinks(escapeHtml(l), '#8b0000')}</p>`;
                             }).join('')}
                         </div>
                     `;
@@ -502,9 +526,9 @@ In conformità con le linee guida pedagogiche di Prof. Memmo, dopo 45 minuti di 
                         <div style="margin-bottom: 1.1rem;">
                             ${lines.map(l => {
                                 if (l.startsWith('•') || l.startsWith('-')) {
-                                    return `<div style="padding-left: 14px; margin-bottom: 4px; color: #2c241b;">${escapeHtml(l)}</div>`;
+                                    return `<div style="padding-left: 14px; margin-bottom: 4px; color: #2c241b;">${this._formatLinks(escapeHtml(l), '#8b0000')}</div>`;
                                 }
-                                return `<p style="margin: 0 0 8px 0; color: #2c241b;">${escapeHtml(l)}</p>`;
+                                return `<p style="margin: 0 0 8px 0; color: #2c241b;">${this._formatLinks(escapeHtml(l), '#8b0000')}</p>`;
                             }).join('')}
                         </div>
                     `;
