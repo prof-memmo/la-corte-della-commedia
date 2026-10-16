@@ -862,31 +862,37 @@
             <div style="flex: 1; padding: 30px 40px; display: flex; flex-direction: column; position: relative; min-height: 450px;">
                 <button onclick="closeMiniguida()" style="position: absolute; top: 15px; right: 15px; width: 36px; height: 36px; border-radius: 50%; border: none; background: #f1f5f9; color: #475569; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.2s;"><i class="fa-solid fa-xmark"></i></button>
                 
-                <h2 id="miniguida-title" style="font-size: 2rem; font-weight: 900; color: #ef4444; margin-bottom: 30px; text-align: center; text-transform: uppercase; border-bottom: 4px solid rgba(239, 68, 68, 0.2); padding-bottom: 10px; display: inline-block; margin-left: auto; margin-right: auto;">Come si gioca?</h2>
+                <h2 id="miniguida-title" style="font-size: 2rem; font-weight: 900; color: #ef4444; margin-bottom: 30px; text-align: center; text-transform: uppercase; border-bottom: 4px solid rgba(239, 68, 68, 0.2); padding-bottom: 10px; display: inline-block; margin-left: auto; margin-right: auto;">Miniguida</h2>
                 
                 <div id="miniguida-step-0" class="miniguida-step" style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; animation: fadeIn 0.3s ease-out;">
-                    <i class="fa-solid fa-scroll" style="font-size: 5rem; color: #ef4444; margin-bottom: 20px;"></i>
-                    <p style="font-size: 1.25rem; color: #475569; line-height: 1.6; font-weight: 500;">📜 <strong>Apri il Fascicolo Dantesco:</strong><br>Esamina il caso del personaggio dell'Aldilà (<em>Francesca, Ulisse, Ugolino...</em>), i suoi peccati e i versi della Commedia.</p>
+                    <i class="fa-solid fa-bullseye" style="font-size: 4.5rem; color: #ef4444; margin-bottom: 20px;"></i>
+                    <p style="font-size: 1.25rem; color: #475569; line-height: 1.6; font-weight: 500; max-width: 540px; margin: 0 auto;">Lo scopo del gioco è vestire i panni dei giudici dell'Oltretomba, analizzare i peccati dei personaggi danteschi ed emettere una sentenza giusta e motivata.</p>
                 </div>
                 
                 <div id="miniguida-step-1" class="miniguida-step" style="flex: 1; display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; animation: fadeIn 0.3s ease-out;">
-                    <i class="fa-solid fa-magnifying-glass" style="font-size: 5rem; color: #f59e0b; margin-bottom: 20px;"></i>
-                    <p style="font-size: 1.25rem; color: #475569; line-height: 1.6; font-weight: 500;">🔍 <strong>Raccogli le Prove:</strong><br>Supera i minigiochi d'indagine per sbloccare indizi storici e analizzare il principio del contrappasso.</p>
+                    <i class="fa-solid fa-scale-balanced" style="font-size: 4.5rem; color: #ef4444; margin-bottom: 20px;"></i>
+                    <p style="font-size: 1.25rem; color: #475569; line-height: 1.6; font-weight: 500; max-width: 540px; margin: 0 auto;">Si gioca aprendo il caso di un'anima, superando i minigiochi per raccogliere le prove storiche, confrontando accusa e difesa e votando il verdetto finale per ottenere la pergamena.</p>
                 </div>
                 
                 <div id="miniguida-step-2" class="miniguida-step" style="flex: 1; display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; animation: fadeIn 0.3s ease-out;">
-                    <i class="fa-solid fa-scale-balanced" style="font-size: 5rem; color: #ec4899; margin-bottom: 20px;"></i>
-                    <p style="font-size: 1.25rem; color: #475569; line-height: 1.6; font-weight: 500;">⚖️ <strong>Accusa, Difesa &amp; Esame:</strong><br>Confronta le tesi dell'Accusa e della Difesa, individua attenuanti e affronta l'esame incrociato.</p>
+                    <i class="fa-solid fa-map-location-dot" style="font-size: 4.5rem; color: #ef4444; margin-bottom: 20px;"></i>
+                    <p style="font-size: 1.25rem; color: #475569; line-height: 1.6; font-weight: 500; max-width: 540px; margin: 0 auto;">Sulla <strong>Mappa</strong> puoi navigare tra i gironi e aprire i singoli fascicoli processuali danteschi.</p>
                 </div>
 
                 <div id="miniguida-step-3" class="miniguida-step" style="flex: 1; display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; animation: fadeIn 0.3s ease-out;">
-                    <i class="fa-solid fa-gavel" style="font-size: 5rem; color: #10b981; margin-bottom: 20px;"></i>
-                    <p style="font-size: 1.25rem; color: #475569; line-height: 1.6; font-weight: 500;">🏛️ <strong>Emetti la Sentenza:</strong><br>Vota il verdetto finale della Corte, scrivi la motivazione e ottieni la prestigiosa <strong>Pergamena con Sigillo</strong>!</p>
+                    <i class="fa-solid fa-magnifying-glass" style="font-size: 4.5rem; color: #ef4444; margin-bottom: 20px;"></i>
+                    <p style="font-size: 1.25rem; color: #475569; line-height: 1.6; font-weight: 500; max-width: 540px; margin: 0 auto;">Esamina gli atti d'accusa, supera i minigiochi per raccogliere le prove e partecipa al dibattimento per votare il verdetto.</p>
+                </div>
+
+                <div id="miniguida-step-4" class="miniguida-step" style="flex: 1; display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; animation: fadeIn 0.3s ease-out;">
+                    <i class="fa-solid fa-book" style="font-size: 4.5rem; color: #ef4444; margin-bottom: 20px;"></i>
+                    <p style="font-size: 1.25rem; color: #475569; line-height: 1.6; font-weight: 500; max-width: 540px; margin: 0 auto;">Clicca su <strong>Archivio</strong> per consultare lo storico delle cause concluse e rileggere le tue pergamene con sigillo.<br><br><em>Consulta il regolamento per saperne di più.</em></p>
                 </div>
                 
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
                     <div style="display: flex; gap: 8px;" id="miniguida-dots">
                         <div class="dot active" style="width: 12px; height: 12px; border-radius: 50%; background: #ef4444; transition: 0.3s;"></div>
+                        <div class="dot" style="width: 12px; height: 12px; border-radius: 50%; background: #e2e8f0; transition: 0.3s;"></div>
                         <div class="dot" style="width: 12px; height: 12px; border-radius: 50%; background: #e2e8f0; transition: 0.3s;"></div>
                         <div class="dot" style="width: 12px; height: 12px; border-radius: 50%; background: #e2e8f0; transition: 0.3s;"></div>
                         <div class="dot" style="width: 12px; height: 12px; border-radius: 50%; background: #e2e8f0; transition: 0.3s;"></div>
@@ -911,7 +917,7 @@
     
     <script>
         let currentMiniguidaStep = 0;
-        const totalMiniguidaSteps = 4;
+        const totalMiniguidaSteps = 5;
         
         function openMiniguida() {
             if (window.CommediaMiniguidaService) {

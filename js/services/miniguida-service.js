@@ -11,28 +11,33 @@
     const SUPER_ADMIN_EMAIL = 'prof.memmo@gmail.com';
 
     const DEFAULT_MINIGUIDA = {
-        title: "Come si gioca?",
+        title: "Miniguida",
         themeColor: "#ef4444",
         steps: [
             {
-                icon: "fa-scroll",
-                title: "Apri il Fascicolo Dantesco",
-                text: "📜 <strong>Apri il Fascicolo Dantesco:</strong><br>Esamina il caso del personaggio dell'Aldilà (<em>Francesca, Ulisse, Ugolino...</em>), i suoi peccati e i versi della Commedia."
-            },
-            {
-                icon: "fa-magnifying-glass",
-                title: "Raccogli le Prove",
-                text: "🔍 <strong>Raccogli le Prove:</strong><br>Supera i minigiochi d'indagine per sbloccare indizi storici e analizzare il principio del contrappasso."
+                icon: "fa-bullseye",
+                title: "Scopo del Gioco",
+                text: "Lo scopo del gioco è vestire i panni dei giudici dell'Oltretomba, analizzare i peccati dei personaggi danteschi ed emettere una sentenza giusta e motivata."
             },
             {
                 icon: "fa-scale-balanced",
-                title: "Accusa, Difesa & Esame",
-                text: "⚖️ <strong>Accusa, Difesa &amp; Esame:</strong><br>Confronta le tesi dell'Accusa e della Difesa, individua attenuanti e affronta l'esame incrociato."
+                title: "Come si Gioca",
+                text: "Si gioca aprendo il caso di un'anima, superando i minigiochi per raccogliere le prove storiche, confrontando accusa e difesa e votando il verdetto finale per ottenere la pergamena."
             },
             {
-                icon: "fa-gavel",
-                title: "Emetti la Sentenza",
-                text: "🏛️ <strong>Emetti la Sentenza:</strong><br>Vota il verdetto finale della Corte, scrivi la motivazione e ottieni la prestigiosa <strong>Pergamena con Sigillo</strong>!"
+                icon: "fa-map-location-dot",
+                title: "Mappa",
+                text: "Sulla <strong>Mappa</strong> puoi navigare tra i gironi e aprire i singoli fascicoli processuali danteschi."
+            },
+            {
+                icon: "fa-magnifying-glass",
+                title: "Prove e Verdetto",
+                text: "Esamina gli atti d'accusa, supera i minigiochi per raccogliere le prove e partecipa al dibattimento per votare il verdetto."
+            },
+            {
+                icon: "fa-book",
+                title: "Archivio",
+                text: "Clicca su <strong>Archivio</strong> per consultare lo storico delle cause concluse e rileggere le tue pergamene con sigillo.<br><br><em>Consulta il regolamento per saperne di più.</em>"
             }
         ]
     };
@@ -180,21 +185,58 @@
         renderModal() {
             const data = this.getData();
             const titleEl = document.getElementById('miniguida-title');
-            if (titleEl) titleEl.innerText = data.title || "Come si gioca?";
+            if (titleEl) titleEl.innerText = data.title || "Miniguida";
+
+            const stepsWrapper = document.querySelector('#modal-miniguida .modal-content > div:nth-child(2)');
+            if (!stepsWrapper) return;
+
+            // Rimuovi vecchi step
+            const oldSteps = stepsWrapper.querySelectorAll('.miniguida-step');
+            oldSteps.forEach(el => el.remove());
+
+            // Rigenera dots
+            const dotsContainer = document.getElementById('miniguida-dots');
+            if (dotsContainer) dotsContainer.innerHTML = '';
+
+            const footerRow = dotsContainer ? dotsContainer.parentElement : null;
 
             data.steps.forEach((step, idx) => {
-                let stepEl = document.getElementById('miniguida-step-' + idx);
-                if (stepEl) {
-                    const iconEl = stepEl.querySelector('i');
-                    const textEl = stepEl.querySelector('p');
-                    if (iconEl && step.icon) {
-                        iconEl.className = step.icon.startsWith('fa-') ? `fa-solid ${step.icon}` : 'fa-solid fa-scroll';
-                    }
-                    if (textEl && step.text) {
-                        textEl.innerHTML = step.text;
-                    }
+                const stepDiv = document.createElement('div');
+                stepDiv.id = 'miniguida-step-' + idx;
+                stepDiv.className = 'miniguida-step';
+                stepDiv.style.flex = '1';
+                stepDiv.style.display = (idx === this._currentStep) ? 'flex' : 'none';
+                stepDiv.style.flexDirection = 'column';
+                stepDiv.style.alignItems = 'center';
+                stepDiv.style.justifyContent = 'center';
+                stepDiv.style.textAlign = 'center';
+                stepDiv.style.animation = 'fadeIn 0.3s ease-out';
+                stepDiv.style.padding = '10px 0';
+
+                const iconClass = step.icon ? (step.icon.startsWith('fa-') ? `fa-solid ${step.icon}` : `fa-solid fa-${step.icon}`) : 'fa-solid fa-scroll';
+                stepDiv.innerHTML = `
+                    <i class="${iconClass}" style="font-size: 4.5rem; color: #ef4444; margin-bottom: 20px;"></i>
+                    <p style="font-size: 1.25rem; color: #475569; line-height: 1.6; font-weight: 500; max-width: 540px; margin: 0 auto;">${step.text || ''}</p>
+                `;
+
+                if (footerRow) {
+                    stepsWrapper.insertBefore(stepDiv, footerRow);
+                } else {
+                    stepsWrapper.appendChild(stepDiv);
+                }
+
+                if (dotsContainer) {
+                    const dot = document.createElement('div');
+                    dot.className = 'dot' + (idx === this._currentStep ? ' active' : '');
+                    dot.style.width = '12px';
+                    dot.style.height = '12px';
+                    dot.style.borderRadius = '50%';
+                    dot.style.background = (idx === this._currentStep) ? '#ef4444' : '#e2e8f0';
+                    dot.style.transition = '0.3s';
+                    dotsContainer.appendChild(dot);
                 }
             });
+
             this.updateView();
         },
 
