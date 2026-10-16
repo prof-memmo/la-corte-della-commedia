@@ -204,6 +204,14 @@ In conformità con le linee guida pedagogiche di Prof. Memmo, dopo 45 minuti di 
                         if (exists) {
                             const data = typeof docSnap.data === 'function' ? docSnap.data() : docSnap.data;
                             if (data && data.text && data.text.trim().length > 0) {
+                                const localTime = this._lastUpdated ? new Date(this._lastUpdated).getTime() : 0;
+                                const cloudTime = data.lastUpdated ? new Date(data.lastUpdated).getTime() : 0;
+
+                                if (cloudTime && localTime && cloudTime < localTime && this._rawText && this._rawText.trim().length > 0) {
+                                    console.info("Commedia: modifica locale più recente del cloud, mantengo versione locale.");
+                                    return;
+                                }
+
                                 this._rawText = data.text;
                                 this._lastUpdated = data.lastUpdated || null;
                                 this._updatedBy = data.updatedBy || '';
