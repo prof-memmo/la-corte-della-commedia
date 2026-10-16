@@ -517,32 +517,66 @@ h6 { font-size: 1.05rem; }
   display: flex;
 }
 
-/* Tooltips per la Navbar */
+/* Tooltips e Floating Dock (Desktop only - Standard Ecosistema) */
 @media screen and (min-width: 1024px) {
     #mobile-bottom-nav {
+        width: max-content !important;
+        min-width: 460px;
+        max-width: 90vw;
+        height: 68px;
+        bottom: 20px !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        border-radius: 40px !important;
+        background: rgba(26, 22, 20, 0.94) !important;
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid var(--accent-gold, #d4af37) !important;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.7) !important;
+        padding: 0 24px !important;
+        gap: 12px !important;
         overflow: visible !important;
+        align-items: center;
+    }
+
+    .nav-item-tooltip {
+        position: relative;
+        flex: 0 0 auto !important;
+        min-width: 60px !important;
+        padding: 6px 12px;
+    }
+
+    .nav-item-tooltip span {
+        display: none !important; /* Nasconde le etichette statiche su desktop */
+    }
+
+    .nav-item-tooltip i {
+        font-size: 1.45rem !important;
+        transition: transform 0.25s ease, color 0.25s ease;
     }
 
     .nav-item-tooltip::after {
         content: attr(data-tooltip);
         position: absolute;
-        bottom: 110%;
+        bottom: 115%;
         left: 50%;
-        transform: translateX(-50%) translateY(10px);
-        background: var(--accent-crimson, #ef4444);
-        color: white;
-        padding: 8px 14px;
-        border-radius: 12px;
-        font-size: 0.9rem;
-        font-weight: 600;
+        transform: translateX(-50%) translateY(8px);
+        background: var(--accent-crimson, #800020);
+        color: #ffffff;
+        padding: 7px 14px;
+        border-radius: 10px;
+        font-size: 0.85rem;
+        font-weight: 700;
         white-space: nowrap;
         opacity: 0;
         visibility: hidden;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         pointer-events: none;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
         z-index: 2000;
-        border: 1px solid rgba(255,255,255,0.1);
+        border: 1px solid rgba(212, 175, 55, 0.35);
+        letter-spacing: 0.3px;
+        text-transform: none;
     }
 
     .nav-item-tooltip:hover::after {
@@ -552,8 +586,8 @@ h6 { font-size: 1.05rem; }
     }
 
     .nav-item-tooltip:hover i {
-        transform: translateY(-5px);
-        color: var(--accent-crimson, #ef4444);
+        transform: translateY(-4px);
+        color: var(--accent-gold, #d4af37);
     }
 }
 
