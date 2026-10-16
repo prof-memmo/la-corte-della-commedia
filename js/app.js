@@ -326,7 +326,7 @@ onAuthStateChanged(auth, async (user) => {
     const bottomNav = document.getElementById('mobile-bottom-nav');
     if (bottomNav) bottomNav.style.display = 'none';
     const mainFooter = document.getElementById('main-footer');
-    if (mainFooter) mainFooter.style.display = 'none';
+    if (mainFooter) mainFooter.style.display = 'flex';
     
     showView('view-login');
   }
