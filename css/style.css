@@ -143,9 +143,23 @@ h6 { font-size: 1.05rem; }
   transform: translateY(-3px) !important;
 }
 
+#view-teacher-dashboard .section-title {
+  color: #1e293b !important;
+}
+
+#view-teacher-dashboard .tab-btn {
+  color: #64748b !important;
+}
+
+#view-teacher-dashboard .tab-btn.active {
+  color: #1e293b !important;
+  border-bottom: 2px solid #b45309 !important;
+  font-weight: 800 !important;
+}
+
 #view-teacher-dashboard .stat-card-interactive h4,
 #view-admin-dashboard .admin-stat-card h4 {
-  color: var(--accent-gold) !important;
+  color: #b45309 !important;
   font-weight: 900 !important;
 }
 
