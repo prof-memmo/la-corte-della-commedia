@@ -267,25 +267,17 @@
               <div style="font-size: 1.6rem; font-weight: 900; color: var(--accent-gold);" id="admin-count-fascicoli">--</div>
               <div style="font-size: 0.75rem; color: #64748b; font-weight: 800; text-transform: uppercase;">Archivio Fascicoli</div>
             </div>
-            <div class="admin-stat-card" onclick="switchAdminTab('utenti')" id="a-btn-utenti">
-              <div style="font-size: 1.6rem; font-weight: 900; color: #16a34a;" id="admin-count-utenti">--</div>
-              <div style="font-size: 0.75rem; color: #64748b; font-weight: 800; text-transform: uppercase;">Utenti Iscritti</div>
-            </div>
-            <div class="admin-stat-card" onclick="switchAdminTab('scuole')" id="a-btn-scuole">
-              <div style="font-size: 1.6rem; font-weight: 900; color: #db2777;" id="admin-count-scuole">--</div>
-              <div style="font-size: 0.75rem; color: #64748b; font-weight: 800; text-transform: uppercase;">Scuole Attive</div>
-            </div>
             <div class="admin-stat-card" onclick="switchAdminTab('liveeditor')" id="a-btn-liveeditor">
-              <div style="font-size: 1.6rem; font-weight: 900; color: #2563eb;">✏️</div>
+              <div style="font-size: 1.6rem; font-weight: 900; color: #2563eb;"><i class="fa-solid fa-pen-to-square"></i></div>
               <div style="font-size: 0.75rem; color: #64748b; font-weight: 800; text-transform: uppercase;">Live Editor</div>
             </div>
             <div class="admin-stat-card" onclick="switchAdminTab('regolamento')" id="a-btn-regolamento">
-              <div style="font-size: 1.6rem; font-weight: 900; color: var(--accent-gold);">📜</div>
+              <div style="font-size: 1.6rem; font-weight: 900; color: var(--accent-gold);"><i class="fa-solid fa-scale-balanced"></i></div>
               <div style="font-size: 0.75rem; color: #64748b; font-weight: 800; text-transform: uppercase;">Regolamento</div>
             </div>
             <div class="admin-stat-card" onclick="switchAdminTab('sistema')" id="a-btn-sistema">
-              <div style="font-size: 1.6rem; font-weight: 900; color: #9333ea;">⚙️</div>
-              <div style="font-size: 0.75rem; color: #64748b; font-weight: 800; text-transform: uppercase;">Sistema &amp; Backup</div>
+              <div style="font-size: 1.6rem; font-weight: 900; color: #9333ea;"><i class="fa-solid fa-gear"></i></div>
+              <div style="font-size: 0.75rem; color: #64748b; font-weight: 800; text-transform: uppercase;">Impostazioni</div>
             </div>
           </div>
           
@@ -298,54 +290,6 @@
               <ul id="admin-cases-list" style="list-style: none; padding: 0;">
                 <li style="padding: 1rem; text-align: center; color: #888;">Caricamento casi in corso...</li>
               </ul>
-            </div>
-          </div>
-
-          <!-- TAB UTENTI ISCRITTI -->
-          <div id="a-tab-utenti" class="admin-tab-content" style="display: none;">
-            <div class="dark-panel" style="padding: 20px; border-radius: 12px;" id="admin-users-table-wrapper">
-              <h3 class="text-gold" style="font-family: 'Julius Sans One', sans-serif; border-bottom: 1px solid var(--border-gold); padding-bottom: 10px; margin-bottom: 15px;">
-                <i class="fa-solid fa-users" style="color: var(--accent-gold); margin-right: 8px;"></i> Registro Giudici e Pellegrini
-              </h3>
-              <div style="overflow-x: auto;">
-                <table style="width: 100%; border-collapse: collapse;">
-                  <thead>
-                    <tr style="border-bottom: 2px solid rgba(212,175,55,0.3); text-align: left; font-size: 0.85rem; color: var(--accent-gold);">
-                      <th style="padding: 10px;">Email / Classe</th>
-                      <th style="padding: 10px;">Ruolo</th>
-                      <th style="padding: 10px;">Data Iscrizione</th>
-                      <th style="padding: 10px; text-align: right;">Azioni</th>
-                    </tr>
-                  </thead>
-                  <tbody id="admin-users-list">
-                    <tr><td colspan="4" style="padding: 1rem; text-align: center; color: #888;">Caricamento utenti in corso...</td></tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-
-          <!-- TAB SCUOLE ATTIVE -->
-          <div id="a-tab-scuole" class="admin-tab-content" style="display: none;">
-            <div class="dark-panel" style="padding: 20px; border-radius: 12px;" id="admin-schools-table-wrapper">
-              <h3 class="text-gold" style="font-family: 'Julius Sans One', sans-serif; border-bottom: 1px solid var(--border-gold); padding-bottom: 10px; margin-bottom: 15px;">
-                <i class="fa-solid fa-school" style="color: var(--accent-gold); margin-right: 8px;"></i> Scuole e Istituti Registrati
-              </h3>
-              <div style="overflow-x: auto;">
-                <table style="width: 100%; border-collapse: collapse;">
-                  <thead>
-                    <tr style="border-bottom: 2px solid rgba(212,175,55,0.3); text-align: left; font-size: 0.85rem; color: var(--accent-gold);">
-                      <th style="padding: 10px;">Nome Istituto</th>
-                      <th style="padding: 10px;">Città</th>
-                      <th style="padding: 10px;">Referente</th>
-                      <th style="padding: 10px; text-align: right;">Contatta</th>
-                    </tr>
-                  </thead>
-                  <tbody id="admin-schools-list">
-                    <tr><td colspan="4" style="padding: 1rem; text-align: center; color: #888;">Caricamento scuole in corso...</td></tr>
-                  </tbody>
-                </table>
-              </div>
             </div>
           </div>
           
@@ -399,16 +343,6 @@
             <div style="margin-bottom: 20px;">
               <label style="font-size: 0.85rem; color: #888; display: block; margin-bottom: 6px;">Account Amministratore</label>
               <input type="text" id="admin-corte-email" class="input-control" value="prof.memmo@gmail.com" readonly style="width: 100%; padding: 10px 14px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.3); color: #aaa;">
-            </div>
-
-            <!-- 1. Diagnostica e Notifiche -->
-            <div style="margin-bottom: 25px; padding: 15px; border: 1px solid rgba(212,175,55,0.25); border-radius: 12px; background: rgba(26,22,20,0.8);">
-              <h3 style="color: var(--accent-gold); margin-top:0; font-size: 1.05rem;"><i class="fa-solid fa-wrench"></i> Diagnostica &amp; Sistema</h3>
-              <p style="font-size: 0.85rem; color: #888; margin-bottom: 15px;">Strumenti di verifica connessione, gestione avvisi e backup del tribunale.</p>
-              <div style="display:flex; gap:10px; flex-wrap:wrap;">
-                <button type="button" class="btn" style="background: rgba(255,255,255,0.1); color: var(--accent-gold); border: 1px solid var(--accent-gold); padding: 8px 16px; font-size: 0.85rem; border-radius: 6px;" onclick="window.testConnessioneAdmin()"><i class="fa-solid fa-satellite-dish"></i> Test Connessione Database</button>
-                <button type="button" class="btn" style="background: var(--accent-gold); color: #000; padding: 8px 16px; font-size: 0.85rem; font-weight: bold; border-radius: 6px;" onclick="window.resetNotificheLette()"><i class="fa-solid fa-bell-slash"></i> Reset Notifiche Non Lette</button>
-              </div>
             </div>
 
             <!-- 2. Danger Zone: Gestione Punteggi Stagionali -->
