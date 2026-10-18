@@ -609,43 +609,7 @@ window.showView = showView;
 window.app = {
   selectedCorteAvatar: 'assets/avatars/6.png',
   openEditProfileModal: function() {
-    if (!firebase.auth().currentUser) return;
-    const modal = document.getElementById('edit-profile-modal');
-    const nameInput = document.getElementById('edit-profile-name');
-    const schoolGroup = document.getElementById('edit-profile-school-group');
-    const schoolInput = document.getElementById('edit-profile-school');
-    const avatarGrid = document.getElementById('corte-edit-avatar-grid');
-    
-    const profile = window.EroiDB && window.EroiDB.cache ? window.EroiDB.cache.userProfile : null;
-    if (!profile) return;
-    
-    const isTeacher = (profile.role === 'teacher' || profile.role === 'admin');
-    
-    if (isTeacher) {
-      schoolGroup.classList.remove('hidden');
-      schoolInput.value = profile.school || ''; 
-    } else {
-      schoolGroup.classList.add('hidden');
-    }
-    
-    nameInput.value = profile.displayName || '';
-    
-    const currentAvatar = profile.avatar || 'assets/avatars/6.png';
-    this.selectedCorteAvatar = currentAvatar;
-
-    if (avatarGrid) {
-        avatarGrid.innerHTML = [6,7,8,9,10,11,12,13,14,15].map(num => `
-            <div class="corte-avatar-opt ${currentAvatar === `assets/avatars/${num}.png` ? 'active' : ''}" 
-                 onclick="window.app.selectCorteAvatar(this, 'assets/avatars/${num}.png')"
-                 style="width:48px; height:48px; border-radius:50%; border:3px solid ${currentAvatar === `assets/avatars/${num}.png` ? 'var(--accent-gold)' : 'transparent'}; cursor:pointer; overflow:hidden; transition:transform 0.2s; box-shadow:0 2px 6px rgba(0,0,0,0.4); background:#ffffff; display:flex; align-items:center; justify-content:center;">
-                <img src="assets/avatars/${num}.png" alt="Avatar ${num}" style="width:100%; height:100%; object-fit:cover;">
-            </div>
-        `).join('');
-    }
-
-    modal.classList.remove('hidden');
-    const dropdown = document.getElementById('user-dropdown');
-    if (dropdown) dropdown.classList.add('hidden');
+    window.open('https://prof-memmo.github.io/games/profilo.html', '_blank');
   },
 
   selectCorteAvatar: function(el, avatarPath) {
@@ -938,10 +902,13 @@ window.switchTeacherTab = function(tabName) {
 import { firebaseConfig, initializeApp, getAuth } from "./firebase-config.js";
 
 window.TeacherDashboard = {
+  classes: [],
+  selectedClassId: null,
+
   init: async function() {
     console.log("Init Teacher Dashboard");
     this.switchTab('panoramica'); // Default tab
-    this.selectStatsCategory('classes'); // Default stats panel
+    await this.loadClasses();
     await this.renderClasses();
     this.bindEvents();
   },
@@ -972,47 +939,197 @@ window.TeacherDashboard = {
     }
   },
 
-  selectStatsCategory: function(category) {
-    // Aggiorna styling card
-    const cards = document.querySelectorAll('.stat-card-interactive');
-    cards.forEach(card => {
-      card.classList.remove('active');
-      card.style.border = '1px solid #333';
-      card.style.background = '#111';
-    });
-    
-    const activeCard = document.getElementById('card-stats-' + category);
-    if (activeCard) {
-      activeCard.classList.add('active');
-      activeCard.style.border = '1px solid var(--accent-gold)';
-      activeCard.style.background = '#1a1a1a';
+  loadClasses: async function() {
+    const classSelect = document.getElementById('select-teacher-class');
+    const nodiSelect = document.getElementById('select-nodi-class');
+
+    const email = (state && state.user && state.user.email) ? state.user.email : '';
+    const uid = (state && state.user && state.user.uid) ? state.user.uid : null;
+
+    if (classSelect) {
+      classSelect.innerHTML = '<option value="">Caricamento classi...</option>';
+    }
+    if (nodiSelect) {
+      nodiSelect.innerHTML = '<option value="">Caricamento classi...</option>';
     }
 
-    // Nascondi sottomenu panoramica
-    const subPanels = document.querySelectorAll('.panoramica-sub-panel');
-    subPanels.forEach(p => p.style.display = 'none');
-    
-    const targetPanel = document.getElementById('panel-stats-' + category);
-    if (targetPanel) {
-      targetPanel.style.display = 'block';
+    try {
+      if (window.EroiDB && window.EroiDB.getTeacherClasses) {
+        this.classes = await window.EroiDB.getTeacherClasses(email, uid);
+      } else {
+        this.classes = [];
+      }
+    } catch (e) {
+      console.error("Errore caricamento classi:", e);
+      this.classes = [];
     }
+
+    if (!this.classes || this.classes.length === 0) {
+      if (classSelect) {
+        classSelect.innerHTML = '<option value="">Nessuna classe trovata (creala nell\'Hub)</option>';
+      }
+      if (nodiSelect) {
+        nodiSelect.innerHTML = '<option value="">Nessuna classe trovata</option>';
+      }
+      const tbody = document.getElementById('teacher-students-tbody');
+      if (tbody) {
+        tbody.innerHTML = '<tr><td colspan="3" style="text-align: center; padding: 25px; color: #888; font-style: italic;">Nessuna classe disponibile. Le classi si creano esclusivamente dall\'Hub docenti.</td></tr>';
+      }
+      const badge = document.getElementById('selected-class-code-badge');
+      if (badge) badge.style.display = 'none';
+      return;
+    }
+
+    let options = '<option value="">-- Seleziona una Classe --</option>';
+    this.classes.forEach(c => {
+      const codeStr = c.code ? ` (Codice: ${c.code})` : '';
+      options += `<option value="${c.id}">${(c.name || 'Classe').replace(/</g, '&lt;').replace(/>/g, '&gt;')}${codeStr}</option>`;
+    });
+
+    if (classSelect) {
+      classSelect.innerHTML = options;
+      classSelect.value = this.classes[0].id;
+      this.onClassChange(this.classes[0].id);
+    }
+    if (nodiSelect) {
+      nodiSelect.innerHTML = options;
+      nodiSelect.value = this.classes[0].id;
+    }
+  },
+
+  onClassChange: async function(classId) {
+    this.selectedClassId = classId;
+    const badge = document.getElementById('selected-class-code-badge');
+    const codeSpan = document.getElementById('display-selected-code');
+
+    const nodiSelect = document.getElementById('select-nodi-class');
+    if (nodiSelect && nodiSelect.value !== classId) {
+      nodiSelect.value = classId;
+    }
+
+    if (!classId) {
+      if (badge) badge.style.display = 'none';
+      const tbody = document.getElementById('teacher-students-tbody');
+      if (tbody) {
+        tbody.innerHTML = '<tr><td colspan="3" style="text-align: center; padding: 25px; color: #888; font-style: italic;">Seleziona una classe per visualizzare gli studenti.</td></tr>';
+      }
+      return;
+    }
+
+    const cls = this.classes.find(c => c.id === classId) || { id: classId };
+    if (badge && codeSpan) {
+      if (cls && cls.code) {
+        codeSpan.textContent = cls.code;
+        badge.style.display = 'inline-flex';
+      } else {
+        badge.style.display = 'none';
+      }
+    }
+
+    await this.renderStudentsForClass(cls);
+  },
+
+  copyClassCode: function() {
+    const codeSpan = document.getElementById('display-selected-code');
+    if (codeSpan && codeSpan.textContent && codeSpan.textContent !== '-') {
+      navigator.clipboard.writeText(codeSpan.textContent);
+      alert('Codice classe copiato negli appunti: ' + codeSpan.textContent);
+    }
+  },
+
+  renderStudentsForClass: async function(cls) {
+    const tbody = document.getElementById('teacher-students-tbody');
+    if (!tbody) return;
+
+    tbody.innerHTML = '<tr><td colspan="3" style="text-align: center; padding: 20px; color: #888;"><i class="fa-solid fa-spinner fa-spin"></i> Caricamento studenti...</td></tr>';
+
+    try {
+      const students = await window.EroiDB.getStudentsByClass(cls.id, cls.code);
+      if (!students || students.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="3" style="text-align: center; padding: 25px; color: #888; font-style: italic;">Nessuno studente iscritto a questa classe. Gli studenti devono registrarsi o essere associati dall\'Hub.</td></tr>';
+        return;
+      }
+
+      let html = '';
+      students.forEach(s => {
+        const name = (s.name || s.displayName || 'Studente').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        const email = s.email ? `<br><small style="color: #666; font-size: 0.75rem;">${s.email.replace(/</g, '&lt;')}</small>` : '';
+        const level = s.level || 'Pellegrino';
+        const xp = s.xp !== undefined ? s.xp : 0;
+
+        html += `
+          <tr style="border-bottom: 1px solid rgba(255,255,255,0.05); transition: background 0.2s;">
+            <td style="padding: 12px 10px; font-weight: 600; color: #fff;">
+              <i class="fa-solid fa-user-graduate" style="color: var(--accent-gold); margin-right: 8px;"></i>
+              ${name}
+              ${email}
+            </td>
+            <td style="padding: 12px 10px; color: #bbb;">
+              <span style="display: inline-block; padding: 2px 8px; border-radius: 4px; background: rgba(255,255,255,0.08); font-size: 0.8rem;">${level}</span>
+            </td>
+            <td style="padding: 12px 10px; color: var(--accent-gold); font-weight: 700;">
+              ${xp} XP
+            </td>
+          </tr>
+        `;
+      });
+      tbody.innerHTML = html;
+    } catch (e) {
+      console.error("Errore caricamento studenti:", e);
+      tbody.innerHTML = '<tr><td colspan="3" style="text-align: center; padding: 20px; color: #ff4d4d;">Errore durante il caricamento degli studenti.</td></tr>';
+    }
+  },
+
+  renderNodi: async function() {
+    const container = document.getElementById('nodi-list-container');
+    if (!container) return;
+    const nodi = [
+      { id: 'limbo', name: 'Limbo (Cerchio I)', desc: 'Spiriti magni e non battezzati', defaultUnlocked: true },
+      { id: 'lussuriosi', name: 'Cerchio II - Lussuriosi', desc: 'Paolo e Francesca', defaultUnlocked: true },
+      { id: 'golosi', name: 'Cerchio III - Golosi', desc: 'Ciacco e la pioggia eterna', defaultUnlocked: false },
+      { id: 'avari', name: 'Cerchio IV - Avari e Prodighi', desc: 'Pesi spinti e contese vane', defaultUnlocked: false },
+      { id: 'iracondi', name: 'Cerchio V - Iracondi e Accidiosi', desc: 'La palude Stigia e Filippo Argenti', defaultUnlocked: false },
+      { id: 'eretici', name: 'Cerchio VI - Eretici', desc: 'La città di Dite e Farinata', defaultUnlocked: false },
+      { id: 'violenti', name: 'Cerchio VII - Violenti', desc: 'Flegetonte e la selva dei suicidi', defaultUnlocked: false },
+      { id: 'fraudolenti', name: 'Cerchio VIII - Malebolge', desc: 'I fossati delle frodi', defaultUnlocked: false },
+      { id: 'traditori', name: 'Cerchio IX - Cocito', desc: 'Il lago ghiacciato e Lucifero', defaultUnlocked: false }
+    ];
+
+    let html = '';
+    nodi.forEach(nodo => {
+      html += `
+        <div style="background: rgba(255,255,255,0.8); border: 1px solid #ccc; border-radius: 8px; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <strong style="color: #222; font-size: 1rem;">${nodo.name}</strong>
+            <p style="margin: 2px 0 0 0; color: #666; font-size: 0.82rem;">${nodo.desc}</p>
+          </div>
+          <div>
+            <span style="display: inline-block; padding: 4px 10px; border-radius: 6px; font-size: 0.8rem; font-weight: 700; background: ${nodo.defaultUnlocked ? '#e8f5e9' : '#f5f5f5'}; color: ${nodo.defaultUnlocked ? '#2e7d32' : '#777'}; border: 1px solid ${nodo.defaultUnlocked ? '#a5d6a7' : '#ddd'};">
+              ${nodo.defaultUnlocked ? 'Sbloccato' : 'Bloccato'}
+            </span>
+          </div>
+        </div>
+      `;
+    });
+    container.innerHTML = html;
   },
 
   renderClasses: async function() {
     // Populate the select dropdown for cases
-    if (window.EroiDB && window.EroiDB.cache.cases.length === 0) {
+    if (window.EroiDB && window.EroiDB.cache && window.EroiDB.cache.cases.length === 0) {
         await window.EroiDB.getCasesByCampaign('inferno');
         await window.EroiDB.getCasesByCampaign('purgatorio');
         await window.EroiDB.getCasesByCampaign('paradiso');
     }
     const caseSelect = document.getElementById('teacher-case-select');
-    if (caseSelect && window.EroiDB) {
+    if (caseSelect && window.EroiDB && window.EroiDB.cache) {
         let options = '<option value="">-- Seleziona un Caso --</option>';
         window.EroiDB.cache.cases.forEach(c => {
             options += `<option value="${c.id}">${c.characterName} (${c.campaignId.toUpperCase()})</option>`;
         });
         caseSelect.innerHTML = options;
     }
+    this.renderNodi();
   },
   
   loadCaseVerdicts: async function(caseId) {
@@ -1026,12 +1143,11 @@ window.TeacherDashboard = {
     
     try {
         let classCode = null;
-        // Optionally filter by the teacher's classCode if set
+        if (this.classes && this.selectedClassId) {
+          const selCls = this.classes.find(c => c.id === this.selectedClassId);
+          if (selCls && selCls.code) classCode = selCls.code;
+        }
         
-        let sentencesQuery = window.firebase.firestore().collection("sentences").where("caseId", "==", caseId);
-        // We use window.firebase if imported, but we should import query, getDocs etc. 
-        // Actually since we don't have direct access to getDocs in app.js without importing, we can add a helper in db.js or just do it here if we assume firebase-config is loaded.
-        // It's safer to add a helper in EroiDB.
         if (window.EroiDB && window.EroiDB.getRawVerdicts) {
             const verdicts = await window.EroiDB.getRawVerdicts(caseId, classCode);
             if (verdicts.length === 0) {
@@ -1063,102 +1179,7 @@ window.TeacherDashboard = {
   },
 
   bindEvents: function() {
-    const self = this;
-    // Crea Studente
-    const formStudent = document.getElementById('form-create-student');
-    if (formStudent && !formStudent.hasAttribute('data-bound')) {
-        formStudent.setAttribute('data-bound', 'true');
-        formStudent.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const btn = document.getElementById('btn-save-new-student');
-            const name = document.getElementById('new-student-name').value;
-            const email = document.getElementById('new-student-email').value;
-            const classId = document.getElementById('new-student-class').value;
-
-            if (!classId) return alert("Crea prima una classe!");
-            btn.disabled = true;
-            btn.textContent = 'Creazione...';
-
-            try {
-                const secondaryApp = initializeApp(firebaseConfig, "Secondary");
-                const secondaryAuth = getAuth(secondaryApp);
-                const defaultPassword = name.toLowerCase().replace(/\\s+/g, '') + "123";
-
-                const userCred = await createUserWithEmailAndPassword(secondaryAuth, email, defaultPassword);
-                
-                await setDoc(doc(db, 'users', userCred.user.uid), {
-                  uid: userCred.user.uid,
-                  email: email,
-                  displayName: name,
-                  xp: 0,
-                  level: 1,
-                  role: 'student',
-                  classId: classId
-                });
-
-                await secondaryAuth.signOut();
-
-                alert("Studente creato con successo!\\nEmail: " + email + "\\nPassword: " + defaultPassword);
-                formStudent.reset();
-                self.renderClasses();
-            } catch (err) {
-                console.error(err);
-                alert("Errore: " + err.message);
-            } finally {
-                btn.disabled = false;
-                btn.textContent = 'Aggiungi';
-            }
-        });
-    }
-
-    // Crea Classe
-    const formClass = document.getElementById('form-create-class');
-    if (formClass && !formClass.hasAttribute('data-bound')) {
-        formClass.setAttribute('data-bound', 'true');
-        formClass.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const id = document.querySelector('#form-create-class input[placeholder*="Codice"]').value.trim().toUpperCase();
-            const name = document.querySelector('#form-create-class input[placeholder*="Nome esteso"]').value.trim();
-            
-            if (!id || !name) return alert("Inserisci codice e nome classe.");
-
-            try {
-                await EroiDB.saveClass({
-                    id: id,
-                    name: name,
-                    teacher: state.user.email,
-                    createdAt: new Date().toISOString()
-                });
-                alert("Classe creata con successo!");
-                formClass.reset();
-                self.renderClasses();
-            } catch (err) {
-                alert("Errore creazione classe: " + err.message);
-            }
-        });
-    }
-
-    // Join Collaborator
-    const formJoin = document.getElementById('form-join-collaborator');
-    if (formJoin && !formJoin.hasAttribute('data-bound')) {
-        formJoin.setAttribute('data-bound', 'true');
-        formJoin.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const classId = document.getElementById('join-collaborator-code').value.trim().toUpperCase();
-            if (!classId) return alert("Inserisci il codice fascicolo classe.");
-
-            try {
-                const success = await EroiDB.joinClassAsCollaborator(classId, state.user.email);
-                if (success) {
-                    alert("Sei stato aggiunto come collaboratore alla classe!");
-                    formJoin.reset();
-                    self.renderClasses();
-                }
-            } catch (err) {
-                alert("Errore: " + err.message);
-            }
-        });
-    }
+    // Eventi e listener aggiuntivi
   }
 };
 
