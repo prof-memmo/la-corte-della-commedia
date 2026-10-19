@@ -40,79 +40,79 @@ const PARADISO_HEAVENS = [
 
 
 export const INFERNO_COORDINATES_PC = [
-    { id: "Antinferno", x: 30.96, y: 11.28 },
-    { id: "Limbo", x: 35.29, y: 31.62 },
-    { id: "Lussuriosi", x: 24.40, y: 49.14 },
-    { id: "Golosi", x: 35.52, y: 62.67 },
-    { id: "Avari", x: 46.64, y: 51.27 },
-    { id: "Iracondi", x: 55.91, y: 34.72 },
-    { id: "Eretici", x: 67.32, y: 48.86 },
-    { id: "Violenti", x: 73.80, y: 69.50 },
-    { id: "Fraudolenti", x: 61.30, y: 80.29 },
-    { id: "Traditori", x: 75.83, y: 88.99 }
+    { id: "Antinferno", x: 30.64, y: 11.98 },
+    { id: "Limbo", x: 35.29, y: 32.42 },
+    { id: "Lussuriosi", x: 24.24, y: 49.99 },
+    { id: "Golosi", x: 35.64, y: 63.53 },
+    { id: "Avari", x: 46.49, y: 51.95 },
+    { id: "Iracondi", x: 55.79, y: 35.49 },
+    { id: "Eretici", x: 67.17, y: 49.65 },
+    { id: "Violenti", x: 73.47, y: 70.20 },
+    { id: "Fraudolenti", x: 61.14, y: 81.10 },
+    { id: "Traditori", x: 75.68, y: 89.81 }
 ];
 
 export const INFERNO_COORDINATES_MOBILE = [
-    { id: "Antinferno", x: 30.29, y: 8.36 },
-    { id: "Limbo", x: 68.74, y: 14.21 },
-    { id: "Lussuriosi", x: 30.28, y: 24.83 },
-    { id: "Golosi", x: 69.46, y: 32.76 },
-    { id: "Avari", x: 30.26, y: 43.13 },
-    { id: "Iracondi", x: 69.83, y: 54.01 },
-    { id: "Eretici", x: 30.28, y: 61.19 },
-    { id: "Violenti", x: 70.28, y: 70.28 },
-    { id: "Fraudolenti", x: 30.28, y: 83.31 },
-    { id: "Traditori", x: 69.83, y: 89.02 }
+    { id: "Antinferno", x: 30.23, y: 8.31 },
+    { id: "Limbo", x: 69.77, y: 14.19 },
+    { id: "Lussuriosi", x: 30.23, y: 24.82 },
+    { id: "Golosi", x: 69.77, y: 32.73 },
+    { id: "Avari", x: 30.23, y: 43.10 },
+    { id: "Iracondi", x: 69.77, y: 53.98 },
+    { id: "Eretici", x: 30.23, y: 61.17 },
+    { id: "Violenti", x: 69.77, y: 70.29 },
+    { id: "Fraudolenti", x: 30.23, y: 83.31 },
+    { id: "Traditori", x: 69.77, y: 89.04 }
 ];
 
 export const PURGATORIO_COORDINATES_PC = [
-    { id: "Antipurgatorio", x: 7.14, y: 76.39 },
-    { id: "Superbi", x: 15.21, y: 59.54 },
-    { id: "Invidiosi", x: 24.74, y: 42.31 },
-    { id: "Iracondi_Purg", x: 34.90, y: 56.76 },
-    { id: "Accidiosi", x: 47.24, y: 40.46 },
-    { id: "Avari_Purg", x: 59.64, y: 50.19 },
-    { id: "Golosi_Purg", x: 72.14, y: 35.09 },
-    { id: "Lussuriosi_Purg", x: 85.73, y: 44.35 },
-    { id: "ParadisoTerrestre", x: 92.66, y: 24.07 }
+    { id: "Antipurgatorio", x: 7.15, y: 76.31 },
+    { id: "Superbi", x: 15.24, y: 59.49 },
+    { id: "Invidiosi", x: 24.82, y: 41.91 },
+    { id: "Iracondi_Purg", x: 35.03, y: 56.79 },
+    { id: "Accidiosi", x: 47.10, y: 40.84 },
+    { id: "Avari_Purg", x: 59.32, y: 51.21 },
+    { id: "Golosi_Purg", x: 72.10, y: 34.82 },
+    { id: "Lussuriosi_Purg", x: 85.81, y: 44.38 },
+    { id: "ParadisoTerrestre", x: 92.67, y: 23.96 }
 ];
 
 export const PURGATORIO_COORDINATES_MOBILE = [
-    { id: "Antipurgatorio", x: 30.83, y: 8.23 },
-    { id: "Superbi", x: 70.09, y: 14.22 },
-    { id: "Invidiosi", x: 30.37, y: 25.10 },
-    { id: "Iracondi_Purg", x: 69.81, y: 32.97 },
-    { id: "Accidiosi", x: 30.37, y: 42.97 },
-    { id: "Avari_Purg", x: 69.91, y: 54.32 },
-    { id: "Golosi_Purg", x: 30.46, y: 61.35 },
-    { id: "Lussuriosi_Purg", x: 69.91, y: 70.36 },
-    { id: "ParadisoTerrestre", x: 30.28, y: 83.54 }
+    { id: "Antipurgatorio", x: 30.23, y: 8.31 },
+    { id: "Superbi", x: 69.77, y: 14.19 },
+    { id: "Invidiosi", x: 30.23, y: 24.82 },
+    { id: "Iracondi_Purg", x: 69.77, y: 32.73 },
+    { id: "Accidiosi", x: 30.23, y: 43.10 },
+    { id: "Avari_Purg", x: 69.77, y: 53.98 },
+    { id: "Golosi_Purg", x: 30.23, y: 61.17 },
+    { id: "Lussuriosi_Purg", x: 69.77, y: 70.29 },
+    { id: "ParadisoTerrestre", x: 30.23, y: 83.31 }
 ];
 
 export const PARADISO_COORDINATES_PC = [
-    { id: "Luna", x: 8.97, y: 58.12 },
-    { id: "Mercurio", x: 20.08, y: 43.83 },
-    { id: "Venere", x: 28.08, y: 60.33 },
-    { id: "Sole", x: 35.47, y: 40.37 },
-    { id: "Marte", x: 44.88, y: 61.33 },
-    { id: "Giove", x: 51.89, y: 40.55 },
-    { id: "Saturno", x: 61.90, y: 61.42 },
-    { id: "StelleFisse", x: 72.40, y: 38.96 },
-    { id: "PrimoMobile", x: 78.67, y: 62.55 },
-    { id: "Empireo", x: 90.98, y: 47.52 }
+    { id: "Luna", x: 9.12, y: 57.88 },
+    { id: "Mercurio", x: 19.78, y: 43.29 },
+    { id: "Venere", x: 28.18, y: 60.15 },
+    { id: "Sole", x: 35.35, y: 40.51 },
+    { id: "Marte", x: 44.89, y: 61.20 },
+    { id: "Giove", x: 51.79, y: 40.79 },
+    { id: "Saturno", x: 61.97, y: 61.18 },
+    { id: "StelleFisse", x: 72.27, y: 39.09 },
+    { id: "PrimoMobile", x: 78.83, y: 62.26 },
+    { id: "Empireo", x: 90.93, y: 47.57 }
 ];
 
 export const PARADISO_COORDINATES_MOBILE = [
-    { id: "Luna", x: 30.18, y: 8.41 },
-    { id: "Mercurio", x: 69.73, y: 14.20 },
-    { id: "Venere", x: 30.18, y: 24.97 },
-    { id: "Sole", x: 69.72, y: 32.93 },
-    { id: "Marte", x: 30.18, y: 43.11 },
-    { id: "Giove", x: 69.73, y: 54.08 },
-    { id: "Saturno", x: 30.18, y: 61.24 },
-    { id: "StelleFisse", x: 69.73, y: 70.35 },
-    { id: "PrimoMobile", x: 30.18, y: 83.40 },
-    { id: "Empireo", x: 69.72, y: 89.08 }
+    { id: "Luna", x: 30.23, y: 8.31 },
+    { id: "Mercurio", x: 69.77, y: 14.19 },
+    { id: "Venere", x: 30.23, y: 24.82 },
+    { id: "Sole", x: 69.77, y: 32.73 },
+    { id: "Marte", x: 30.23, y: 43.10 },
+    { id: "Giove", x: 69.77, y: 53.98 },
+    { id: "Saturno", x: 30.23, y: 61.17 },
+    { id: "StelleFisse", x: 69.77, y: 70.29 },
+    { id: "PrimoMobile", x: 30.23, y: 83.31 },
+    { id: "Empireo", x: 69.77, y: 89.04 }
 ];
 
 const CAMPAIGN_CONFIG = {
@@ -292,9 +292,11 @@ export const MapEngine = {
                 <button class="btn-fullscreen-lim" onclick="window.MapEngine.toggleFullscreenMap(this)" title="Schermo Intero LIM" aria-label="Schermo Intero LIM">
                     <i class="fa-solid fa-expand"></i>
                 </button>
-                <img class="map-bg-img" src="${bgImgPath}" alt="Mappa ${config.name}" />
-                <svg class="map-svg-layer" viewBox="${isMobile ? '0 0 1080 1920' : '0 0 1920 1080'}"></svg>
-                <div class="map-hotspots-layer"></div>
+                <div class="map-stage">
+                    <img class="map-bg-img" src="${bgImgPath}" alt="Mappa ${config.name}" />
+                    <svg class="map-svg-layer" viewBox="${isMobile ? '0 0 1080 1920' : '0 0 1920 1080'}" preserveAspectRatio="none"></svg>
+                    <div class="map-hotspots-layer"></div>
+                </div>
             </div>
         `;
 
