@@ -436,6 +436,7 @@ export const MapEngine = {
                 fsBtns.forEach(b => {
                     b.innerHTML = isFs ? '<i class="fa-solid fa-compress"></i>' : '<i class="fa-solid fa-expand"></i>';
                     b.title = isFs ? 'Esci da Schermo Intero LIM' : 'Schermo Intero LIM';
+                });
             });
         }
     },

@@ -30,6 +30,21 @@
           }
         }
       } catch(e) {}
+
+      // Fail-Safe: Se dopo 3s l'app non ha completato l'autenticazione, rimuovi il blocco caricamento
+      setTimeout(function() {
+        if (document.documentElement.classList.contains('corte-pre-auth')) {
+          console.warn("[Zero-Flicker Guard] Rilascio preventivo timeout caricamento.");
+          document.documentElement.classList.remove('corte-pre-auth');
+          var lEl = document.getElementById('view-corte-loading');
+          if (lEl) lEl.style.display = 'none';
+          var activeViews = document.querySelectorAll('.view.active');
+          if (!activeViews.length) {
+            var loginEl = document.getElementById('view-login');
+            if (loginEl) loginEl.classList.add('active');
+          }
+        }
+      }, 3000);
     })();
   </script>
   <style id="corte-flicker-guard-style">

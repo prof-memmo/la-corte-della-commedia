@@ -47,13 +47,18 @@ async function showView(viewId) {
         checkUser = { ...state.user, uid: profile.teacherId, email: profile.teacherEmail };
       }
 
-      const isAllowed = await window.HubSubscriptionGuard.verifyAccess({
-        user: checkUser,
-        role: role,
-        isPublicView: false
-      });
-      if (!isAllowed) {
-        return; // Interrompi: blocco attivo, la vista protetta non viene attivata
+      try {
+        const isAllowed = await window.HubSubscriptionGuard.verifyAccess({
+          user: checkUser,
+          role: role,
+          isPublicView: false
+        });
+        if (!isAllowed) {
+          document.documentElement.classList.remove('corte-pre-auth');
+          return; // Interrompi: blocco attivo, la vista protetta non viene attivata
+        }
+      } catch (errGuard) {
+        console.warn("HubSubscriptionGuard check error (fallback procedi):", errGuard);
       }
     }
   }
