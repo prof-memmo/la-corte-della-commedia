@@ -365,16 +365,36 @@ export const MapEngine = {
             hotspotsLayer.appendChild(hotspot);
         });
 
-        // Dynamic SVG Path connecting nodes
+        // Dynamic SVG Path connecting nodes with cutout mask (NEVER covers text inside circles)
+        const maskId = `mask-nodes-${campaignId}-${isMobile ? 'm' : 'pc'}`;
+        const nodeRadius = isMobile ? 120 : 88;
+        const scaleX = isMobile ? 1080 / 100 : 1920 / 100;
+        const scaleY = isMobile ? 1920 / 100 : 1080 / 100;
+
+        let maskCircles = '';
+        nodesArray.forEach((_, idx) => {
+            const coord = coords[idx];
+            if (!coord) return;
+            const cx = coord.x * scaleX;
+            const cy = coord.y * scaleY;
+            maskCircles += `<circle cx="${cx}" cy="${cy}" r="${nodeRadius}" fill="black" />`;
+        });
+
+        svgLayer.innerHTML = `
+            <defs>
+                <mask id="${maskId}">
+                    <rect width="100%" height="100%" fill="white" />
+                    ${maskCircles}
+                </mask>
+            </defs>
+        `;
+
         let pathD = "";
         let completedPathD = "";
         for (let i = 0; i < nodesArray.length - 1; i++) {
             const c1 = coords[i];
             const c2 = coords[i+1];
             if (!c1 || !c2) continue;
-
-            const scaleX = isMobile ? 1080 / 100 : 1920 / 100;
-            const scaleY = isMobile ? 1920 / 100 : 1080 / 100;
 
             const x1 = c1.x * scaleX;
             const y1 = c1.y * scaleY;
@@ -400,10 +420,11 @@ export const MapEngine = {
             const bgPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
             bgPath.setAttribute('d', pathD);
             bgPath.setAttribute('fill', 'none');
-            bgPath.setAttribute('stroke', 'rgba(255, 255, 255, 0.15)');
+            bgPath.setAttribute('stroke', 'rgba(255, 255, 255, 0.12)');
             bgPath.setAttribute('stroke-width', isMobile ? '8' : '5');
             bgPath.setAttribute('stroke-dasharray', isMobile ? '8 6' : '6 4');
             bgPath.setAttribute('stroke-linecap', 'round');
+            bgPath.setAttribute('mask', `url(#${maskId})`);
             svgLayer.appendChild(bgPath);
 
             if (completedPathD) {
@@ -414,6 +435,7 @@ export const MapEngine = {
                 fgPath.setAttribute('stroke-width', isMobile ? '8' : '5');
                 fgPath.setAttribute('stroke-linecap', 'round');
                 fgPath.style.filter = config.glowFilter;
+                fgPath.setAttribute('mask', `url(#${maskId})`);
                 svgLayer.appendChild(fgPath);
             }
         }
@@ -458,29 +480,31 @@ export const MapEngine = {
         list.innerHTML = '';
         
         if (cases.length === 0) {
-            list.innerHTML = '<li style="padding: 1rem; text-align: center; color: #888;">Nessun fascicolo trovato in questo cerchio. Torna indietro o avanza (il cerchio conta come completato).</li>';
+            list.innerHTML = '<li style="padding: 1.5rem; text-align: center; color: #1a1614; background: #ffffff; border-radius: 12px; border: 1.5px solid var(--accent-gold); box-shadow: 0 4px 15px rgba(0,0,0,0.3);">Nessun fascicolo trovato in questo cerchio. Torna indietro o avanza (il cerchio conta come completato).</li>';
             return;
         }
 
         cases.forEach(c => {
             const isCompleted = this.completedCaseIds.includes(c.id);
             const li = document.createElement('li');
-            li.style.background = isCompleted ? 'rgba(50, 200, 50, 0.1)' : 'rgba(0, 0, 0, 0.3)';
-            li.style.border = isCompleted ? '1px solid #3c3' : '1px solid var(--border-color)';
-            li.style.margin = '0.5rem 0';
-            li.style.padding = '1rem';
-            li.style.borderRadius = 'var(--radius-sm)';
+            li.style.background = '#ffffff';
+            li.style.color = '#1a1614';
+            li.style.border = isCompleted ? '2px solid #22c55e' : '1.5px solid var(--accent-gold)';
+            li.style.margin = '0.75rem 0';
+            li.style.padding = '1.2rem';
+            li.style.borderRadius = '12px';
+            li.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.4)';
             li.style.display = 'flex';
             li.style.justifyContent = 'space-between';
             li.style.alignItems = 'center';
 
             li.innerHTML = `
                 <div>
-                    <h4 class="text-gold" style="margin-bottom: 5px;">${c.characterName}</h4>
-                    <span style="font-size: 0.8rem; color: #888;">${c.canto}</span>
-                    ${isCompleted ? '<span style="color: #3c3; font-size: 0.8rem; margin-left: 10px;">(Completato)</span>' : ''}
+                    <h4 style="color: #8b0000; font-family: 'Julius Sans One', sans-serif; margin-bottom: 5px; font-weight: 800;">${c.characterName}</h4>
+                    <span style="font-size: 0.85rem; color: #555; font-weight: 600;">${c.canto}</span>
+                    ${isCompleted ? '<span style="color: #15803d; font-size: 0.85rem; font-weight: 800; margin-left: 10px;"><i class="fa-solid fa-circle-check"></i> Giudicato</span>' : ''}
                 </div>
-                <button class="btn btn-primary" style="${isCompleted ? 'background: #3c3; color: #fff;' : ''}">
+                <button class="btn btn-primary" style="${isCompleted ? 'background: #15803d; color: #fff;' : 'background: var(--accent-crimson); color: #fff;'} padding: 0.6rem 1.4rem; border-radius: 20px; font-weight: 700;">
                     ${isCompleted ? 'Rivedi Caso' : 'Apri Fascicolo'}
                 </button>
             `;
