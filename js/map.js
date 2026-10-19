@@ -65,6 +65,89 @@ export const INFERNO_COORDINATES_MOBILE = [
     { id: "Traditori", x: 69.83, y: 89.02 }
 ];
 
+export const PURGATORIO_COORDINATES_PC = [
+    { id: "Antipurgatorio", x: 7.14, y: 76.39 },
+    { id: "Superbi", x: 15.21, y: 59.54 },
+    { id: "Invidiosi", x: 24.74, y: 42.31 },
+    { id: "Iracondi_Purg", x: 34.90, y: 56.76 },
+    { id: "Accidiosi", x: 47.24, y: 40.46 },
+    { id: "Avari_Purg", x: 59.64, y: 50.19 },
+    { id: "Golosi_Purg", x: 72.14, y: 35.09 },
+    { id: "Lussuriosi_Purg", x: 85.73, y: 44.35 },
+    { id: "ParadisoTerrestre", x: 92.66, y: 24.07 }
+];
+
+export const PURGATORIO_COORDINATES_MOBILE = [
+    { id: "Antipurgatorio", x: 30.83, y: 8.23 },
+    { id: "Superbi", x: 70.09, y: 14.22 },
+    { id: "Invidiosi", x: 30.37, y: 25.10 },
+    { id: "Iracondi_Purg", x: 69.81, y: 32.97 },
+    { id: "Accidiosi", x: 30.37, y: 42.97 },
+    { id: "Avari_Purg", x: 69.91, y: 54.32 },
+    { id: "Golosi_Purg", x: 30.46, y: 61.35 },
+    { id: "Lussuriosi_Purg", x: 69.91, y: 70.36 },
+    { id: "ParadisoTerrestre", x: 30.28, y: 83.54 }
+];
+
+export const PARADISO_COORDINATES_PC = [
+    { id: "Luna", x: 8.97, y: 58.12 },
+    { id: "Mercurio", x: 20.08, y: 43.83 },
+    { id: "Venere", x: 28.08, y: 60.33 },
+    { id: "Sole", x: 35.47, y: 40.37 },
+    { id: "Marte", x: 44.88, y: 61.33 },
+    { id: "Giove", x: 51.89, y: 40.55 },
+    { id: "Saturno", x: 61.90, y: 61.42 },
+    { id: "StelleFisse", x: 72.40, y: 38.96 },
+    { id: "PrimoMobile", x: 78.67, y: 62.55 },
+    { id: "Empireo", x: 90.98, y: 47.52 }
+];
+
+export const PARADISO_COORDINATES_MOBILE = [
+    { id: "Luna", x: 30.18, y: 8.41 },
+    { id: "Mercurio", x: 69.73, y: 14.20 },
+    { id: "Venere", x: 30.18, y: 24.97 },
+    { id: "Sole", x: 69.72, y: 32.93 },
+    { id: "Marte", x: 30.18, y: 43.11 },
+    { id: "Giove", x: 69.73, y: 54.08 },
+    { id: "Saturno", x: 30.18, y: 61.24 },
+    { id: "StelleFisse", x: 69.73, y: 70.35 },
+    { id: "PrimoMobile", x: 30.18, y: 83.40 },
+    { id: "Empireo", x: 69.72, y: 89.08 }
+];
+
+const CAMPAIGN_CONFIG = {
+    inferno: {
+        name: "Inferno",
+        nodes: INFERNO_CIRCLES,
+        coordsPC: INFERNO_COORDINATES_PC,
+        coordsMobile: INFERNO_COORDINATES_MOBILE,
+        bgPC: "assets/maps/pc/inferno.png",
+        bgMobile: "assets/maps/mobile/inferno.png",
+        glowColor: "#f59e0b",
+        glowFilter: "drop-shadow(0 0 8px rgba(245, 158, 11, 0.8))"
+    },
+    purgatorio: {
+        name: "Purgatorio",
+        nodes: PURGATORIO_TERRACES,
+        coordsPC: PURGATORIO_COORDINATES_PC,
+        coordsMobile: PURGATORIO_COORDINATES_MOBILE,
+        bgPC: "assets/maps/pc/purgatorio.png",
+        bgMobile: "assets/maps/mobile/purgatorio.png",
+        glowColor: "#e0a96d",
+        glowFilter: "drop-shadow(0 0 8px rgba(224, 169, 109, 0.8))"
+    },
+    paradiso: {
+        name: "Paradiso",
+        nodes: PARADISO_HEAVENS,
+        coordsPC: PARADISO_COORDINATES_PC,
+        coordsMobile: PARADISO_COORDINATES_MOBILE,
+        bgPC: "assets/maps/pc/paradiso.png",
+        bgMobile: "assets/maps/mobile/paradiso.png",
+        glowColor: "#38bdf8",
+        glowFilter: "drop-shadow(0 0 8px rgba(56, 189, 248, 0.8))"
+    }
+};
+
 export const MapEngine = {
     allCases: [],
     completedCaseIds: [],
@@ -160,182 +243,56 @@ export const MapEngine = {
             }
             return true; 
         } else {
-            if (circleIndex === 0) return true; 
+            if (circleIndex === 0) return true;
             const prevCircle = nodesArray[circleIndex - 1];
             return this.isCircleCompleted(prevCircle.id);
         }
     },
 
-
-    
     renderMap: function(campaignId) {
         this.currentCampaign = campaignId;
         const container = document.getElementById(`map-${campaignId}`);
         if (!container) return;
         
         container.innerHTML = '';
-        
-        if (campaignId === 'inferno') {
-            this.renderIllustratedInferno(container);
-            return;
-        }
-
-        let nodesArray = INFERNO_CIRCLES;
-        let decorImage = 'assets/Immagini/10.png'; // inferno decor
-        if (campaignId === 'purgatorio') {
-            nodesArray = PURGATORIO_TERRACES;
-            decorImage = 'assets/Immagini/6.png';
-        }
-        if (campaignId === 'paradiso') {
-            nodesArray = PARADISO_HEAVENS;
-            decorImage = 'assets/Immagini/7.png';
-        }
-
-        const svgLayer = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-        svgLayer.style.position = 'absolute';
-        svgLayer.style.top = '0';
-        svgLayer.style.left = '0';
-        svgLayer.style.width = '100%';
-        svgLayer.style.height = '100%';
-        svgLayer.style.zIndex = '0';
-        svgLayer.style.pointerEvents = 'none';
-        container.appendChild(svgLayer);
-
-        const nodesLayer = document.createElement('div');
-        nodesLayer.style.position = 'relative';
-        nodesLayer.style.zIndex = '1';
-        nodesLayer.style.display = 'flex';
-        nodesLayer.style.flexDirection = 'column';
-        nodesLayer.style.alignItems = 'center';
-        container.appendChild(nodesLayer);
-        
-        const decorImg = document.createElement('img');
-        decorImg.src = decorImage;
-        decorImg.style.position = 'absolute';
-        decorImg.style.top = '15%';
-        decorImg.style.right = '5%';
-        decorImg.style.width = '120px';
-        decorImg.style.height = '120px';
-        decorImg.style.objectFit = 'cover';
-        decorImg.style.borderRadius = '50%';
-        decorImg.style.boxShadow = '0 0 20px rgba(0,0,0,0.8)';
-        decorImg.style.border = '2px solid var(--border-color)';
-        decorImg.style.zIndex = '0';
-        decorImg.style.opacity = '0.8';
-        container.appendChild(decorImg);
-        
-        const renderedNodes = [];
-
-        nodesArray.forEach((circle, index) => {
-            const unlocked = this.isCircleUnlocked(index, campaignId);
-            const completed = this.isCircleCompleted(circle.id);
-            
-            // Fila solo i casi per la campagna corrente e per il cerchio corrente
-            const casesInCircle = this.allCases.filter(c => c.campaignId === campaignId && c.cerchio === circle.id);
-            const numCases = casesInCircle.length;
-
-            const node = document.createElement('div');
-            node.className = `map-node ${completed ? 'completed' : ''}`;
-            
-            const btn = document.createElement('div');
-            
-            if (unlocked) {
-                btn.className = `circle-btn ${completed ? 'completed' : 'unlocked'}`;
-                btn.onclick = () => {
-                    this.openCircleDashboard(circle.id, casesInCircle, campaignId);
-                };
-            } else {
-                btn.className = 'circle-btn locked';
-                btn.onclick = () => {
-                    alert('Devi prima completare i fascicoli del cerchio precedente per accedere a questo!');
-                };
-            }
-
-            let icon = unlocked ? (completed ? '<i class="fa-solid fa-check"></i>' : '<i class="fa-solid fa-door-open"></i>') : '<i class="fa-solid fa-lock"></i>';
-            if (numCases === 0 && unlocked && !completed) {
-               icon = '<i class="fa-solid fa-ghost"></i>'; 
-            }
-
-            btn.innerHTML = `
-                <span>${circle.name}</span>
-                <span class="icon">${icon}</span>
-            `;
-
-            const infoText = document.createElement('div');
-            infoText.style.fontSize = '0.8rem';
-            infoText.style.color = '#888';
-            infoText.style.marginTop = '5px';
-            infoText.textContent = numCases > 0 ? `${casesInCircle.filter(c => this.completedCaseIds.includes(c.id)).length} / ${numCases} fascicoli` : 'Nessun fascicolo noto';
-
-            node.appendChild(btn);
-            node.appendChild(infoText);
-            nodesLayer.appendChild(node);
-            renderedNodes.push({ node, completed });
-        });
-
-        setTimeout(() => {
-            let pathD = "";
-            let completedPathD = "";
-            
-            for (let i = 0; i < renderedNodes.length - 1; i++) {
-                const n1 = renderedNodes[i].node;
-                const n2 = renderedNodes[i+1].node;
-                
-                const btn1 = n1.querySelector('.circle-btn');
-                const btn2 = n2.querySelector('.circle-btn');
-                
-                if (!btn1 || !btn2) continue;
-
-                const x1 = n1.offsetLeft + btn1.offsetLeft + (btn1.offsetWidth / 2);
-                const y1 = n1.offsetTop + btn1.offsetTop + (btn1.offsetHeight / 2);
-                
-                const x2 = n2.offsetLeft + btn2.offsetLeft + (btn2.offsetWidth / 2);
-                const y2 = n2.offsetTop + btn2.offsetTop + (btn2.offsetHeight / 2);
-
-                if (i === 0) {
-                    pathD += `M ${x1} ${y1} `;
-                    completedPathD += `M ${x1} ${y1} `;
-                }
-                
-                const yMid = (y1 + y2) / 2;
-                const curveStr = `C ${x1} ${yMid}, ${x2} ${yMid}, ${x2} ${y2} `;
-                pathD += curveStr;
-                
-                if (renderedNodes[i].completed && renderedNodes[i+1].completed) {
-                    completedPathD += curveStr;
-                } else if (renderedNodes[i].completed) {
-                    completedPathD += `C ${x1} ${yMid}, ${x2} ${yMid}, ${x2} ${y2} `;
-                }
-            }
-            
-            if (pathD) {
-                const bgPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-                bgPath.setAttribute('d', pathD);
-                bgPath.setAttribute('fill', 'none');
-                bgPath.setAttribute('stroke', 'rgba(255, 255, 255, 0.1)');
-                bgPath.setAttribute('stroke-width', '12');
-                bgPath.setAttribute('stroke-linecap', 'round');
-                svgLayer.appendChild(bgPath);
-
-                const fgPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-                fgPath.setAttribute('d', completedPathD);
-                fgPath.setAttribute('fill', 'none');
-                fgPath.setAttribute('stroke', 'var(--accent-gold)');
-                fgPath.setAttribute('stroke-width', '12');
-                fgPath.setAttribute('stroke-linecap', 'round');
-                svgLayer.appendChild(fgPath);
-            }
-        }, 300);
+        this.renderIllustratedCampaign(campaignId, container);
     },
 
-    renderIllustratedInferno: function(container) {
+    toggleFullscreenMap: function(btn) {
+        const wrapper = btn.closest('.illustrated-map-wrapper');
+        if (!wrapper) return;
+        if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+            if (wrapper.requestFullscreen) {
+                wrapper.requestFullscreen();
+            } else if (wrapper.webkitRequestFullscreen) {
+                wrapper.webkitRequestFullscreen();
+            }
+            btn.innerHTML = '<i class="fa-solid fa-compress"></i>';
+            btn.title = "Esci da Schermo Intero LIM";
+        } else {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            } else if (document.webkitExitFullscreen) {
+                document.webkitExitFullscreen();
+            }
+            btn.innerHTML = '<i class="fa-solid fa-expand"></i>';
+            btn.title = "Schermo Intero LIM";
+        }
+    },
+
+    renderIllustratedCampaign: function(campaignId, container) {
+        const config = CAMPAIGN_CONFIG[campaignId] || CAMPAIGN_CONFIG.inferno;
         const isMobile = window.innerWidth <= 768;
-        const coords = isMobile ? INFERNO_COORDINATES_MOBILE : INFERNO_COORDINATES_PC;
-        const bgImgPath = isMobile ? 'assets/maps/mobile/inferno.png' : 'assets/maps/pc/inferno.png';
+        const coords = isMobile ? config.coordsMobile : config.coordsPC;
+        const bgImgPath = isMobile ? config.bgMobile : config.bgPC;
+        const nodesArray = config.nodes;
 
         container.innerHTML = `
-            <div class="illustrated-map-wrapper ${isMobile ? 'mode-mobile' : 'mode-pc'}">
-                <img class="map-bg-img" src="${bgImgPath}" alt="Mappa Inferno" />
+            <div class="illustrated-map-wrapper ${isMobile ? 'mode-mobile' : 'mode-pc'}" data-campaign="${campaignId}">
+                <button class="btn-fullscreen-lim" onclick="window.MapEngine.toggleFullscreenMap(this)" title="Schermo Intero LIM" aria-label="Schermo Intero LIM">
+                    <i class="fa-solid fa-expand"></i>
+                </button>
+                <img class="map-bg-img" src="${bgImgPath}" alt="Mappa ${config.name}" />
                 <svg class="map-svg-layer" viewBox="${isMobile ? '0 0 1080 1920' : '0 0 1920 1080'}"></svg>
                 <div class="map-hotspots-layer"></div>
             </div>
@@ -344,11 +301,11 @@ export const MapEngine = {
         const hotspotsLayer = container.querySelector('.map-hotspots-layer');
         const svgLayer = container.querySelector('.map-svg-layer');
 
-        INFERNO_CIRCLES.forEach((circle, index) => {
+        nodesArray.forEach((circle, index) => {
             const coord = coords[index] || { x: 50, y: 50 };
-            const unlocked = this.isCircleUnlocked(index, 'inferno');
+            const unlocked = this.isCircleUnlocked(index, campaignId);
             const completed = this.isCircleCompleted(circle.id);
-            const casesInCircle = this.allCases.filter(c => c.campaignId === 'inferno' && c.cerchio === circle.id);
+            const casesInCircle = this.allCases.filter(c => c.campaignId === campaignId && c.cerchio === circle.id);
             const numCases = casesInCircle.length;
             const solvedCases = casesInCircle.filter(c => this.completedCaseIds.includes(c.id)).length;
             const isCurrentTappa = unlocked && !completed;
@@ -390,7 +347,7 @@ export const MapEngine = {
             hotspot.onclick = (e) => {
                 e.stopPropagation();
                 if (unlocked) {
-                    this.openCircleDashboard(circle.id, casesInCircle, 'inferno');
+                    this.openCircleDashboard(circle.id, casesInCircle, campaignId);
                 } else {
                     alert(`Devi prima completare i fascicoli del cerchio precedente per accedere a: ${circle.name}!`);
                 }
@@ -409,7 +366,7 @@ export const MapEngine = {
         // Dynamic SVG Path connecting nodes
         let pathD = "";
         let completedPathD = "";
-        for (let i = 0; i < INFERNO_CIRCLES.length - 1; i++) {
+        for (let i = 0; i < nodesArray.length - 1; i++) {
             const c1 = coords[i];
             const c2 = coords[i+1];
             if (!c1 || !c2) continue;
@@ -430,9 +387,9 @@ export const MapEngine = {
             const seg = `M ${x1} ${y1} C ${cx1} ${cy1}, ${cx2} ${cy2}, ${x2} ${y2} `;
             pathD += seg;
 
-            const circle1 = INFERNO_CIRCLES[i];
-            const circle2 = INFERNO_CIRCLES[i+1];
-            if (this.isCircleCompleted(circle1.id) || this.isCircleUnlocked(i+1, 'inferno')) {
+            const circle1 = nodesArray[i];
+            const circle2 = nodesArray[i+1];
+            if (this.isCircleCompleted(circle1.id) || this.isCircleUnlocked(i+1, campaignId)) {
                 completedPathD += seg;
             }
         }
@@ -451,10 +408,10 @@ export const MapEngine = {
                 const fgPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
                 fgPath.setAttribute('d', completedPathD);
                 fgPath.setAttribute('fill', 'none');
-                fgPath.setAttribute('stroke', '#f59e0b');
+                fgPath.setAttribute('stroke', config.glowColor);
                 fgPath.setAttribute('stroke-width', isMobile ? '8' : '5');
                 fgPath.setAttribute('stroke-linecap', 'round');
-                fgPath.style.filter = 'drop-shadow(0 0 8px rgba(245, 158, 11, 0.8))';
+                fgPath.style.filter = config.glowFilter;
                 svgLayer.appendChild(fgPath);
             }
         }
@@ -466,13 +423,19 @@ export const MapEngine = {
             window.addEventListener('resize', () => {
                 clearTimeout(resizeTimer);
                 resizeTimer = setTimeout(() => {
-                    if (this.currentCampaign === 'inferno') {
-                        const newContainer = document.getElementById('map-inferno');
-                        if (newContainer && newContainer.style.display !== 'none') {
-                            this.renderIllustratedInferno(newContainer);
-                        }
+                    const activeContainer = document.getElementById(`map-${this.currentCampaign}`);
+                    if (activeContainer && activeContainer.style.display !== 'none') {
+                        this.renderIllustratedCampaign(this.currentCampaign, activeContainer);
                     }
                 }, 200);
+            });
+
+            document.addEventListener('fullscreenchange', () => {
+                const fsBtns = document.querySelectorAll('.btn-fullscreen-lim');
+                const isFs = !!document.fullscreenElement;
+                fsBtns.forEach(b => {
+                    b.innerHTML = isFs ? '<i class="fa-solid fa-compress"></i>' : '<i class="fa-solid fa-expand"></i>';
+                    b.title = isFs ? 'Esci da Schermo Intero LIM' : 'Schermo Intero LIM';
             });
         }
     },
