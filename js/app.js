@@ -58,6 +58,7 @@ async function showView(viewId) {
     }
   }
 
+  document.documentElement.classList.remove('corte-pre-auth');
   document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
   const target = document.getElementById(viewId);
   if (target) target.classList.add('active');
@@ -150,6 +151,10 @@ if (loginEmailBtn) {
 
 if (logoutBtn) {
   logoutBtn.addEventListener('click', () => {
+    try {
+      localStorage.removeItem('corte_user');
+      document.documentElement.classList.remove('corte-pre-auth');
+    } catch(e) {}
     signOut(auth);
   });
 }
@@ -271,6 +276,15 @@ onAuthStateChanged(auth, async (user) => {
         }
         
         window.app.profile = profile;
+        try {
+          localStorage.setItem('corte_user', JSON.stringify({
+            uid: user.uid,
+            email: userEmail,
+            name: hubName,
+            avatar: userAvatar,
+            role: role
+          }));
+        } catch(e) {}
       }
     } catch (e) {
       console.warn("Impossibile caricare il profilo.", e);
@@ -317,6 +331,10 @@ onAuthStateChanged(auth, async (user) => {
     }
 
   } else {
+    try {
+      localStorage.removeItem('corte_user');
+      document.documentElement.classList.remove('corte-pre-auth');
+    } catch(e) {}
     // Nascondi il menu utente, header, nav e footer
     const userMenu = document.getElementById('user-menu-container');
     if (userMenu) userMenu.style.display = 'none';
