@@ -39,6 +39,32 @@ const PARADISO_HEAVENS = [
 ];
 
 
+export const INFERNO_COORDINATES_PC = [
+    { id: "Antinferno", x: 30.96, y: 11.28 },
+    { id: "Limbo", x: 35.29, y: 31.62 },
+    { id: "Lussuriosi", x: 24.40, y: 49.14 },
+    { id: "Golosi", x: 35.52, y: 62.67 },
+    { id: "Avari", x: 46.64, y: 51.27 },
+    { id: "Iracondi", x: 55.91, y: 34.72 },
+    { id: "Eretici", x: 67.32, y: 48.86 },
+    { id: "Violenti", x: 73.80, y: 69.50 },
+    { id: "Fraudolenti", x: 61.30, y: 80.29 },
+    { id: "Traditori", x: 75.83, y: 88.99 }
+];
+
+export const INFERNO_COORDINATES_MOBILE = [
+    { id: "Antinferno", x: 30.29, y: 8.36 },
+    { id: "Limbo", x: 68.74, y: 14.21 },
+    { id: "Lussuriosi", x: 30.28, y: 24.83 },
+    { id: "Golosi", x: 69.46, y: 32.76 },
+    { id: "Avari", x: 30.26, y: 43.13 },
+    { id: "Iracondi", x: 69.83, y: 54.01 },
+    { id: "Eretici", x: 30.28, y: 61.19 },
+    { id: "Violenti", x: 70.28, y: 70.28 },
+    { id: "Fraudolenti", x: 30.28, y: 83.31 },
+    { id: "Traditori", x: 69.83, y: 89.02 }
+];
+
 export const MapEngine = {
     allCases: [],
     completedCaseIds: [],
@@ -149,6 +175,11 @@ export const MapEngine = {
         
         container.innerHTML = '';
         
+        if (campaignId === 'inferno') {
+            this.renderIllustratedInferno(container);
+            return;
+        }
+
         let nodesArray = INFERNO_CIRCLES;
         let decorImage = 'assets/Immagini/10.png'; // inferno decor
         if (campaignId === 'purgatorio') {
@@ -295,6 +326,155 @@ export const MapEngine = {
                 svgLayer.appendChild(fgPath);
             }
         }, 300);
+    },
+
+    renderIllustratedInferno: function(container) {
+        const isMobile = window.innerWidth <= 768;
+        const coords = isMobile ? INFERNO_COORDINATES_MOBILE : INFERNO_COORDINATES_PC;
+        const bgImgPath = isMobile ? 'assets/maps/mobile/inferno.png' : 'assets/maps/pc/inferno.png';
+
+        container.innerHTML = `
+            <div class="illustrated-map-wrapper ${isMobile ? 'mode-mobile' : 'mode-pc'}">
+                <img class="map-bg-img" src="${bgImgPath}" alt="Mappa Inferno" />
+                <svg class="map-svg-layer" viewBox="${isMobile ? '0 0 1080 1920' : '0 0 1920 1080'}"></svg>
+                <div class="map-hotspots-layer"></div>
+            </div>
+        `;
+
+        const hotspotsLayer = container.querySelector('.map-hotspots-layer');
+        const svgLayer = container.querySelector('.map-svg-layer');
+
+        INFERNO_CIRCLES.forEach((circle, index) => {
+            const coord = coords[index] || { x: 50, y: 50 };
+            const unlocked = this.isCircleUnlocked(index, 'inferno');
+            const completed = this.isCircleCompleted(circle.id);
+            const casesInCircle = this.allCases.filter(c => c.campaignId === 'inferno' && c.cerchio === circle.id);
+            const numCases = casesInCircle.length;
+            const solvedCases = casesInCircle.filter(c => this.completedCaseIds.includes(c.id)).length;
+            const isCurrentTappa = unlocked && !completed;
+
+            const hotspot = document.createElement('div');
+            let statusClass = completed ? 'completed' : (unlocked ? 'unlocked' : 'locked');
+            if (isCurrentTappa) statusClass += ' active-tappa';
+
+            hotspot.className = `map-hotspot ${statusClass}`;
+            hotspot.style.left = `${coord.x}%`;
+            hotspot.style.top = `${coord.y}%`;
+            hotspot.setAttribute('role', 'button');
+            hotspot.setAttribute('tabindex', '0');
+            hotspot.setAttribute('aria-label', `${circle.name} - ${completed ? 'Completato' : (unlocked ? 'Sbloccato' : 'Bloccato')}`);
+
+            // Badges
+            let badgeIcon = '<i class="fa-solid fa-lock"></i>';
+            let badgeType = 'locked';
+            if (completed) {
+                badgeIcon = '<i class="fa-solid fa-check"></i>';
+                badgeType = 'completed';
+            } else if (unlocked) {
+                badgeIcon = '<i class="fa-solid fa-door-open"></i>';
+                badgeType = 'active';
+            }
+
+            const badgeHtml = `<span class="hotspot-badge ${badgeType}">${badgeIcon}</span>`;
+            const pillHtml = numCases > 0 ? `<span class="hotspot-fascicoli-pill">${solvedCases}/${numCases}</span>` : '';
+            const statusLabel = completed ? 'Completato' : (unlocked ? (isCurrentTappa ? 'Tappa Attiva' : 'Sbloccato') : 'Bloccato');
+            const tooltipHtml = `
+                <div class="hotspot-tooltip">
+                    <strong>${circle.name}</strong><br>
+                    <span style="font-size:0.75rem; color:#cbd5e1;">${statusLabel} • ${solvedCases}/${numCases} fascicoli</span>
+                </div>
+            `;
+
+            hotspot.innerHTML = `${badgeHtml}${pillHtml}${tooltipHtml}`;
+
+            hotspot.onclick = (e) => {
+                e.stopPropagation();
+                if (unlocked) {
+                    this.openCircleDashboard(circle.id, casesInCircle, 'inferno');
+                } else {
+                    alert(`Devi prima completare i fascicoli del cerchio precedente per accedere a: ${circle.name}!`);
+                }
+            };
+
+            hotspot.onkeydown = (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    hotspot.click();
+                }
+            };
+
+            hotspotsLayer.appendChild(hotspot);
+        });
+
+        // Dynamic SVG Path connecting nodes
+        let pathD = "";
+        let completedPathD = "";
+        for (let i = 0; i < INFERNO_CIRCLES.length - 1; i++) {
+            const c1 = coords[i];
+            const c2 = coords[i+1];
+            if (!c1 || !c2) continue;
+
+            const scaleX = isMobile ? 1080 / 100 : 1920 / 100;
+            const scaleY = isMobile ? 1920 / 100 : 1080 / 100;
+
+            const x1 = c1.x * scaleX;
+            const y1 = c1.y * scaleY;
+            const x2 = c2.x * scaleX;
+            const y2 = c2.y * scaleY;
+
+            const cx1 = x1 + (x2 - x1) * 0.5;
+            const cy1 = y1;
+            const cx2 = x1 + (x2 - x1) * 0.5;
+            const cy2 = y2;
+
+            const seg = `M ${x1} ${y1} C ${cx1} ${cy1}, ${cx2} ${cy2}, ${x2} ${y2} `;
+            pathD += seg;
+
+            const circle1 = INFERNO_CIRCLES[i];
+            const circle2 = INFERNO_CIRCLES[i+1];
+            if (this.isCircleCompleted(circle1.id) || this.isCircleUnlocked(i+1, 'inferno')) {
+                completedPathD += seg;
+            }
+        }
+
+        if (pathD) {
+            const bgPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            bgPath.setAttribute('d', pathD);
+            bgPath.setAttribute('fill', 'none');
+            bgPath.setAttribute('stroke', 'rgba(255, 255, 255, 0.15)');
+            bgPath.setAttribute('stroke-width', isMobile ? '8' : '5');
+            bgPath.setAttribute('stroke-dasharray', isMobile ? '8 6' : '6 4');
+            bgPath.setAttribute('stroke-linecap', 'round');
+            svgLayer.appendChild(bgPath);
+
+            if (completedPathD) {
+                const fgPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                fgPath.setAttribute('d', completedPathD);
+                fgPath.setAttribute('fill', 'none');
+                fgPath.setAttribute('stroke', '#f59e0b');
+                fgPath.setAttribute('stroke-width', isMobile ? '8' : '5');
+                fgPath.setAttribute('stroke-linecap', 'round');
+                fgPath.style.filter = 'drop-shadow(0 0 8px rgba(245, 158, 11, 0.8))';
+                svgLayer.appendChild(fgPath);
+            }
+        }
+
+        // Debounced resize listener
+        if (!this._resizeAttached) {
+            this._resizeAttached = true;
+            let resizeTimer;
+            window.addEventListener('resize', () => {
+                clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(() => {
+                    if (this.currentCampaign === 'inferno') {
+                        const newContainer = document.getElementById('map-inferno');
+                        if (newContainer && newContainer.style.display !== 'none') {
+                            this.renderIllustratedInferno(newContainer);
+                        }
+                    }
+                }, 200);
+            });
+        }
     },
 
     openCircleDashboard: function(circleId, cases, campaignId) {
