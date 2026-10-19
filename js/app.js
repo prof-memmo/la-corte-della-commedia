@@ -530,18 +530,10 @@ function switchMapTab(tabName) {
       mapElement.style.display = 'block';
   }
   
-  // Change background depending on campaign
+  // Base del sito costantemente nero assoluto (#000000)
   const body = document.body;
-  if(tabName === 'inferno') {
-      body.style.background = 'url("assets/Immagini/bg_inferno.jpg") center/cover fixed';
-      body.style.backgroundColor = '#1a1a2e';
-  } else if (tabName === 'purgatorio') {
-      body.style.background = 'url("assets/Immagini/bg_purgatorio.jpg") center/cover fixed';
-      body.style.backgroundColor = '#2c3e50';
-  } else if (tabName === 'paradiso') {
-      body.style.background = 'url("assets/Immagini/bg_paradiso.jpg") center/cover fixed';
-      body.style.backgroundColor = '#f0f8ff';
-  }
+  body.style.background = '#000000';
+  body.style.backgroundColor = '#000000';
 
   // Tell MapEngine to render the appropriate map
   if (window.MapEngine) {

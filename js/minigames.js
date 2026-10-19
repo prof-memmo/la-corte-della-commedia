@@ -1538,7 +1538,7 @@ export const MinigamesEngine = {
     const sealData = caseData.phases.sealPuzzle;
     
     container.innerHTML = `
-      <div class="animate-fade-in" style="background: url('assets/Immagini/parchment_bg.png') center/cover; border-radius: 10px; padding: 30px; box-shadow: inset 0 0 40px rgba(0,0,0,0.8); color: #222; font-family: 'Times New Roman', serif;">
+      <div class="animate-fade-in" style="background: #ffffff; border-radius: 12px; padding: 30px; border: 1.5px solid var(--accent-gold); box-shadow: 0 5px 20px rgba(0,0,0,0.4); color: #1a1614; font-family: 'Times New Roman', serif;">
         <div style="text-align: center; margin-bottom: 20px;">
           <img src="assets/Immagini/3.png" style="width: 80px; opacity: 0.8;">
           <h3 style="color: #6a040f; margin-top: 10px; font-family: 'Julius Sans One', sans-serif;">Il Sigillo della Sentenza</h3>
