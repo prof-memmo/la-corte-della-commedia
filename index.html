@@ -53,7 +53,13 @@
     .corte-pre-auth #user-menu-container { display: block !important; }
     .corte-pre-auth #view-corte-loading { display: flex !important; }
   </style>
-  <script src="https://prof-memmo.github.io/prof-memmo-gestione-siti/shared/hub-subscription-guard.js?v=20260824_corte_guard"></script>
+  <script>
+    (function() {
+      var isPrev = window.location.pathname.indexOf('/preview') !== -1;
+      var cdnBase = isPrev ? 'https://prof-memmo.github.io/prof-memmo-gestione-siti/preview/shared/' : 'https://prof-memmo.github.io/prof-memmo-gestione-siti/shared/';
+      document.write('<script src="' + cdnBase + 'hub-subscription-guard.js?v=20261020_corte_guard"><\/script>');
+    })();
+  </script>
 </head>
   <body>
     
@@ -145,7 +151,7 @@
               <span style="font-size: 0.7rem;">▼</span>
             </div>
             
-            <div id="user-dropdown" class="hidden" onclick="event.stopPropagation()" style="position: absolute; top: calc(100% + 10px); right: 0; background: #1a1614; border: 1px solid var(--accent-gold); border-radius: 12px; padding: 15px; width: 250px; box-shadow: 0 10px 25px rgba(0,0,0,0.8); z-index: 1000; flex-direction: column; gap: 10px; display: none;">
+            <div id="user-dropdown" class="hidden" onclick="event.stopPropagation()" style="position: absolute; top: calc(100% + 10px); right: 0; background: #1a1614; border: 1px solid var(--accent-gold); border-radius: 12px; padding: 15px; width: 250px; box-shadow: 0 10px 25px rgba(0,0,0,0.8); z-index: 1000; flex-direction: column; gap: 10px; display: none; max-height: calc(100vh - 85px); overflow-y: auto;">
               <!-- XP preview -->
               <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.05); padding: 8px 12px; border-radius: 8px;">
                  <span style="font-size: 0.8rem; color: #ccc;">Esperienza</span>
@@ -171,11 +177,10 @@
               <div class="dropdown-actions" style="display: flex; flex-direction: column; gap: 6px;">
                 <button class="btn btn-secondary" onclick="window.open('https://prof-memmo.github.io/games/profilo.html', '_blank')" style="width: 100%; border-radius: 8px; padding: 8px; font-size: 0.8rem; background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.2); color: #ccc; cursor: pointer; text-align: left; display: flex; align-items: center; gap: 8px;"><i class="fa-solid fa-user-gear"></i> Modifica Profilo</button>
                 <button class="btn btn-secondary" onclick="window.openSharedModal('invita')" style="width: 100%; border-radius: 8px; padding: 8px; font-size: 0.8rem; background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.2); color: #ccc; cursor: pointer; text-align: left; display: flex; align-items: center; gap: 8px;"><i class="fa-solid fa-paper-plane" style="color:#ffffff;"></i> Invita un Collega</button>
-                <div style="display: flex; gap: 6px; width: 100%;">
-                  <button class="btn btn-secondary" onclick="window.openSharedModal('privacy')" style="flex: 1; border-radius: 8px; padding: 8px; font-size: 0.8rem; background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.2); color: #ccc; cursor: pointer;"><i class="fa-solid fa-shield"></i> Privacy</button>
-                  <button class="btn btn-secondary" onclick="window.openSharedModal('termini')" style="flex: 1; border-radius: 8px; padding: 8px; font-size: 0.8rem; background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.2); color: #ccc; cursor: pointer;"><i class="fa-solid fa-scroll"></i> Termini</button>
-                </div>
-                <button class="btn btn-secondary" onclick="window.showContattiModal()" style="width: 100%; border-radius: 8px; padding: 8px; font-size: 0.8rem; background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.2); color: #ccc; cursor: pointer;"><i class="fa-solid fa-envelope"></i> Contatti</button>
+                <button id="btn-notifiche-dropdown" class="btn btn-secondary" onclick="if(window.openSharedModal) window.openSharedModal('notifiche');" style="width: 100%; border-radius: 8px; padding: 8px; font-size: 0.8rem; background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.2); color: #ccc; cursor: pointer; text-align: left; display: flex; align-items: center; justify-content: space-between;">
+                  <span style="display: flex; align-items: center; gap: 8px;"><i class="fa-solid fa-bell"></i> Notifiche</span>
+                  <span id="dropdown-notif-badge" class="badge-notif-pill" style="display:none;">0</span>
+                </button>
                 <div style="display: flex; gap: 6px; width: 100%; margin-top: 4px;">
                   <button id="audio-toggle-btn" class="btn btn-secondary" onclick="if(window.MusicPlayer) window.MusicPlayer.togglePlay()" style="flex: 1; border-radius: 8px; padding: 8px; font-size: 0.78rem; background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.2); color: #ccc; cursor: pointer;"><i class="fa-solid fa-volume-high"></i> Effetti</button>
                   <button id="logout-btn" class="btn btn-danger" onclick="if(window.app && window.app.logout) { window.app.logout(); } else if(window.logout) { window.logout(); } else if(firebase.auth()) { firebase.auth().signOut(); }" style="flex: 1; border-radius: 8px; padding: 8px; font-size: 0.78rem; background: #dc2626; border: none; color: white; cursor: pointer; font-weight: 700;"><i class="fa-solid fa-power-off"></i> Esci</button>
@@ -792,15 +797,31 @@
 
       <!-- Global Footer -->
       <footer id="main-footer" style="display: flex; flex-direction: column; align-items: center; padding: 1.5rem 1.5rem 80px 1.5rem; width: 100%; box-sizing: border-box; font-size: 0.75rem; color: #a89f91; margin-top: 20px; line-height: 1.5; letter-spacing: 0.5px;">
-        <div class="footer-legal-links" style="display: flex; justify-content: center; gap: 20px; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; width: 100%;">
-          <a href="javascript:void(0)" onclick="openSharedModal('privacy')" style="color: inherit; text-decoration: none; opacity: 0.85;">Privacy Policy</a>
-          <a href="javascript:void(0)" onclick="openSharedModal('termini')" style="color: inherit; text-decoration: none; opacity: 0.85;">Termini e Condizioni</a>
+        <div class="footer-legal-links" style="display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 12px 20px; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; width: 100%;">
+          <a href="javascript:void(0)" onclick="openSharedModal('privacy')" data-legal="privacy" style="color: inherit; text-decoration: underline; opacity: 0.85;">Privacy Policy</a>
+          <a href="javascript:void(0)" onclick="openSharedModal('termini')" data-legal="terms" style="color: inherit; text-decoration: underline; opacity: 0.85;">Termini e Condizioni</a>
+          <a href="javascript:void(0)" onclick="openSharedModal('contatti')" data-legal="contatti" style="color: inherit; text-decoration: underline; opacity: 0.85;">Contatti</a>
+          <a href="https://prof-memmo.github.io/games/condividi-esperienza.html" target="_blank" rel="noopener noreferrer" style="color: inherit; text-decoration: underline; opacity: 0.85;">Condividi Esperienza</a>
         </div>
         <div style="display: flex; align-items: center; justify-content: flex-start; gap: 15px; width: 100%; box-sizing: border-box;">
             <img src="https://prof-memmo.github.io/prof-memmo-gestione-siti/shared/assets/legal/patamu-badge.png" alt="Patamu" style="height: 52px; object-fit: contain; flex-shrink: 0;" onerror="this.src='public/assets/patamu_pencil.png'">
             <p style="text-align: left; margin: 0; flex: 1; width: 100%; color: inherit; opacity: 0.9; text-transform: uppercase; font-size: 0.78rem;">&copy; 2026 Guglielmo Piersanti. Tutti i contenuti presenti su questo sito sono di proprietà dell'autore e sono protetti tramite deposito e marcatura temporale presso Patamu. I contenuti sono inoltre distribuiti con licenza Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0).</p>
         </div>
       </footer>
+      <script>
+        (function() {
+          var fl = document.querySelector('.footer-legal-links');
+          if (fl && window.MutationObserver) {
+            var expected = fl.innerHTML;
+            var obs = new MutationObserver(function() {
+              if (!fl.querySelector('a[href*="condividi-esperienza"]')) {
+                fl.innerHTML = expected;
+              }
+            });
+            obs.observe(fl, { childList: true, subtree: true });
+          }
+        })();
+      </script>
 
     <!-- Firebase SDKs via CDN -->
     <script type="module" src="js/firebase-config.js?v=20260928_rules_v3"></script>
@@ -947,6 +968,12 @@
     </script>
 
     <!-- Modali condivisi ecosistema Prof. Memmo -->
-    <script src="https://prof-memmo.github.io/prof-memmo-gestione-siti/shared/legal-modal.js?v=20260819a"></script>
+    <script>
+      (function() {
+        var isPrev = window.location.pathname.indexOf('/preview') !== -1;
+        var cdnBase = isPrev ? 'https://prof-memmo.github.io/prof-memmo-gestione-siti/preview/shared/' : 'https://prof-memmo.github.io/prof-memmo-gestione-siti/shared/';
+        document.write('<script src="' + cdnBase + 'legal-modal.js?v=20261020_corte_legal"><\/script>');
+      })();
+    </script>
 </body>
 </html>
