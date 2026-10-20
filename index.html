@@ -820,7 +820,7 @@
     <div id="modal-miniguida" class="modal-overlay" style="display: none; align-items: center; justify-content: center; z-index: 9999; background: rgba(15,23,42,0.8); backdrop-filter: blur(4px); position: fixed; inset: 0; padding: 20px;">
         <div class="modal-content" style="background: white; border-radius: 24px; width: 100%; max-width: 900px; display: flex; overflow: hidden; position: relative; max-height: 90vh; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);">
             <div style="width: 33%; background: #f8fafc; display: flex; align-items: flex-end; justify-content: center; border-right: 2px solid #f1f5f9; padding-top: 20px;" class="hide-mobile">
-                <img src="assets/prof_memmo_full.jpg" onerror="this.src='https://prof-memmo.github.io/prof-memmo-gestione-siti/shared/assets/branding/prof-memmo/prof-memmo-full.jpg';" alt="Prof Memmo" style="width: 120%; object-fit: contain; mix-blend-mode: multiply; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.2));">
+                <img src="assets/prof_memmo_full.png" onerror="this.src='https://prof-memmo.github.io/prof-memmo-gestione-siti/shared/assets/branding/prof-memmo/prof-memmo-full.png';" alt="Prof Memmo" style="width: 120%; object-fit: contain; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.2));">
             </div>
             <div style="flex: 1; padding: 30px 40px; display: flex; flex-direction: column; position: relative; min-height: 450px;">
                 <button onclick="closeMiniguida()" style="position: absolute; top: 15px; right: 15px; width: 36px; height: 36px; border-radius: 50%; border: none; background: #f1f5f9; color: #475569; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.2s;"><i class="fa-solid fa-xmark"></i></button>
@@ -831,23 +831,28 @@
                     <i class="fa-solid fa-bullseye" style="font-size: 4.5rem; color: #ef4444; margin-bottom: 20px;"></i>
                     <p style="font-size: 1.25rem; color: #475569; line-height: 1.6; font-weight: 500; max-width: 540px; margin: 0 auto;">Lo scopo del gioco è vestire i panni dei giudici dell'Oltretomba, analizzare i peccati dei personaggi danteschi ed emettere una sentenza giusta e motivata.</p>
                 </div>
-                
+
                 <div id="miniguida-step-1" class="miniguida-step" style="flex: 1; display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; animation: fadeIn 0.3s ease-out;">
+                    <i class="fa-solid fa-chalkboard-user" style="font-size: 4.5rem; color: #ef4444; margin-bottom: 20px;"></i>
+                    <p style="font-size: 1.25rem; color: #475569; line-height: 1.6; font-weight: 500; max-width: 540px; margin: 0 auto;"><strong>Per il Docente:</strong> crea le tue classi dal Profilo su <em>prof-memmo.github.io/games</em> per ottenere il <strong>Codice Classe</strong> da condividere con gli alunni.<br><br><strong>Per gli Studenti:</strong> nessun bisogno di email! Basta inserire il <strong>Codice Classe</strong> e selezionare il proprio nome per iniziare subito la sfida.</p>
+                </div>
+                
+                <div id="miniguida-step-2" class="miniguida-step" style="flex: 1; display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; animation: fadeIn 0.3s ease-out;">
                     <i class="fa-solid fa-scale-balanced" style="font-size: 4.5rem; color: #ef4444; margin-bottom: 20px;"></i>
                     <p style="font-size: 1.25rem; color: #475569; line-height: 1.6; font-weight: 500; max-width: 540px; margin: 0 auto;">Si gioca aprendo il caso di un'anima, superando i minigiochi per raccogliere le prove storiche, confrontando accusa e difesa e votando il verdetto finale per ottenere la pergamena.</p>
                 </div>
                 
-                <div id="miniguida-step-2" class="miniguida-step" style="flex: 1; display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; animation: fadeIn 0.3s ease-out;">
+                <div id="miniguida-step-3" class="miniguida-step" style="flex: 1; display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; animation: fadeIn 0.3s ease-out;">
                     <i class="fa-solid fa-map-location-dot" style="font-size: 4.5rem; color: #ef4444; margin-bottom: 20px;"></i>
                     <p style="font-size: 1.25rem; color: #475569; line-height: 1.6; font-weight: 500; max-width: 540px; margin: 0 auto;">Sulla <strong>Mappa</strong> puoi navigare tra i gironi e aprire i singoli fascicoli processuali danteschi.</p>
                 </div>
 
-                <div id="miniguida-step-3" class="miniguida-step" style="flex: 1; display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; animation: fadeIn 0.3s ease-out;">
+                <div id="miniguida-step-4" class="miniguida-step" style="flex: 1; display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; animation: fadeIn 0.3s ease-out;">
                     <i class="fa-solid fa-magnifying-glass" style="font-size: 4.5rem; color: #ef4444; margin-bottom: 20px;"></i>
                     <p style="font-size: 1.25rem; color: #475569; line-height: 1.6; font-weight: 500; max-width: 540px; margin: 0 auto;">Esamina gli atti d'accusa, supera i minigiochi per raccogliere le prove e partecipa al dibattimento per votare il verdetto.</p>
                 </div>
 
-                <div id="miniguida-step-4" class="miniguida-step" style="flex: 1; display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; animation: fadeIn 0.3s ease-out;">
+                <div id="miniguida-step-5" class="miniguida-step" style="flex: 1; display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; animation: fadeIn 0.3s ease-out;">
                     <i class="fa-solid fa-book" style="font-size: 4.5rem; color: #ef4444; margin-bottom: 20px;"></i>
                     <p style="font-size: 1.25rem; color: #475569; line-height: 1.6; font-weight: 500; max-width: 540px; margin: 0 auto;">Clicca su <strong>Archivio</strong> per consultare lo storico delle cause concluse e rileggere le tue pergamene con sigillo.<br><br><em>Consulta il regolamento per saperne di più.</em></p>
                 </div>
@@ -855,6 +860,7 @@
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
                     <div style="display: flex; gap: 8px;" id="miniguida-dots">
                         <div class="dot active" style="width: 12px; height: 12px; border-radius: 50%; background: #ef4444; transition: 0.3s;"></div>
+                        <div class="dot" style="width: 12px; height: 12px; border-radius: 50%; background: #e2e8f0; transition: 0.3s;"></div>
                         <div class="dot" style="width: 12px; height: 12px; border-radius: 50%; background: #e2e8f0; transition: 0.3s;"></div>
                         <div class="dot" style="width: 12px; height: 12px; border-radius: 50%; background: #e2e8f0; transition: 0.3s;"></div>
                         <div class="dot" style="width: 12px; height: 12px; border-radius: 50%; background: #e2e8f0; transition: 0.3s;"></div>
