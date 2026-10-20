@@ -274,7 +274,20 @@ onAuthStateChanged(auth, async (user) => {
         if (dropdownXp) dropdownXp.textContent = `${xp} XP`;
         
         const hAvatarImg = document.getElementById('header-user-avatar-img');
-        const userAvatar = (profile && profile.avatar) || hubAvatar || user.photoURL || 'assets/avatars/6.png';
+        const resolveCorteAvatar = (raw, isSuper, name) => {
+          if (typeof window.resolveEcosystemAvatar === 'function') {
+            return window.resolveEcosystemAvatar(raw, isSuper, name);
+          }
+          const isMemmo = isSuper || (name && name.toUpperCase().includes('MEMMO'));
+          if (isMemmo) return 'https://prof-memmo.github.io/prof-memmo-gestione-siti/shared/assets/branding/prof-memmo/prof-memmo-avatar.png';
+          if (!raw) return 'https://prof-memmo.github.io/prof-memmo-gestione-siti/shared/assets/branding/prof-memmo/prof-memmo-avatar.png';
+          if (raw.startsWith('http://') || raw.startsWith('https://')) return raw;
+          const clean = raw.replace(/^(\/?assets\/avatars\/|\/?shared\/assets\/avatars\/)/, '');
+          const file = clean.endsWith('.png') ? clean : `${clean}.png`;
+          return `https://prof-memmo.github.io/prof-memmo-gestione-siti/shared/assets/avatars/${file}`;
+        };
+        const rawAv = (profile && profile.avatar) || hubAvatar || user.photoURL || '';
+        const userAvatar = resolveCorteAvatar(rawAv, isSuperAdmin, hubName);
         if (profile) profile.avatar = userAvatar;
         if (hAvatarImg) {
           hAvatarImg.src = userAvatar;
@@ -289,6 +302,9 @@ onAuthStateChanged(auth, async (user) => {
             avatar: userAvatar,
             role: role
           }));
+          localStorage.setItem('hub_user_name', hubName);
+          localStorage.setItem('hub_user_role', isSuperAdmin ? 'admin' : role);
+          localStorage.setItem('hub_user_avatar', userAvatar);
         } catch(e) {}
       }
     } catch (e) {

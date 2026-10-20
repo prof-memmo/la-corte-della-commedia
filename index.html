@@ -126,25 +126,47 @@
         <div style="display: flex; align-items: center; gap: 1rem;">
           <div id="user-menu-container" style="display: none; position: relative; z-index: 1001;">
             <div id="user-menu-trigger" onclick="event.stopPropagation(); const dd = document.getElementById('user-dropdown'); dd.classList.toggle('hidden'); if(!dd.classList.contains('hidden')) dd.style.display='flex'; else dd.style.display='none';" style="display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.3); padding: 5px 15px 5px 5px; border-radius: 30px; border: 1px solid var(--accent-gold); cursor: pointer; color: white; transition: all 0.2s;">
-              <div style="width: 32px; height: 32px; border-radius: 50%; background: #ffffff; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 1.5px solid var(--accent-gold);">
-                <img id="header-user-avatar-img" src="https://prof-memmo.github.io/prof-memmo-gestione-siti/shared/assets/avatars/6.png" style="width:100%; height:100%; object-fit:cover;">
+              <div style="width: 32px; height: 32px; border-radius: 50%; background: #ffffff; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 1.5px solid var(--accent-gold); flex-shrink: 0;">
+                <img id="header-user-avatar-img" src="https://prof-memmo.github.io/prof-memmo-gestione-siti/shared/assets/branding/prof-memmo/prof-memmo-avatar.png" style="width:100%; height:100%; object-fit:cover;" onerror="this.src='https://prof-memmo.github.io/prof-memmo-gestione-siti/shared/assets/branding/prof-memmo/prof-memmo-avatar.png'">
               </div>
               <span id="header-user-name" style="font-size: 0.9rem; font-weight: bold; max-width: 120px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Giudice</span>
               <script>
                 (function() {
                   try {
-                    var cached = localStorage.getItem('corte_user') || localStorage.getItem('currentUser');
-                    if (cached) {
-                      var u = JSON.parse(cached);
-                      if (u && (u.name || u.displayName)) {
-                        var el = document.getElementById('header-user-name');
-                        if (el) el.textContent = u.name || u.displayName;
-                      }
-                      if (u && u.avatar) {
-                        var av = document.getElementById('header-user-avatar-img');
-                        if (av) av.src = u.avatar;
+                    var candidateKeys = ['corte_user', 'hub_user', 'currentUser', 'user', 'teacherUser', 'eroi_user_profile', 'fanta_user'];
+                    var cached = null;
+                    for (var i = 0; i < candidateKeys.length; i++) {
+                      var raw = localStorage.getItem(candidateKeys[i]);
+                      if (raw) {
+                        try {
+                          var parsed = JSON.parse(raw);
+                          if (parsed && (parsed.name || parsed.displayName || parsed.email)) { cached = parsed; break; }
+                        } catch(e) {}
                       }
                     }
+                    var ssoName = cached ? (cached.name || cached.displayName || (cached.anagrafica && cached.anagrafica.nome) || (cached.email && cached.email.split('@')[0])) : (localStorage.getItem('hub_user_name') || 'Giudice');
+                    var rawAv = (cached && cached.avatar) || localStorage.getItem('hub_user_avatar');
+                    var isSuper = (cached && cached.email && cached.email.toLowerCase() === 'prof.memmo@gmail.com') || (ssoName && ssoName.toUpperCase().indexOf('MEMMO') !== -1);
+                    
+                    function normalizeAv(raw, isS, nm) {
+                      if (typeof window.resolveEcosystemAvatar === 'function') {
+                        return window.resolveEcosystemAvatar(raw, isS, nm);
+                      }
+                      if (isS || (nm && nm.toUpperCase().indexOf('MEMMO') !== -1)) return 'https://prof-memmo.github.io/prof-memmo-gestione-siti/shared/assets/branding/prof-memmo/prof-memmo-avatar.png';
+                      if (!raw) return 'https://prof-memmo.github.io/prof-memmo-gestione-siti/shared/assets/branding/prof-memmo/prof-memmo-avatar.png';
+                      if (raw.indexOf('http://') === 0 || raw.indexOf('https://') === 0) return raw;
+                      var cl = raw.replace(/^(\/?assets\/avatars\/|\/?shared\/assets\/avatars\/)/, '');
+                      if (cl.indexOf('.png') === -1) cl += '.png';
+                      return 'https://prof-memmo.github.io/prof-memmo-gestione-siti/shared/assets/avatars/' + cl;
+                    }
+
+                    if (ssoName) {
+                      var el = document.getElementById('header-user-name');
+                      if (el) el.textContent = ssoName;
+                    }
+                    var avUrl = normalizeAv(rawAv, isSuper, ssoName);
+                    var avEl = document.getElementById('header-user-avatar-img');
+                    if (avEl && avUrl) avEl.src = avUrl;
                   } catch(e) {}
                 })();
               </script>
