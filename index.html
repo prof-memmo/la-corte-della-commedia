@@ -152,12 +152,17 @@
                       if (typeof window.resolveEcosystemAvatar === 'function') {
                         return window.resolveEcosystemAvatar(raw, isS, nm);
                       }
+                      if (raw && typeof raw === 'string' && raw.trim() !== '') {
+                        if (raw.indexOf('http://') === 0 || raw.indexOf('https://') === 0) return raw;
+                        var cl = raw.replace(/^(\/?assets\/avatars\/|\/?shared\/assets\/avatars\/)/, '');
+                        if (cl.indexOf('/') === -1) {
+                          if (cl.indexOf('.png') === -1) cl += '.png';
+                          return 'https://prof-memmo.github.io/prof-memmo-gestione-siti/shared/assets/avatars/' + cl;
+                        }
+                        return raw;
+                      }
                       if (isS || (nm && nm.toUpperCase().indexOf('MEMMO') !== -1)) return 'https://prof-memmo.github.io/prof-memmo-gestione-siti/shared/assets/branding/prof-memmo/prof-memmo-avatar.png';
-                      if (!raw) return 'https://prof-memmo.github.io/prof-memmo-gestione-siti/shared/assets/branding/prof-memmo/prof-memmo-avatar.png';
-                      if (raw.indexOf('http://') === 0 || raw.indexOf('https://') === 0) return raw;
-                      var cl = raw.replace(/^(\/?assets\/avatars\/|\/?shared\/assets\/avatars\/)/, '');
-                      if (cl.indexOf('.png') === -1) cl += '.png';
-                      return 'https://prof-memmo.github.io/prof-memmo-gestione-siti/shared/assets/avatars/' + cl;
+                      return 'https://prof-memmo.github.io/prof-memmo-gestione-siti/shared/assets/avatars/6.png';
                     }
 
                     if (ssoName) {

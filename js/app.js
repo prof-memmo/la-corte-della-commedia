@@ -278,13 +278,18 @@ onAuthStateChanged(auth, async (user) => {
           if (typeof window.resolveEcosystemAvatar === 'function') {
             return window.resolveEcosystemAvatar(raw, isSuper, name);
           }
+          if (raw && typeof raw === 'string' && raw.trim() !== '') {
+            if (raw.startsWith('http://') || raw.startsWith('https://')) return raw;
+            const clean = raw.replace(/^(\/?assets\/avatars\/|\/?shared\/assets\/avatars\/)/, '');
+            if (!clean.includes('/')) {
+              const file = clean.endsWith('.png') ? clean : `${clean}.png`;
+              return `https://prof-memmo.github.io/prof-memmo-gestione-siti/shared/assets/avatars/${file}`;
+            }
+            return raw;
+          }
           const isMemmo = isSuper || (name && name.toUpperCase().includes('MEMMO'));
           if (isMemmo) return 'https://prof-memmo.github.io/prof-memmo-gestione-siti/shared/assets/branding/prof-memmo/prof-memmo-avatar.png';
-          if (!raw) return 'https://prof-memmo.github.io/prof-memmo-gestione-siti/shared/assets/branding/prof-memmo/prof-memmo-avatar.png';
-          if (raw.startsWith('http://') || raw.startsWith('https://')) return raw;
-          const clean = raw.replace(/^(\/?assets\/avatars\/|\/?shared\/assets\/avatars\/)/, '');
-          const file = clean.endsWith('.png') ? clean : `${clean}.png`;
-          return `https://prof-memmo.github.io/prof-memmo-gestione-siti/shared/assets/avatars/${file}`;
+          return 'https://prof-memmo.github.io/prof-memmo-gestione-siti/shared/assets/avatars/6.png';
         };
         const rawAv = (profile && profile.avatar) || hubAvatar || user.photoURL || '';
         const userAvatar = resolveCorteAvatar(rawAv, isSuperAdmin, hubName);
@@ -707,15 +712,21 @@ window.app = {
       }
       
       // Update local cache
-      profile.displayName = nameInput;
-      profile.avatar = chosenAvatar;
+      const resolvedAvatar = (typeof window.resolveEcosystemAvatar === 'function')
+        ? window.resolveEcosystemAvatar(chosenAvatar, isTeacher && user.email.toLowerCase() === 'prof.memmo@gmail.com', nameInput)
+        : chosenAvatar;
+      profile.avatar = resolvedAvatar;
       if (isTeacher) profile.school = schoolInput;
       
       // Refresh UI
       const headerName = document.getElementById('header-user-name');
       if (headerName) headerName.textContent = nameInput;
       const hAvatarImg = document.getElementById('header-user-avatar-img');
-      if (hAvatarImg && profile.avatar) hAvatarImg.src = profile.avatar;
+      if (hAvatarImg && resolvedAvatar) hAvatarImg.src = resolvedAvatar;
+      try {
+        localStorage.setItem('hub_user_avatar', resolvedAvatar);
+        localStorage.setItem('hub_user_name', nameInput);
+      } catch(e) {}
       
       alert('Profilo e avatar aggiornati con successo in tutto l\'ecosistema!');
       document.getElementById('edit-profile-modal').classList.add('hidden');
