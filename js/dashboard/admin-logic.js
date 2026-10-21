@@ -1,5 +1,5 @@
 window.switchAdminTab = function(tabName) {
-    ['utenti', 'scuole', 'sistema', 'fascicoli', 'liveeditor', 'regolamento'].forEach(id => {
+    ['fascicoli', 'liveeditor', 'regolamento', 'sistema'].forEach(id => {
         const btn = document.getElementById('a-btn-' + id);
         if (btn) {
             btn.classList.remove('active');
@@ -30,10 +30,6 @@ window.switchAdminTab = function(tabName) {
         }
     } else if (tabName === 'sistema') {
         if (window.loadHistoricalArchives) window.loadHistoricalArchives();
-    } else if (tabName === 'utenti') {
-        if (window.loadAdminUsers) window.loadAdminUsers();
-    } else if (tabName === 'scuole') {
-        if (window.renderAdminSchoolsList) window.renderAdminSchoolsList();
     }
 };
 
@@ -119,27 +115,6 @@ window.filterAdminUsers = function(filterType) {
     window.loadAdminUsers();
 };
 
-window.testConnessioneAdmin = async function() {
-    try {
-        const db = window.fbDb || window.db || (typeof firebase !== 'undefined' && firebase.firestore ? firebase.firestore() : null);
-        if (!db) throw new Error("Database Firebase non inizializzato");
-        await db.collection('corte_cases').limit(1).get().catch(() => db.collection('users').limit(1).get());
-        alert("✅ Connessione al Cloud Firestore riuscita e operativa!\nLatenza ottimale.");
-    } catch (e) {
-        console.error("Errore test connessione:", e);
-        alert("❌ Errore connessione database: " + e.message);
-    }
-};
-
-window.resetNotificheLette = function() {
-    try {
-        localStorage.removeItem('corte_unread_notifications');
-        localStorage.removeItem('corte_seen_notifications');
-        alert("✅ Tutte le notifiche dell'amministratore sono state reimpostate come lette.");
-    } catch (e) {
-        alert("Errore reset notifiche: " + e.message);
-    }
-};
 
 window.azzeraValidazioniStagione = async function() {
     if (!confirm("Sei sicuro di voler AZZERARE TUTTI I VERDETTI E I PROGRESSI DEI PROCESSI per la nuova stagione?\nStudenti, docenti e classi rimarranno inalterati.")) return;

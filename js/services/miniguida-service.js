@@ -11,35 +11,45 @@
     const SUPER_ADMIN_EMAIL = 'prof.memmo@gmail.com';
 
     const DEFAULT_MINIGUIDA = {
-        title: "Come si gioca?",
+        title: "Miniguida",
         themeColor: "#ef4444",
         steps: [
             {
-                icon: "fa-scroll",
-                title: "Apri il Fascicolo Dantesco",
-                text: "📜 <strong>Apri il Fascicolo Dantesco:</strong><br>Esamina il caso del personaggio dell'Aldilà (<em>Francesca, Ulisse, Ugolino...</em>), i suoi peccati e i versi della Commedia."
+                icon: "fa-bullseye",
+                title: "Scopo del Gioco",
+                text: "Lo scopo del gioco è vestire i panni dei giudici dell'Oltretomba, analizzare i peccati dei personaggi danteschi ed emettere una sentenza giusta e motivata."
             },
             {
-                icon: "fa-magnifying-glass",
-                title: "Raccogli le Prove",
-                text: "🔍 <strong>Raccogli le Prove:</strong><br>Supera i minigiochi d'indagine per sbloccare indizi storici e analizzare il principio del contrappasso."
+                icon: "fa-chalkboard-user",
+                title: "Accesso e Classi",
+                text: "<strong>Per il Docente:</strong> crea le tue classi dal Profilo su <em>prof-memmo.github.io/games</em> per ottenere il <strong>Codice Classe</strong> da condividere con gli alunni.<br><br><strong>Per gli Studenti:</strong> nessun bisogno di email! Basta inserire il <strong>Codice Classe</strong> e selezionare il proprio nome per iniziare subito la sfida."
             },
             {
                 icon: "fa-scale-balanced",
-                title: "Accusa, Difesa & Esame",
-                text: "⚖️ <strong>Accusa, Difesa &amp; Esame:</strong><br>Confronta le tesi dell'Accusa e della Difesa, individua attenuanti e affronta l'esame incrociato."
+                title: "Come si Gioca",
+                text: "Si gioca aprendo il caso di un'anima, superando i minigiochi per raccogliere le prove storiche, confrontando accusa e difesa e votando il verdetto finale per ottenere la pergamena."
             },
             {
-                icon: "fa-gavel",
-                title: "Emetti la Sentenza",
-                text: "🏛️ <strong>Emetti la Sentenza:</strong><br>Vota il verdetto finale della Corte, scrivi la motivazione e ottieni la prestigiosa <strong>Pergamena con Sigillo</strong>!"
+                icon: "fa-map-location-dot",
+                title: "Mappa",
+                text: "Sulla <strong>Mappa</strong> puoi navigare tra i gironi e aprire i singoli fascicoli processuali danteschi."
+            },
+            {
+                icon: "fa-magnifying-glass",
+                title: "Prove e Verdetto",
+                text: "Esamina gli atti d'accusa, supera i minigiochi per raccogliere le prove e partecipa al dibattimento per votare il verdetto."
+            },
+            {
+                icon: "fa-book",
+                title: "Archivio",
+                text: "Clicca su <strong>Archivio</strong> per consultare lo storico delle cause concluse e rileggere le tue pergamene con sigillo.<br><br><em>Consulta il regolamento per saperne di più.</em>"
             }
         ]
     };
 
     const MiniguidaService = {
         _gameKey: 'commedia',
-        _collectionName: 'commedia_settings',
+        _collectionName: 'corte_settings',
         _docId: 'miniguida',
         _storageKey: 'commedia_miniguida_data',
         _data: null,
@@ -51,8 +61,22 @@
             return JSON.parse(JSON.stringify(DEFAULT_MINIGUIDA));
         },
 
+        ensureAccessStep(data) {
+            if (!data || !Array.isArray(data.steps)) return data;
+            const hasAccess = data.steps.some(s => 
+                (s.title && s.title.toLowerCase().includes('accesso')) ||
+                (s.text && s.text.toLowerCase().includes('accesso'))
+            );
+            if (!hasAccess && data.steps.length > 0) {
+                const accessStep = JSON.parse(JSON.stringify(DEFAULT_MINIGUIDA.steps[1]));
+                data.steps.splice(1, 0, accessStep);
+            }
+            return data;
+        },
+
         getData() {
-            return this._data || this.getDefaultData();
+            const raw = this._data || this.getDefaultData();
+            return this.ensureAccessStep(raw);
         },
 
         subscribe(callback) {
@@ -180,21 +204,58 @@
         renderModal() {
             const data = this.getData();
             const titleEl = document.getElementById('miniguida-title');
-            if (titleEl) titleEl.innerText = data.title || "Come si gioca?";
+            if (titleEl) titleEl.innerText = data.title || "Miniguida";
+
+            const stepsWrapper = document.querySelector('#modal-miniguida .modal-content > div:nth-child(2)');
+            if (!stepsWrapper) return;
+
+            // Rimuovi vecchi step
+            const oldSteps = stepsWrapper.querySelectorAll('.miniguida-step');
+            oldSteps.forEach(el => el.remove());
+
+            // Rigenera dots
+            const dotsContainer = document.getElementById('miniguida-dots');
+            if (dotsContainer) dotsContainer.innerHTML = '';
+
+            const footerRow = dotsContainer ? dotsContainer.parentElement : null;
 
             data.steps.forEach((step, idx) => {
-                let stepEl = document.getElementById('miniguida-step-' + idx);
-                if (stepEl) {
-                    const iconEl = stepEl.querySelector('i');
-                    const textEl = stepEl.querySelector('p');
-                    if (iconEl && step.icon) {
-                        iconEl.className = step.icon.startsWith('fa-') ? `fa-solid ${step.icon}` : 'fa-solid fa-scroll';
-                    }
-                    if (textEl && step.text) {
-                        textEl.innerHTML = step.text;
-                    }
+                const stepDiv = document.createElement('div');
+                stepDiv.id = 'miniguida-step-' + idx;
+                stepDiv.className = 'miniguida-step';
+                stepDiv.style.flex = '1';
+                stepDiv.style.display = (idx === this._currentStep) ? 'flex' : 'none';
+                stepDiv.style.flexDirection = 'column';
+                stepDiv.style.alignItems = 'center';
+                stepDiv.style.justifyContent = 'center';
+                stepDiv.style.textAlign = 'center';
+                stepDiv.style.animation = 'fadeIn 0.3s ease-out';
+                stepDiv.style.padding = '10px 0';
+
+                const iconClass = step.icon ? (step.icon.startsWith('fa-') ? `fa-solid ${step.icon}` : `fa-solid fa-${step.icon}`) : 'fa-solid fa-scroll';
+                stepDiv.innerHTML = `
+                    <i class="${iconClass}" style="font-size: 4.5rem; color: #ef4444; margin-bottom: 20px;"></i>
+                    <p style="font-size: 1.25rem; color: #475569; line-height: 1.6; font-weight: 500; max-width: 540px; margin: 0 auto;">${step.text || ''}</p>
+                `;
+
+                if (footerRow) {
+                    stepsWrapper.insertBefore(stepDiv, footerRow);
+                } else {
+                    stepsWrapper.appendChild(stepDiv);
+                }
+
+                if (dotsContainer) {
+                    const dot = document.createElement('div');
+                    dot.className = 'dot' + (idx === this._currentStep ? ' active' : '');
+                    dot.style.width = '12px';
+                    dot.style.height = '12px';
+                    dot.style.borderRadius = '50%';
+                    dot.style.background = (idx === this._currentStep) ? '#ef4444' : '#e2e8f0';
+                    dot.style.transition = '0.3s';
+                    dotsContainer.appendChild(dot);
                 }
             });
+
             this.updateView();
         },
 
@@ -259,7 +320,7 @@
                             <label style="display: block; font-size: 0.82rem; font-weight: 700; color: #64748b; margin-bottom: 4px;">Anteprima Live:</label>
                             <div style="background: white; border-radius: 16px; border: 1px solid #e2e8f0; padding: 15px; color: #1e293b; display: flex; overflow: hidden; box-shadow: 0 6px 20px rgba(0,0,0,0.06); min-height: 380px;">
                                 <div style="width: 35%; background: #f8fafc; display: flex; align-items: flex-end; justify-content: center; border-right: 1px solid #f1f5f9; padding-top: 10px;">
-                                    <img src="assets/prof_memmo_full.jpg" onerror="this.src='https://prof-memmo.github.io/prof-memmo-gestione-siti/shared/assets/branding/prof-memmo/prof-memmo-full.jpg';" alt="Prof Memmo" style="width: 120%; object-fit: contain; mix-blend-mode: multiply;">
+                                    <img src="assets/prof_memmo_full.png" onerror="this.src='https://prof-memmo.github.io/prof-memmo-gestione-siti/shared/assets/branding/prof-memmo/prof-memmo-full.png';" alt="Prof Memmo" style="width: 120%; object-fit: contain; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.2));">
                                 </div>
                                 <div style="flex: 1; padding: 10px 15px; display: flex; flex-direction: column; justify-content: space-between;">
                                     <div>

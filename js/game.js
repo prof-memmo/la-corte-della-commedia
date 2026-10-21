@@ -117,7 +117,7 @@ export const EroiGame = {
                 trialContent.innerHTML = `
                     <h3 class="text-crimson" style="text-align:center;">Fase 2: Ricostruzione dei Fatti</h3>
                     
-                    <div style="background: url('assets/Immagini/parchment_bg.png') center/cover; padding: 30px; border-radius: 10px; color: #222; font-family: 'Times New Roman', serif; box-shadow: inset 0 0 40px rgba(0,0,0,0.5), 0 5px 15px rgba(0,0,0,0.5); margin-top: 20px;">
+                    <div style="background: #ffffff; padding: 30px; border-radius: 12px; color: #1a1614; font-family: 'Times New Roman', serif; border: 1.5px solid var(--accent-gold); box-shadow: 0 5px 20px rgba(0,0,0,0.4); margin-top: 20px;">
                         <h4 style="color: #4a2c11; margin-top: 0; border-bottom: 1px solid rgba(74, 44, 17, 0.3); padding-bottom: 5px;">I Fatti Storici ${getEditBtn('facts', data.phases?.facts)}</h4>
                         <p style="line-height: 1.8; font-size: 1.15rem;">${data.phases?.facts || "Nessun fatto storico."}</p>
                         
@@ -150,7 +150,7 @@ export const EroiGame = {
                         <div style="flex: 0 0 180px; display: flex; justify-content: center;">
                             <img src="public/assets/dante_full.png" style="max-height: 450px; width: auto; filter: drop-shadow(0 0 10px rgba(0,0,0,0.8));">
                         </div>
-                        <div style="flex: 1; background: url('assets/Immagini/parchment_bg.png') center/cover; padding: 25px; border-radius: 10px; color: #222; font-family: 'Times New Roman', serif; box-shadow: inset 0 0 30px rgba(0,0,0,0.4), 0 5px 15px rgba(0,0,0,0.5); min-width: 250px;">
+                        <div style="flex: 1; background: #ffffff; padding: 25px; border-radius: 12px; color: #1a1614; font-family: 'Times New Roman', serif; border: 1.5px solid var(--accent-gold); box-shadow: 0 5px 20px rgba(0,0,0,0.4); min-width: 250px;">
                             <h4 style="color: #6a040f; margin-top: 0; border-bottom: 1px solid rgba(106, 4, 15, 0.3); padding-bottom: 5px;">${danteTitle} ${getEditBtn('accusation', data.phases?.accusation)}</h4>
                             <p style="line-height: 1.8; font-size: 1.15rem;">${data.phases?.accusation || "L'indagine è silente."}</p>
                             
@@ -175,7 +175,7 @@ export const EroiGame = {
                         <div style="flex: 0 0 180px; display: flex; justify-content: center;">
                             <img src="public/assets/difesa_full.png" style="max-height: 450px; width: auto; filter: drop-shadow(0 0 10px rgba(0,0,0,0.8));">
                         </div>
-                        <div style="flex: 1; background: url('assets/Immagini/parchment_bg.png') center/cover; padding: 25px; border-radius: 10px; color: #222; font-family: 'Times New Roman', serif; box-shadow: inset 0 0 30px rgba(0,0,0,0.4), 0 5px 15px rgba(0,0,0,0.5); min-width: 250px;">
+                        <div style="flex: 1; background: #ffffff; padding: 25px; border-radius: 12px; color: #1a1614; font-family: 'Times New Roman', serif; border: 1.5px solid var(--accent-gold); box-shadow: 0 5px 20px rgba(0,0,0,0.4); min-width: 250px;">
                             <h4 style="color: #4a2c11; margin-top: 0; border-bottom: 1px solid rgba(74, 44, 17, 0.3); padding-bottom: 5px; text-align: right;">${defTitle} ${getEditBtn('defense', data.phases?.defense)}</h4>
                             <p style="font-size: 1.15rem; line-height: 1.8;">${data.phases?.defense || "La difesa tace."}</p>
                         </div>

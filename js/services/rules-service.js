@@ -15,8 +15,7 @@
 
     const SUPER_ADMIN_EMAIL = 'prof.memmo@gmail.com';
 
-    const DEFAULT_COMMEDIA_RULES_TEXT = `[PROCEDIMENTO]
-1. Apertura del fascicolo
+    const DEFAULT_COMMEDIA_RULES_TEXT = `1. Apertura del fascicolo
 Analisi iniziale del ritratto, del peccato e degli obiettivi del caso dantesco.
 
 2. Ricostruzione dei fatti
@@ -46,36 +45,15 @@ Risoluzione autonoma di un enigma storico-logico per validare definitivamente la
 10. La Sentenza
 Generazione della pergamena finale con il risultato, XP e badge, custodita per sempre nell'Archivio.
 
-[STUDENTE]
-1. I Tre Livelli di Indagine
-Il tuo Docente imposterà per la tua Classe uno dei tre livelli di difficoltà, a seconda del grado scolastico: Esploratore (per un approccio guidato), Giurista (per una maggiore autonomia e interpretazione), o Magistrato (per le sfide più ardue, ricche di collegamenti storici e filosofici).
+11. La Giuria e la Progressione
+Al termine di ogni procedimento vengono mostrati i risultati aggregati della tua Giuria. Tutte le tue azioni ti faranno guadagnare XP, livelli, badge e collezioni per scalare le classifiche del tribunale.
 
-2. La Valutazione dei Docenti
-Le tue sentenze e le tue motivazioni verranno lette e valutate dal tuo Docente (il Sommo Giudice). Se l'argomentazione è ritenuta valida, sarai ricompensato con XP e Fiorini d'oro, che ti permetteranno di ottenere nuovi e prestigiosi titoli nobiliari.
-
-3. Diritto al Riposo e Pausa Cognitiva
-A tutela del benessere visivo ed emotivo, dopo 45 minuti di dibattito in tribunale la sessione si sospende per una pausa di decompressione e confronto tra pari.
-
-[PELLEGRINO]
-1. Giocatore Unico o Corti Private (Multiplayer)
-Come pellegrino (Giurato) hai due scelte: affrontare il viaggio in solitaria, oppure creare una Corte Privata. In quest'ultimo caso potrai generare un link e invitare amici, compagni di lettura o familiari per vivere un'esperienza multiplayer, confrontando le vostre sentenze e visualizzando le statistiche della vostra Corte.
-
-2. Il Ruolo del Presidente di Corte
-Se decidi di creare tu la Corte Privata, ne diventi il "Presidente". Come Presidente potrai scegliere il livello di difficoltà per il tuo gruppo (Esploratore, Giurista o Magistrato), decidere quali casi sbloccare e amministrare l'ingresso dei nuovi giurati.
-
-[DOCENTE]
-1. Il Pannello del Docente (Dossier e Classi)
-In veste di Sommo Docente, hai il pieno controllo sulle tue aule e sui tuoi studenti. Dal tuo pannello puoi creare nuove "Classi", ottenere un Codice univoco da condividere con i tuoi alunni per l'iscrizione, e monitorare l'andamento didattico e la Classifica della classe in tempo reale.
-
-2. Assegnazione Livelli e Nodi
-Per ogni classe devi stabilire il target di profondità (Esploratore per la sec. di I grado; Giurista per il biennio; Magistrato per il triennio). Puoi anche decidere il ritmo del gioco, impostando uno sblocco "Automatico" per i casi successivi o "Manuale" per allinearli alle lezioni in classe.
-
-3. La Valutazione dei Verdetti
-Sei tu il giudice ultimo dell'argomentazione espressa dai ragazzi. Nel Dossier troverai le sentenze: approvandole garantirai XP e badge, mentre respingendole potrai fornire un feedback formativo obbligando lo studente a rielaborare la motivazione.`;
+12. Benessere Visivo e Pause
+In conformità con le linee guida pedagogiche di Prof. Memmo, dopo 45 minuti di dibattito in tribunale la sessione prevede una pausa di decompressione e confronto non mediato da schermi.`;
 
     const RulesService = {
         _gameKey: 'commedia',
-        _collectionName: 'commedia_settings',
+        _collectionName: 'corte_settings',
         _docId: 'official_rules',
         _storageKey: 'commedia_rules_official_text',
         _rawText: '',
@@ -89,10 +67,61 @@ Sei tu il giudice ultimo dell'argomentazione espressa dai ragazzi. Nel Dossier t
             return DEFAULT_COMMEDIA_RULES_TEXT.trim();
         },
 
-        isSuperAdmin(email) {
-            const fbUser = (window.hubApp && window.hubApp.auth && window.hubApp.auth().currentUser) ||
+        _resolveUserEmail(providedEmail) {
+            if (providedEmail && typeof providedEmail === 'string' && providedEmail.trim()) {
+                return providedEmail.trim().toLowerCase();
+            }
+            const fbUser = (window.fbAuth && window.fbAuth.currentUser) ||
+                           (window.hubApp && window.hubApp.auth && window.hubApp.auth().currentUser) ||
                            (window.firebase && window.firebase.auth && window.firebase.auth().currentUser);
-            const userEmail = (email || (fbUser && fbUser.email) || (window.currentUser && window.currentUser.email) || window.currentUserEmail || '').toLowerCase();
+            if (fbUser && fbUser.email) {
+                return fbUser.email.trim().toLowerCase();
+            }
+            if (window.currentUser && window.currentUser.email) {
+                return window.currentUser.email.trim().toLowerCase();
+            }
+            if (window.EroiDB && window.EroiDB.cache && window.EroiDB.cache.userProfile && window.EroiDB.cache.userProfile.email) {
+                return window.EroiDB.cache.userProfile.email.trim().toLowerCase();
+            }
+            if (window.currentUserEmail && typeof window.currentUserEmail === 'string') {
+                return window.currentUserEmail.trim().toLowerCase();
+            }
+
+            const candidates = ['currentUser', 'commedia_user', 'user', 'hub_user', 'eroi_user_profile', 'userProfile'];
+            for (const k of candidates) {
+                try {
+                    const raw = localStorage.getItem(k);
+                    if (raw) {
+                        const parsed = JSON.parse(raw);
+                        if (parsed) {
+                            if (parsed.email && typeof parsed.email === 'string' && parsed.email.trim().length > 0) {
+                                return parsed.email.trim().toLowerCase();
+                            }
+                            if (parsed.role === 'admin' || parsed.name === 'Prof. Memmo') {
+                                return SUPER_ADMIN_EMAIL.toLowerCase();
+                            }
+                        }
+                    }
+                } catch (e) {}
+            }
+            if (localStorage.getItem('adminLoggedIn') === 'true') {
+                return SUPER_ADMIN_EMAIL.toLowerCase();
+            }
+            return '';
+        },
+
+        _getFirestoreDb() {
+            if (window.fbDb && typeof window.fbDb.collection === 'function') return window.fbDb;
+            if (window.db && typeof window.db.collection === 'function') return window.db;
+            if (window.hubDb && typeof window.hubDb.collection === 'function') return window.hubDb;
+            if (typeof firebase !== 'undefined' && firebase.firestore && typeof firebase.firestore === 'function') {
+                return firebase.firestore();
+            }
+            return null;
+        },
+
+        isSuperAdmin(email) {
+            const userEmail = this._resolveUserEmail(email);
             return userEmail === SUPER_ADMIN_EMAIL.toLowerCase();
         },
 
@@ -142,27 +171,47 @@ Sei tu il giudice ultimo dell'argomentazione espressa dai ragazzi. Nel Dossier t
 
             this._notify();
 
-            // 2. Setup listener Firestore
+            // 2. Setup listener Firestore Realtime
             if (this._isInitialized) return;
             this._isInitialized = true;
 
-            const db = window.hubDb || window.db || (typeof firebase !== 'undefined' && firebase.firestore ? firebase.firestore() : null);
+            const db = this._getFirestoreDb();
             if (!db) {
-                console.info("Firestore non ancora disponibile per Commedia. Uso cache locale.");
+                console.info("Firestore non ancora pronto per Commedia. Riprovo a breve...");
+                setTimeout(() => {
+                    const retryDb = this._getFirestoreDb();
+                    if (retryDb && !this._unsubscribeFirestore) {
+                        this._setupFirestoreListener(retryDb);
+                    }
+                }, 1000);
                 return;
             }
 
-            try {
-                // Collezione commedia_settings o settings (con prefisso corte_)
-                const docRef = (typeof db.doc === 'function') 
-                    ? db.doc(this._collectionName + '/' + this._docId)
-                    : (typeof db.collection === 'function' ? db.collection(this._collectionName).doc(this._docId) : null);
+            this._setupFirestoreListener(db);
+        },
 
-                if (docRef && typeof docRef.onSnapshot === 'function') {
-                    this._unsubscribeFirestore = docRef.onSnapshot(docSnap => {
-                        if (docSnap.exists) {
-                            const data = docSnap.data();
-                            if (data && data.text) {
+        _setupFirestoreListener(db) {
+            try {
+                const attachListener = (colName, isPrimary) => {
+                    const docRef = (typeof db.collection === 'function')
+                        ? db.collection(colName).doc(this._docId)
+                        : (typeof db.doc === 'function' ? db.doc(colName + '/' + this._docId) : null);
+
+                    if (!docRef || typeof docRef.onSnapshot !== 'function') return null;
+
+                    return docRef.onSnapshot(docSnap => {
+                        const exists = typeof docSnap.exists === 'function' ? docSnap.exists() : docSnap.exists;
+                        if (exists) {
+                            const data = typeof docSnap.data === 'function' ? docSnap.data() : docSnap.data;
+                            if (data && data.text && data.text.trim().length > 0) {
+                                const localTime = this._lastUpdated ? new Date(this._lastUpdated).getTime() : 0;
+                                const cloudTime = data.lastUpdated ? new Date(data.lastUpdated).getTime() : 0;
+
+                                if (cloudTime && localTime && cloudTime < localTime && this._rawText && this._rawText.trim().length > 0) {
+                                    console.info("Commedia: modifica locale più recente del cloud, mantengo versione locale.");
+                                    return;
+                                }
+
                                 this._rawText = data.text;
                                 this._lastUpdated = data.lastUpdated || null;
                                 this._updatedBy = data.updatedBy || '';
@@ -177,28 +226,29 @@ Sei tu il giudice ultimo dell'argomentazione espressa dai ragazzi. Nel Dossier t
 
                                 this._notify();
                             }
+                        } else if (isPrimary) {
+                            // Se corte_settings non ha ancora il testo, prova commedia_settings (compatibilità storica)
+                            attachListener('commedia_settings', false);
                         }
                     }, err => {
-                        console.warn("Firestore snapshot regolamento Commedia (normale se offline):", err.message);
+                        console.warn("Firestore snapshot " + colName + " Commedia (normale se offline):", err.message);
+                        if (isPrimary) {
+                            attachListener('commedia_settings', false);
+                        }
                     });
-                }
+                };
+
+                this._unsubscribeFirestore = attachListener(this._collectionName, true);
             } catch (err) {
                 console.warn("Inizializzazione Firestore listener regolamento Commedia fallita:", err);
             }
         },
 
         async saveToCloud(newText) {
-            const db = window.hubDb || window.db || (typeof firebase !== 'undefined' && firebase.firestore ? firebase.firestore() : null);
-            if (!db) {
-                throw new Error("Firestore non disponibile. Verifica la connessione a Internet.");
-            }
-
-            const fbUser = (window.hubApp && window.hubApp.auth && window.hubApp.auth().currentUser) ||
-                           (window.firebase && window.firebase.auth && window.firebase.auth().currentUser);
-            const userEmail = (fbUser && fbUser.email ? fbUser.email : (window.currentUserEmail || '')).toLowerCase();
+            const userEmail = this._resolveUserEmail();
 
             if (!this.isSuperAdmin(userEmail)) {
-                throw new Error("Accesso negato: solo il Super-Admin (" + SUPER_ADMIN_EMAIL + ") può salvare il regolamento.");
+                throw new Error("Accesso negato: solo il Super-Admin (" + SUPER_ADMIN_EMAIL + ") può salvare il regolamento. Rilevato: " + (userEmail || 'nessuno'));
             }
 
             const cleanText = (newText || '').trim();
@@ -210,19 +260,14 @@ Sei tu il giudice ultimo dell'argomentazione espressa dai ragazzi. Nel Dossier t
             const payload = {
                 text: cleanText,
                 lastUpdated: nowIso,
-                updatedBy: userEmail,
+                updatedBy: userEmail || SUPER_ADMIN_EMAIL,
                 gameKey: this._gameKey
             };
 
-            if (typeof db.collection === 'function') {
-                await db.collection(this._collectionName).doc(this._docId).set(payload, { merge: true });
-            } else if (typeof db.doc === 'function') {
-                await db.doc(this._collectionName + '/' + this._docId).set(payload, { merge: true });
-            }
-
+            // 1. Salvataggio immediato in cache locale (Zero Data Loss garantito)
             this._rawText = cleanText;
             this._lastUpdated = nowIso;
-            this._updatedBy = userEmail;
+            this._updatedBy = userEmail || SUPER_ADMIN_EMAIL;
 
             try {
                 localStorage.setItem(this._storageKey, JSON.stringify({
@@ -233,6 +278,46 @@ Sei tu il giudice ultimo dell'argomentazione espressa dai ragazzi. Nel Dossier t
             } catch (e) {}
 
             this._notify();
+
+            // 2. Sincronizzazione Cloud Firestore con doppio salvataggio (corte_settings e commedia_settings) e fallback hub_settings
+            const db = this._getFirestoreDb();
+            if (db) {
+                let saved = false;
+                try {
+                    if (typeof db.collection === 'function') {
+                        await db.collection('corte_settings').doc(this._docId).set(payload, { merge: true });
+                    } else if (typeof db.doc === 'function') {
+                        await db.doc('corte_settings/' + this._docId).set(payload, { merge: true });
+                    }
+                    saved = true;
+                } catch (e1) {
+                    console.warn("Salvataggio su corte_settings respinto:", e1.message);
+                }
+
+                try {
+                    if (typeof db.collection === 'function') {
+                        await db.collection('commedia_settings').doc(this._docId).set(payload, { merge: true });
+                    } else if (typeof db.doc === 'function') {
+                        await db.doc('commedia_settings/' + this._docId).set(payload, { merge: true });
+                    }
+                    saved = true;
+                } catch (e2) {
+                    console.warn("Salvataggio su commedia_settings respinto:", e2.message);
+                }
+
+                if (!saved) {
+                    try {
+                        if (typeof db.collection === 'function') {
+                            await db.collection('hub_settings').doc('corte_rules').set(payload, { merge: true });
+                        }
+                        saved = true;
+                    } catch (e3) {
+                        console.warn("Salvataggio cloud non completato, ma salvato localmente:", e3.message);
+                        return { success: true, localOnly: true, warning: e3.message };
+                    }
+                }
+            }
+
             return { success: true, lastUpdated: nowIso };
         },
 
@@ -312,70 +397,146 @@ Sei tu il giudice ultimo dell'argomentazione espressa dai ragazzi. Nel Dossier t
             return result;
         },
 
+        _formatLinks(str, linkColor = '#8b0000') {
+            if (!str || typeof str !== 'string') return '';
+            // 1. Markdown link: [Label](https://url)
+            let res = str.replace(/\[([^\]]+)\]\((https?:\/\/[^\s\)]+)\)/g, (m, label, url) => {
+                const cleanHref = url.replace(/&amp;/g, '&');
+                return `<a href="${cleanHref}" target="_blank" rel="noopener noreferrer" style="color: ${linkColor}; text-decoration: underline; font-weight: 700; word-break: break-all;">${label} <span style="font-size: 0.8em; margin-left: 2px;">↗</span></a>`;
+            });
+            // 2. Plain URL: https://...
+            res = res.replace(/(^|[\s(>])(https?:\/\/[^\s<]+)/g, (m, prefix, url) => {
+                let cleanUrl = url;
+                let trailing = '';
+                const trailMatch = url.match(/([.,;:!?)]+)$/);
+                if (trailMatch) {
+                    trailing = trailMatch[1];
+                    cleanUrl = url.substring(0, url.length - trailing.length);
+                }
+                const cleanHref = cleanUrl.replace(/&amp;/g, '&');
+                return `${prefix}<a href="${cleanHref}" target="_blank" rel="noopener noreferrer" style="color: ${linkColor}; text-decoration: underline; font-weight: 700; word-break: break-all;">${cleanUrl} <span style="font-size: 0.8em; margin-left: 2px;">↗</span></a>${trailing}`;
+            });
+            return res;
+        },
+
+        parseTextToItems(text) {
+            let src = (text || this.getRawText()).trim();
+            src = src.replace(/\[(PROCEDIMENTO|STUDENTE|PELLEGRINO|DOCENTE)\]/gi, '').trim();
+            if (!src) return [];
+
+            const blocks = src.split(/\n\s*\n/).map(b => b.trim()).filter(Boolean);
+            const items = [];
+
+            blocks.forEach((block, index) => {
+                const lines = block.split('\n').map(l => l.trim()).filter(Boolean);
+                if (lines.length === 0) return;
+
+                let firstLine = lines[0].replace(/^[\u2022\*\-]\s*/, '').trim();
+                let title = '';
+                let content = '';
+
+                let detectedNumber = null;
+                const matchNumbered = firstLine.match(/^(\d+)[\.\)]\s*(.*)$/);
+                if (matchNumbered) {
+                    detectedNumber = parseInt(matchNumbered[1], 10);
+                    firstLine = matchNumbered[2].trim();
+                }
+
+                if (lines.length > 1) {
+                    title = firstLine;
+                    content = lines.slice(1).join(' ').trim();
+                } else {
+                    const colonMatch = firstLine.match(/^([^:]{3,60}):\s*(.+)$/);
+                    if (colonMatch) {
+                        title = colonMatch[1].trim();
+                        content = colonMatch[2].trim();
+                    } else {
+                        content = firstLine;
+                    }
+                }
+
+                if (title) {
+                    title = title.replace(/:\s*$/, '').trim();
+                }
+
+                items.push({
+                    index: detectedNumber !== null ? detectedNumber : index + 1,
+                    title: title || `Articolo ${detectedNumber !== null ? detectedNumber : index + 1}`,
+                    text: content || title
+                });
+            });
+
+            return items;
+        },
+
         // ===================================================================
         // VISTA PUBBLICA / GIOCO (#view-regolamento in index.html)
         // Stile nativo de La Corte della Commedia: .parchment-panel, Julius Sans One, oro/cremisi
         // ===================================================================
         renderPublicView() {
-            const sections = this.parseSections();
-
-            // 1. Procedimento Comune
             const elComune = document.getElementById('reg-comune');
-            if (elComune && sections.procedimento.length > 0) {
-                elComune.innerHTML = `
-                    <h2 style="color: var(--accent-gold); font-family: 'Julius Sans One', sans-serif; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 20px; text-align: center;">Il Procedimento Giudiziario</h2>
-                    <p class="text-on-parchment-muted" style="margin-bottom: 1.5rem; line-height: 1.6;">
-                        Ogni caso affrontato nella Corte rappresenta un procedimento giudiziario (Campagna &rarr; Fascicolo &rarr; Missioni &rarr; Prove &rarr; Verdetto &rarr; Archivio) ed è strutturato in <strong>fasi fondamentali</strong>:
-                    </p>
-                    <ul style="list-style-type: none; padding-left: 0; margin-bottom: 1.5rem;" class="text-on-parchment-muted">
-                        ${sections.procedimento.map(i => `
-                            <li style="margin-bottom: 1rem;">
-                                <strong style="color: var(--accent-crimson);">${i.index}. ${i.title}:</strong> ${i.text}
-                            </li>
-                        `).join('')}
-                    </ul>
-                    <h3 style="color: var(--accent-crimson); font-family: 'Julius Sans One', sans-serif; margin-top: 2rem;">La Giuria e la Progressione</h3>
-                    <p class="text-on-parchment-muted" style="margin-bottom: 1.5rem; line-height: 1.6;">
-                        Al termine di ogni procedimento verranno mostrati i risultati aggregati della tua <strong>Giuria</strong>: la tua Classe (nella modalità Scuola) o la tua Corte Privata (nella modalità Comunità). Tutte le tue azioni ti faranno guadagnare <strong>XP, livelli, badge e collezioni</strong>.
-                    </p>
-                `;
+            if (!elComune) return;
+
+            // Rimuovi card residue non più necessarie
+            ['reg-studente', 'reg-pellegrino', 'reg-docente'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.remove();
+            });
+
+            const rawText = this.getRawText();
+            if (!rawText || !rawText.trim()) {
+                elComune.innerHTML = `<p class="text-on-parchment-muted" style="text-align: center; font-style: italic; color: #5c4a38;">Nessun regolamento inserito.</p>`;
+                return;
             }
 
-            // 2. Studente
-            const elStud = document.getElementById('reg-studente');
-            if (elStud && sections.studente.length > 0) {
-                elStud.innerHTML = `
-                    <h2 style="color: var(--accent-gold); font-family: 'Julius Sans One', sans-serif; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 20px; text-align: center;">Regolamento dello Studente (Modalità Scuola)</h2>
-                    ${sections.studente.map(i => `
-                        <h3 style="color: var(--accent-crimson); font-family: 'Julius Sans One', sans-serif;">${i.index}. ${i.title}</h3>
-                        <p class="text-on-parchment-muted" style="margin-bottom: 1.5rem; line-height: 1.6;">${i.text}</p>
-                    `).join('')}
-                `;
-            }
+            // Renderizza fedelmente il testo inserito dall'utente dal pannello admin
+            const escapeHtml = (str) => {
+                const div = document.createElement('div');
+                div.textContent = str;
+                return div.innerHTML;
+            };
 
-            // 3. Pellegrino
-            const elPell = document.getElementById('reg-pellegrino');
-            if (elPell && sections.pellegrino.length > 0) {
-                elPell.innerHTML = `
-                    <h2 style="color: var(--accent-gold); font-family: 'Julius Sans One', sans-serif; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 20px; text-align: center;">Regolamento del Pellegrino (Modalità Comunità)</h2>
-                    ${sections.pellegrino.map(i => `
-                        <h3 style="color: var(--accent-crimson); font-family: 'Julius Sans One', sans-serif;">${i.index}. ${i.title}</h3>
-                        <p class="text-on-parchment-muted" style="margin-bottom: 1.5rem; line-height: 1.6;">${i.text}</p>
-                    `).join('')}
-                `;
-            }
+            const blocks = rawText.trim().split(/\n\s*\n/).filter(Boolean);
 
-            // 4. Docente
-            const elDoc = document.getElementById('reg-docente');
-            if (elDoc && sections.docente.length > 0) {
-                elDoc.innerHTML = `
-                    <h2 style="color: var(--accent-gold); font-family: 'Julius Sans One', sans-serif; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 20px; text-align: center;">Regolamento del Docente (Modalità Scuola)</h2>
-                    ${sections.docente.map(i => `
-                        <h3 style="color: var(--accent-crimson); font-family: 'Julius Sans One', sans-serif;">${i.index}. ${i.title}</h3>
-                        <p class="text-on-parchment-muted" style="margin-bottom: 1.5rem; line-height: 1.6;">${i.text}</p>
-                    `).join('')}
-                `;
-            }
+            let html = '<div class="rules-user-content" style="color: #2c241b; line-height: 1.7; font-size: 1.05rem;">';
+
+            blocks.forEach((block) => {
+                const lines = block.split('\n').map(l => l.trim()).filter(Boolean);
+                if (lines.length === 0) return;
+
+                const firstLine = lines[0];
+                const isHeading = /^(\d+[\.\)]\s*|[A-Z0-9\.\-\s]{2,50}:)/i.test(firstLine);
+
+                if (isHeading) {
+                    html += `
+                        <div style="margin-bottom: 1.3rem; padding-bottom: 0.6rem; border-bottom: 1px dashed rgba(212,175,55,0.3);">
+                            <div style="color: var(--accent-crimson, #8b0000); font-weight: 800; font-size: 1.1rem; margin-bottom: 6px; font-family: 'Cinzel', 'Julius Sans One', serif;">
+                                ${this._formatLinks(escapeHtml(firstLine), '#8b0000')}
+                            </div>
+                            ${lines.slice(1).map(l => {
+                                if (l.startsWith('•') || l.startsWith('-')) {
+                                    return `<div style="padding-left: 14px; margin-bottom: 4px; color: #2c241b;">${this._formatLinks(escapeHtml(l), '#8b0000')}</div>`;
+                                }
+                                return `<p style="margin: 0 0 6px 0; color: #2c241b;">${this._formatLinks(escapeHtml(l), '#8b0000')}</p>`;
+                            }).join('')}
+                        </div>
+                    `;
+                } else {
+                    html += `
+                        <div style="margin-bottom: 1.1rem;">
+                            ${lines.map(l => {
+                                if (l.startsWith('•') || l.startsWith('-')) {
+                                    return `<div style="padding-left: 14px; margin-bottom: 4px; color: #2c241b;">${this._formatLinks(escapeHtml(l), '#8b0000')}</div>`;
+                                }
+                                return `<p style="margin: 0 0 8px 0; color: #2c241b;">${this._formatLinks(escapeHtml(l), '#8b0000')}</p>`;
+                            }).join('')}
+                        </div>
+                    `;
+                }
+            });
+
+            html += '</div>';
+            elComune.innerHTML = html;
         },
 
         // ===================================================================
@@ -386,10 +547,8 @@ Sei tu il giudice ultimo dell'argomentazione espressa dai ragazzi. Nel Dossier t
             if (!container) return;
 
             const text = this.getRawText();
-            const fbUser = (window.hubApp && window.hubApp.auth && window.hubApp.auth().currentUser) || 
-                           (window.firebase && window.firebase.auth && window.firebase.auth().currentUser);
-            const userEmail = fbUser ? (fbUser.email || '') : (window.currentUserEmail || '');
-            const isAuthAdmin = userEmail.toLowerCase() === SUPER_ADMIN_EMAIL.toLowerCase();
+            const userEmail = this._resolveUserEmail();
+            const isAuthAdmin = this.isSuperAdmin(userEmail);
 
             container.innerHTML = `
                 <div style="background: #ffffff; padding: 25px; border-radius: 16px; border: 1.5px solid rgba(212,175,55,0.4); box-shadow: 0 4px 20px rgba(0,0,0,0.05); margin-bottom: 25px;">
@@ -399,7 +558,7 @@ Sei tu il giudice ultimo dell'argomentazione espressa dai ragazzi. Nel Dossier t
                                 <span style="font-size: 1.4rem;">📜</span> Regolamento della Corte • Editor Cloud
                             </h3>
                             <p style="margin: 0; font-size: 0.85rem; color: #64748b; line-height: 1.4;">
-                                Modifica le pergamene del regolamento ([PROCEDIMENTO], [STUDENTE], [PELLEGRINO], [DOCENTE]).
+                                Modifica il testo ufficiale del Regolamento de La Corte della Commedia.
                             </p>
                         </div>
                         <div>
@@ -444,9 +603,13 @@ Sei tu il giudice ultimo dell'argomentazione espressa dai ragazzi. Nel Dossier t
             }
 
             try {
-                await this.saveToCloud(textarea.value);
+                const res = await this.saveToCloud(textarea.value);
                 if (btn) {
-                    btn.innerHTML = `<i class="fa-solid fa-check"></i> SALVATO CON SUCCESSO!`;
+                    if (res && res.localOnly) {
+                        btn.innerHTML = `<i class="fa-solid fa-check"></i> SALVATO LOCALMENTE!`;
+                    } else {
+                        btn.innerHTML = `<i class="fa-solid fa-check"></i> SALVATO CON SUCCESSO!`;
+                    }
                     btn.style.background = '#22c55e';
                     btn.style.color = '#fff';
                 }
@@ -459,6 +622,31 @@ Sei tu il giudice ultimo dell'argomentazione espressa dai ragazzi. Nel Dossier t
                     }
                 }, 2000);
             } catch (err) {
+                // Zero data loss fallback
+                try {
+                    localStorage.setItem(this._storageKey, JSON.stringify({
+                        text: textarea.value,
+                        lastUpdated: new Date().toISOString(),
+                        updatedBy: SUPER_ADMIN_EMAIL
+                    }));
+                    this._rawText = textarea.value;
+                    this._notify();
+                    if (btn) {
+                        btn.innerHTML = `<i class="fa-solid fa-check"></i> SALVATO (OFFLINE)!`;
+                        btn.style.background = '#d97706';
+                        btn.style.color = '#fff';
+                    }
+                    setTimeout(() => {
+                        if (btn) {
+                            btn.disabled = false;
+                            btn.innerHTML = originalHtml;
+                            btn.style.background = 'var(--accent-gold)';
+                            btn.style.color = '#000';
+                        }
+                    }, 2000);
+                    return;
+                } catch (e) {}
+
                 alert("Errore salvataggio: " + (err.message || err));
                 if (btn) {
                     btn.disabled = false;

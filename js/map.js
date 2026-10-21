@@ -39,6 +39,115 @@ const PARADISO_HEAVENS = [
 ];
 
 
+export const INFERNO_COORDINATES_PC = [
+    { id: "Antinferno", x: 30.64, y: 11.98 },
+    { id: "Limbo", x: 35.29, y: 32.42 },
+    { id: "Lussuriosi", x: 24.24, y: 49.99 },
+    { id: "Golosi", x: 35.64, y: 63.53 },
+    { id: "Avari", x: 46.49, y: 51.95 },
+    { id: "Iracondi", x: 55.79, y: 35.49 },
+    { id: "Eretici", x: 67.17, y: 49.65 },
+    { id: "Violenti", x: 73.47, y: 70.20 },
+    { id: "Fraudolenti", x: 61.14, y: 81.10 },
+    { id: "Traditori", x: 75.68, y: 89.81 }
+];
+
+export const INFERNO_COORDINATES_MOBILE = [
+    { id: "Antinferno", x: 30.23, y: 8.31 },
+    { id: "Limbo", x: 69.77, y: 14.19 },
+    { id: "Lussuriosi", x: 30.23, y: 24.82 },
+    { id: "Golosi", x: 69.77, y: 32.73 },
+    { id: "Avari", x: 30.23, y: 43.10 },
+    { id: "Iracondi", x: 69.77, y: 53.98 },
+    { id: "Eretici", x: 30.23, y: 61.17 },
+    { id: "Violenti", x: 69.77, y: 70.29 },
+    { id: "Fraudolenti", x: 30.23, y: 83.31 },
+    { id: "Traditori", x: 69.77, y: 89.04 }
+];
+
+export const PURGATORIO_COORDINATES_PC = [
+    { id: "Antipurgatorio", x: 7.15, y: 76.31 },
+    { id: "Superbi", x: 15.24, y: 59.49 },
+    { id: "Invidiosi", x: 24.82, y: 41.91 },
+    { id: "Iracondi_Purg", x: 35.03, y: 56.79 },
+    { id: "Accidiosi", x: 47.10, y: 40.84 },
+    { id: "Avari_Purg", x: 59.32, y: 51.21 },
+    { id: "Golosi_Purg", x: 72.10, y: 34.82 },
+    { id: "Lussuriosi_Purg", x: 85.81, y: 44.38 },
+    { id: "ParadisoTerrestre", x: 92.67, y: 23.96 }
+];
+
+export const PURGATORIO_COORDINATES_MOBILE = [
+    { id: "Antipurgatorio", x: 30.23, y: 8.31 },
+    { id: "Superbi", x: 69.77, y: 14.19 },
+    { id: "Invidiosi", x: 30.23, y: 24.82 },
+    { id: "Iracondi_Purg", x: 69.77, y: 32.73 },
+    { id: "Accidiosi", x: 30.23, y: 43.10 },
+    { id: "Avari_Purg", x: 69.77, y: 53.98 },
+    { id: "Golosi_Purg", x: 30.23, y: 61.17 },
+    { id: "Lussuriosi_Purg", x: 69.77, y: 70.29 },
+    { id: "ParadisoTerrestre", x: 30.23, y: 83.31 }
+];
+
+export const PARADISO_COORDINATES_PC = [
+    { id: "Luna", x: 9.12, y: 57.88 },
+    { id: "Mercurio", x: 19.78, y: 43.29 },
+    { id: "Venere", x: 28.18, y: 60.15 },
+    { id: "Sole", x: 35.35, y: 40.51 },
+    { id: "Marte", x: 44.89, y: 61.20 },
+    { id: "Giove", x: 51.79, y: 40.79 },
+    { id: "Saturno", x: 61.97, y: 61.18 },
+    { id: "StelleFisse", x: 72.27, y: 39.09 },
+    { id: "PrimoMobile", x: 78.83, y: 62.26 },
+    { id: "Empireo", x: 90.93, y: 47.57 }
+];
+
+export const PARADISO_COORDINATES_MOBILE = [
+    { id: "Luna", x: 30.23, y: 8.31 },
+    { id: "Mercurio", x: 69.77, y: 14.19 },
+    { id: "Venere", x: 30.23, y: 24.82 },
+    { id: "Sole", x: 69.77, y: 32.73 },
+    { id: "Marte", x: 30.23, y: 43.10 },
+    { id: "Giove", x: 69.77, y: 53.98 },
+    { id: "Saturno", x: 30.23, y: 61.17 },
+    { id: "StelleFisse", x: 69.77, y: 70.29 },
+    { id: "PrimoMobile", x: 30.23, y: 83.31 },
+    { id: "Empireo", x: 69.77, y: 89.04 }
+];
+
+const CAMPAIGN_CONFIG = {
+    inferno: {
+        name: "Inferno",
+        nodes: INFERNO_CIRCLES,
+        coordsPC: INFERNO_COORDINATES_PC,
+        coordsMobile: INFERNO_COORDINATES_MOBILE,
+        bgPC: "assets/maps/pc/inferno.png",
+        bgMobile: "assets/maps/mobile/inferno.png",
+        glowColor: "#f59e0b",
+        glowFilter: "drop-shadow(0 0 8px rgba(245, 158, 11, 0.8))"
+    },
+    purgatorio: {
+        name: "Purgatorio",
+        nodes: PURGATORIO_TERRACES,
+        coordsPC: PURGATORIO_COORDINATES_PC,
+        coordsMobile: PURGATORIO_COORDINATES_MOBILE,
+        bgPC: "assets/maps/pc/purgatorio.png",
+        bgMobile: "assets/maps/mobile/purgatorio.png",
+        glowColor: "#e0a96d",
+        glowFilter: "drop-shadow(0 0 8px rgba(224, 169, 109, 0.8))"
+    },
+    paradiso: {
+        name: "Paradiso",
+        nodes: PARADISO_HEAVENS,
+        coordsPC: PARADISO_COORDINATES_PC,
+        coordsMobile: PARADISO_COORDINATES_MOBILE,
+        bgPC: "assets/maps/pc/paradiso.png",
+        bgMobile: "assets/maps/mobile/paradiso.png",
+        glowColor: "#38bdf8",
+        glowFilter: "drop-shadow(0 0 8px rgba(56, 189, 248, 0.8))"
+    }
+};
+
 export const MapEngine = {
     allCases: [],
     completedCaseIds: [],
@@ -134,167 +243,226 @@ export const MapEngine = {
             }
             return true; 
         } else {
-            if (circleIndex === 0) return true; 
+            if (circleIndex === 0) return true;
             const prevCircle = nodesArray[circleIndex - 1];
             return this.isCircleCompleted(prevCircle.id);
         }
     },
 
-
-    
     renderMap: function(campaignId) {
         this.currentCampaign = campaignId;
         const container = document.getElementById(`map-${campaignId}`);
         if (!container) return;
         
         container.innerHTML = '';
-        
-        let nodesArray = INFERNO_CIRCLES;
-        let decorImage = 'assets/Immagini/10.png'; // inferno decor
-        if (campaignId === 'purgatorio') {
-            nodesArray = PURGATORIO_TERRACES;
-            decorImage = 'assets/Immagini/6.png';
-        }
-        if (campaignId === 'paradiso') {
-            nodesArray = PARADISO_HEAVENS;
-            decorImage = 'assets/Immagini/7.png';
-        }
+        this.renderIllustratedCampaign(campaignId, container);
+    },
 
-        const svgLayer = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-        svgLayer.style.position = 'absolute';
-        svgLayer.style.top = '0';
-        svgLayer.style.left = '0';
-        svgLayer.style.width = '100%';
-        svgLayer.style.height = '100%';
-        svgLayer.style.zIndex = '0';
-        svgLayer.style.pointerEvents = 'none';
-        container.appendChild(svgLayer);
+    toggleFullscreenMap: function(btn) {
+        const wrapper = btn.closest('.illustrated-map-wrapper');
+        if (!wrapper) return;
+        if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+            if (wrapper.requestFullscreen) {
+                wrapper.requestFullscreen();
+            } else if (wrapper.webkitRequestFullscreen) {
+                wrapper.webkitRequestFullscreen();
+            }
+            btn.innerHTML = '<i class="fa-solid fa-compress"></i>';
+            btn.title = "Esci da Schermo Intero LIM";
+        } else {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            } else if (document.webkitExitFullscreen) {
+                document.webkitExitFullscreen();
+            }
+            btn.innerHTML = '<i class="fa-solid fa-expand"></i>';
+            btn.title = "Schermo Intero LIM";
+        }
+    },
 
-        const nodesLayer = document.createElement('div');
-        nodesLayer.style.position = 'relative';
-        nodesLayer.style.zIndex = '1';
-        nodesLayer.style.display = 'flex';
-        nodesLayer.style.flexDirection = 'column';
-        nodesLayer.style.alignItems = 'center';
-        container.appendChild(nodesLayer);
-        
-        const decorImg = document.createElement('img');
-        decorImg.src = decorImage;
-        decorImg.style.position = 'absolute';
-        decorImg.style.top = '15%';
-        decorImg.style.right = '5%';
-        decorImg.style.width = '120px';
-        decorImg.style.height = '120px';
-        decorImg.style.objectFit = 'cover';
-        decorImg.style.borderRadius = '50%';
-        decorImg.style.boxShadow = '0 0 20px rgba(0,0,0,0.8)';
-        decorImg.style.border = '2px solid var(--border-color)';
-        decorImg.style.zIndex = '0';
-        decorImg.style.opacity = '0.8';
-        container.appendChild(decorImg);
-        
-        const renderedNodes = [];
+    renderIllustratedCampaign: function(campaignId, container) {
+        const config = CAMPAIGN_CONFIG[campaignId] || CAMPAIGN_CONFIG.inferno;
+        const isMobile = window.innerWidth <= 768;
+        const coords = isMobile ? config.coordsMobile : config.coordsPC;
+        const bgImgPath = isMobile ? config.bgMobile : config.bgPC;
+        const nodesArray = config.nodes;
+
+        container.innerHTML = `
+            <div class="illustrated-map-wrapper ${isMobile ? 'mode-mobile' : 'mode-pc'}" data-campaign="${campaignId}">
+                <button class="btn-fullscreen-lim" onclick="window.MapEngine.toggleFullscreenMap(this)" title="Schermo Intero LIM" aria-label="Schermo Intero LIM">
+                    <i class="fa-solid fa-expand"></i>
+                </button>
+                <div class="map-stage">
+                    <img class="map-bg-img" src="${bgImgPath}" alt="Mappa ${config.name}" />
+                    <svg class="map-svg-layer" viewBox="${isMobile ? '0 0 1080 1920' : '0 0 1920 1080'}" preserveAspectRatio="none"></svg>
+                    <div class="map-hotspots-layer"></div>
+                </div>
+            </div>
+        `;
+
+        const hotspotsLayer = container.querySelector('.map-hotspots-layer');
+        const svgLayer = container.querySelector('.map-svg-layer');
 
         nodesArray.forEach((circle, index) => {
+            const coord = coords[index] || { x: 50, y: 50 };
             const unlocked = this.isCircleUnlocked(index, campaignId);
             const completed = this.isCircleCompleted(circle.id);
-            
-            // Fila solo i casi per la campagna corrente e per il cerchio corrente
             const casesInCircle = this.allCases.filter(c => c.campaignId === campaignId && c.cerchio === circle.id);
             const numCases = casesInCircle.length;
+            const solvedCases = casesInCircle.filter(c => this.completedCaseIds.includes(c.id)).length;
+            const isCurrentTappa = unlocked && !completed;
 
-            const node = document.createElement('div');
-            node.className = `map-node ${completed ? 'completed' : ''}`;
-            
-            const btn = document.createElement('div');
-            
-            if (unlocked) {
-                btn.className = `circle-btn ${completed ? 'completed' : 'unlocked'}`;
-                btn.onclick = () => {
-                    this.openCircleDashboard(circle.id, casesInCircle, campaignId);
-                };
-            } else {
-                btn.className = 'circle-btn locked';
-                btn.onclick = () => {
-                    alert('Devi prima completare i fascicoli del cerchio precedente per accedere a questo!');
-                };
+            const hotspot = document.createElement('div');
+            let statusClass = completed ? 'completed' : (unlocked ? 'unlocked' : 'locked');
+            if (isCurrentTappa) statusClass += ' active-tappa';
+
+            hotspot.className = `map-hotspot ${statusClass}`;
+            hotspot.style.left = `${coord.x}%`;
+            hotspot.style.top = `${coord.y}%`;
+            hotspot.setAttribute('role', 'button');
+            hotspot.setAttribute('tabindex', '0');
+            hotspot.setAttribute('aria-label', `${circle.name} - ${completed ? 'Completato' : (unlocked ? 'Sbloccato' : 'Bloccato')}`);
+
+            // Badges
+            let badgeIcon = '<i class="fa-solid fa-lock"></i>';
+            let badgeType = 'locked';
+            if (completed) {
+                badgeIcon = '<i class="fa-solid fa-check"></i>';
+                badgeType = 'completed';
+            } else if (unlocked) {
+                badgeIcon = '<i class="fa-solid fa-door-open"></i>';
+                badgeType = 'active';
             }
 
-            let icon = unlocked ? (completed ? '<i class="fa-solid fa-check"></i>' : '<i class="fa-solid fa-door-open"></i>') : '<i class="fa-solid fa-lock"></i>';
-            if (numCases === 0 && unlocked && !completed) {
-               icon = '<i class="fa-solid fa-ghost"></i>'; 
-            }
-
-            btn.innerHTML = `
-                <span>${circle.name}</span>
-                <span class="icon">${icon}</span>
+            const badgeHtml = `<span class="hotspot-badge ${badgeType}">${badgeIcon}</span>`;
+            const pillHtml = numCases > 0 ? `<span class="hotspot-fascicoli-pill">${solvedCases}/${numCases}</span>` : '';
+            const statusLabel = completed ? 'Completato' : (unlocked ? (isCurrentTappa ? 'Tappa Attiva' : 'Sbloccato') : 'Bloccato');
+            const tooltipHtml = `
+                <div class="hotspot-tooltip">
+                    <strong>${circle.name}</strong><br>
+                    <span style="font-size:0.75rem; color:#cbd5e1;">${statusLabel} • ${solvedCases}/${numCases} fascicoli</span>
+                </div>
             `;
 
-            const infoText = document.createElement('div');
-            infoText.style.fontSize = '0.8rem';
-            infoText.style.color = '#888';
-            infoText.style.marginTop = '5px';
-            infoText.textContent = numCases > 0 ? `${casesInCircle.filter(c => this.completedCaseIds.includes(c.id)).length} / ${numCases} fascicoli` : 'Nessun fascicolo noto';
+            hotspot.innerHTML = `${badgeHtml}${pillHtml}${tooltipHtml}`;
 
-            node.appendChild(btn);
-            node.appendChild(infoText);
-            nodesLayer.appendChild(node);
-            renderedNodes.push({ node, completed });
+            hotspot.onclick = (e) => {
+                e.stopPropagation();
+                if (unlocked) {
+                    this.openCircleDashboard(circle.id, casesInCircle, campaignId);
+                } else {
+                    alert(`Devi prima completare i fascicoli del cerchio precedente per accedere a: ${circle.name}!`);
+                }
+            };
+
+            hotspot.onkeydown = (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    hotspot.click();
+                }
+            };
+
+            hotspotsLayer.appendChild(hotspot);
         });
 
-        setTimeout(() => {
-            let pathD = "";
-            let completedPathD = "";
-            
-            for (let i = 0; i < renderedNodes.length - 1; i++) {
-                const n1 = renderedNodes[i].node;
-                const n2 = renderedNodes[i+1].node;
-                
-                const btn1 = n1.querySelector('.circle-btn');
-                const btn2 = n2.querySelector('.circle-btn');
-                
-                if (!btn1 || !btn2) continue;
+        // Dynamic SVG Path connecting nodes with cutout mask (NEVER covers text inside circles)
+        const maskId = `mask-nodes-${campaignId}-${isMobile ? 'm' : 'pc'}`;
+        const nodeRadius = isMobile ? 120 : 88;
+        const scaleX = isMobile ? 1080 / 100 : 1920 / 100;
+        const scaleY = isMobile ? 1920 / 100 : 1080 / 100;
 
-                const x1 = n1.offsetLeft + btn1.offsetLeft + (btn1.offsetWidth / 2);
-                const y1 = n1.offsetTop + btn1.offsetTop + (btn1.offsetHeight / 2);
-                
-                const x2 = n2.offsetLeft + btn2.offsetLeft + (btn2.offsetWidth / 2);
-                const y2 = n2.offsetTop + btn2.offsetTop + (btn2.offsetHeight / 2);
+        let maskCircles = '';
+        nodesArray.forEach((_, idx) => {
+            const coord = coords[idx];
+            if (!coord) return;
+            const cx = coord.x * scaleX;
+            const cy = coord.y * scaleY;
+            maskCircles += `<circle cx="${cx}" cy="${cy}" r="${nodeRadius}" fill="black" />`;
+        });
 
-                if (i === 0) {
-                    pathD += `M ${x1} ${y1} `;
-                    completedPathD += `M ${x1} ${y1} `;
-                }
-                
-                const yMid = (y1 + y2) / 2;
-                const curveStr = `C ${x1} ${yMid}, ${x2} ${yMid}, ${x2} ${y2} `;
-                pathD += curveStr;
-                
-                if (renderedNodes[i].completed && renderedNodes[i+1].completed) {
-                    completedPathD += curveStr;
-                } else if (renderedNodes[i].completed) {
-                    completedPathD += `C ${x1} ${yMid}, ${x2} ${yMid}, ${x2} ${y2} `;
-                }
+        svgLayer.innerHTML = `
+            <defs>
+                <mask id="${maskId}">
+                    <rect width="100%" height="100%" fill="white" />
+                    ${maskCircles}
+                </mask>
+            </defs>
+        `;
+
+        let pathD = "";
+        let completedPathD = "";
+        for (let i = 0; i < nodesArray.length - 1; i++) {
+            const c1 = coords[i];
+            const c2 = coords[i+1];
+            if (!c1 || !c2) continue;
+
+            const x1 = c1.x * scaleX;
+            const y1 = c1.y * scaleY;
+            const x2 = c2.x * scaleX;
+            const y2 = c2.y * scaleY;
+
+            const cx1 = x1 + (x2 - x1) * 0.5;
+            const cy1 = y1;
+            const cx2 = x1 + (x2 - x1) * 0.5;
+            const cy2 = y2;
+
+            const seg = `M ${x1} ${y1} C ${cx1} ${cy1}, ${cx2} ${cy2}, ${x2} ${y2} `;
+            pathD += seg;
+
+            const circle1 = nodesArray[i];
+            const circle2 = nodesArray[i+1];
+            if (this.isCircleCompleted(circle1.id) || this.isCircleUnlocked(i+1, campaignId)) {
+                completedPathD += seg;
             }
-            
-            if (pathD) {
-                const bgPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-                bgPath.setAttribute('d', pathD);
-                bgPath.setAttribute('fill', 'none');
-                bgPath.setAttribute('stroke', 'rgba(255, 255, 255, 0.1)');
-                bgPath.setAttribute('stroke-width', '12');
-                bgPath.setAttribute('stroke-linecap', 'round');
-                svgLayer.appendChild(bgPath);
+        }
 
+        if (pathD) {
+            const bgPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            bgPath.setAttribute('d', pathD);
+            bgPath.setAttribute('fill', 'none');
+            bgPath.setAttribute('stroke', 'rgba(255, 255, 255, 0.12)');
+            bgPath.setAttribute('stroke-width', isMobile ? '8' : '5');
+            bgPath.setAttribute('stroke-dasharray', isMobile ? '8 6' : '6 4');
+            bgPath.setAttribute('stroke-linecap', 'round');
+            bgPath.setAttribute('mask', `url(#${maskId})`);
+            svgLayer.appendChild(bgPath);
+
+            if (completedPathD) {
                 const fgPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
                 fgPath.setAttribute('d', completedPathD);
                 fgPath.setAttribute('fill', 'none');
-                fgPath.setAttribute('stroke', 'var(--accent-gold)');
-                fgPath.setAttribute('stroke-width', '12');
+                fgPath.setAttribute('stroke', config.glowColor);
+                fgPath.setAttribute('stroke-width', isMobile ? '8' : '5');
                 fgPath.setAttribute('stroke-linecap', 'round');
+                fgPath.style.filter = config.glowFilter;
+                fgPath.setAttribute('mask', `url(#${maskId})`);
                 svgLayer.appendChild(fgPath);
             }
-        }, 300);
+        }
+
+        // Debounced resize listener
+        if (!this._resizeAttached) {
+            this._resizeAttached = true;
+            let resizeTimer;
+            window.addEventListener('resize', () => {
+                clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(() => {
+                    const activeContainer = document.getElementById(`map-${this.currentCampaign}`);
+                    if (activeContainer && activeContainer.style.display !== 'none') {
+                        this.renderIllustratedCampaign(this.currentCampaign, activeContainer);
+                    }
+                }, 200);
+            });
+
+            document.addEventListener('fullscreenchange', () => {
+                const fsBtns = document.querySelectorAll('.btn-fullscreen-lim');
+                const isFs = !!document.fullscreenElement;
+                fsBtns.forEach(b => {
+                    b.innerHTML = isFs ? '<i class="fa-solid fa-compress"></i>' : '<i class="fa-solid fa-expand"></i>';
+                    b.title = isFs ? 'Esci da Schermo Intero LIM' : 'Schermo Intero LIM';
+                });
+            });
+        }
     },
 
     openCircleDashboard: function(circleId, cases, campaignId) {
@@ -312,29 +480,31 @@ export const MapEngine = {
         list.innerHTML = '';
         
         if (cases.length === 0) {
-            list.innerHTML = '<li style="padding: 1rem; text-align: center; color: #888;">Nessun fascicolo trovato in questo cerchio. Torna indietro o avanza (il cerchio conta come completato).</li>';
+            list.innerHTML = '<li style="padding: 1.5rem; text-align: center; color: #1a1614; background: #ffffff; border-radius: 12px; border: 1.5px solid var(--accent-gold); box-shadow: 0 4px 15px rgba(0,0,0,0.3);">Nessun fascicolo trovato in questo cerchio. Torna indietro o avanza (il cerchio conta come completato).</li>';
             return;
         }
 
         cases.forEach(c => {
             const isCompleted = this.completedCaseIds.includes(c.id);
             const li = document.createElement('li');
-            li.style.background = isCompleted ? 'rgba(50, 200, 50, 0.1)' : 'rgba(0, 0, 0, 0.3)';
-            li.style.border = isCompleted ? '1px solid #3c3' : '1px solid var(--border-color)';
-            li.style.margin = '0.5rem 0';
-            li.style.padding = '1rem';
-            li.style.borderRadius = 'var(--radius-sm)';
+            li.style.background = '#ffffff';
+            li.style.color = '#1a1614';
+            li.style.border = isCompleted ? '2px solid #22c55e' : '1.5px solid var(--accent-gold)';
+            li.style.margin = '0.75rem 0';
+            li.style.padding = '1.2rem';
+            li.style.borderRadius = '12px';
+            li.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.4)';
             li.style.display = 'flex';
             li.style.justifyContent = 'space-between';
             li.style.alignItems = 'center';
 
             li.innerHTML = `
                 <div>
-                    <h4 class="text-gold" style="margin-bottom: 5px;">${c.characterName}</h4>
-                    <span style="font-size: 0.8rem; color: #888;">${c.canto}</span>
-                    ${isCompleted ? '<span style="color: #3c3; font-size: 0.8rem; margin-left: 10px;">(Completato)</span>' : ''}
+                    <h4 style="color: #8b0000; font-family: 'Julius Sans One', sans-serif; margin-bottom: 5px; font-weight: 800;">${c.characterName}</h4>
+                    <span style="font-size: 0.85rem; color: #555; font-weight: 600;">${c.canto}</span>
+                    ${isCompleted ? '<span style="color: #15803d; font-size: 0.85rem; font-weight: 800; margin-left: 10px;"><i class="fa-solid fa-circle-check"></i> Giudicato</span>' : ''}
                 </div>
-                <button class="btn btn-primary" style="${isCompleted ? 'background: #3c3; color: #fff;' : ''}">
+                <button class="btn btn-primary" style="${isCompleted ? 'background: #15803d; color: #fff;' : 'background: var(--accent-crimson); color: #fff;'} padding: 0.6rem 1.4rem; border-radius: 20px; font-weight: 700;">
                     ${isCompleted ? 'Rivedi Caso' : 'Apri Fascicolo'}
                 </button>
             `;
