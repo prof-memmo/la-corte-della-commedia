@@ -500,12 +500,12 @@ h6 { font-size: 1.05rem; }
         height: 32px !important;
     }
     #user-menu-trigger {
-        padding: 3px 8px 3px 4px !important;
-        gap: 6px !important;
+        padding: 3px !important;
+        border-radius: 50% !important;
+        gap: 0 !important;
     }
     #header-user-name {
-        font-size: 0.72rem !important;
-        max-width: 70px !important;
+        display: none !important;
     }
 
     /* SPAZIO TITOLO: riduce padding-top della view su schermi ridotti */
