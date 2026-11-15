@@ -481,6 +481,33 @@ h6 { font-size: 1.05rem; }
    MIGLIORIE APP-FRIENDLY E MOBILE
    ========================================== */
 @media (max-width: 768px) {
+    .app-header {
+        height: 60px !important;
+        padding: 0 10px !important;
+    }
+    .header-game-logo, #main-app-header img[alt="Logo La Corte"] {
+        height: 32px !important;
+        max-width: 110px !important;
+        object-fit: contain !important;
+    }
+    .header-prof-logo {
+        height: 32px !important;
+        width: 32px !important;
+        object-fit: contain !important;
+    }
+    .header-prof-logo-wrapper {
+        width: 32px !important;
+        height: 32px !important;
+    }
+    #user-menu-trigger {
+        padding: 3px 8px 3px 4px !important;
+        gap: 6px !important;
+    }
+    #header-user-name {
+        font-size: 0.72rem !important;
+        max-width: 70px !important;
+    }
+
     /* SPAZIO TITOLO: riduce padding-top della view su schermi ridotti */
     .view.active {
         padding-top: 10px !important;
