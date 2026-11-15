@@ -1189,4 +1189,15 @@ h6 { font-size: 1.05rem; }
   justify-content: center;
 }
 
+/* Dashboard Libreria Layout */
+.dashboard-libreria-grid {
+  grid-template-columns: 1fr 2fr;
+}
+
+@media (max-width: 768px) {
+  .dashboard-libreria-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 
