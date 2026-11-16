@@ -481,6 +481,52 @@ h6 { font-size: 1.05rem; }
    MIGLIORIE APP-FRIENDLY E MOBILE
    ========================================== */
 @media (max-width: 768px) {
+    html {
+        font-size: 15px !important;
+    }
+    body {
+        font-size: 0.92rem !important;
+        line-height: 1.5 !important;
+    }
+    html, body {
+        overflow-x: hidden;
+    }
+    h1 {
+        font-size: clamp(1.25rem, 4vw, 1.8rem) !important;
+    }
+    h2 {
+        font-size: clamp(1.1rem, 3.5vw, 1.5rem) !important;
+    }
+    h3 {
+        font-size: clamp(0.95rem, 3vw, 1.25rem) !important;
+    }
+    .app-header {
+        height: 60px !important;
+        padding: 0 10px !important;
+    }
+    .header-game-logo, #main-app-header img[alt="Logo La Corte"] {
+        height: 32px !important;
+        max-width: 110px !important;
+        object-fit: contain !important;
+    }
+    .header-prof-logo {
+        height: 32px !important;
+        width: 32px !important;
+        object-fit: contain !important;
+    }
+    .header-prof-logo-wrapper {
+        width: 32px !important;
+        height: 32px !important;
+    }
+    #user-menu-trigger {
+        padding: 3px !important;
+        border-radius: 50% !important;
+        gap: 0 !important;
+    }
+    #header-user-name {
+        display: none !important;
+    }
+
     /* SPAZIO TITOLO: riduce padding-top della view su schermi ridotti */
     .view.active {
         padding-top: 10px !important;
@@ -1187,6 +1233,17 @@ h6 { font-size: 1.05rem; }
   display: inline-flex;
   align-items: center;
   justify-content: center;
+}
+
+/* Dashboard Libreria Layout */
+.dashboard-libreria-grid {
+  grid-template-columns: 1fr 2fr;
+}
+
+@media (max-width: 768px) {
+  .dashboard-libreria-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 

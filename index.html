@@ -114,7 +114,7 @@
     <!-- App Header (Visibile solo dopo il login) -->
     <header class="app-header" id="main-app-header" style="display: none; z-index: 1000; position: relative; justify-content: space-between; align-items: center;">
         <div style="display: flex; align-items: center; gap: 1rem;">
-          <img src="https://prof-memmo.github.io/prof-memmo-gestione-siti/shared/assets/branding/games/corte-commedia-header.png" alt="Logo La Corte" style="height: 75px; object-fit: contain;">
+          <img src="https://prof-memmo.github.io/prof-memmo-gestione-siti/shared/assets/branding/games/corte-commedia-header.png" alt="Logo La Corte" class="header-game-logo" style="height: 48px; max-width: 190px; object-fit: contain;">
         </div>
         
         <!-- Logo Avatar Centrato -->
@@ -256,7 +256,7 @@
 
         <!-- VISTA ONBOARDING -->
         <section id="view-onboarding" class="view animate-fade-in" style="padding-top: 2rem;">
-          <h2 class="text-gold" style="text-align: center; font-size: 2.5rem; font-family: 'Julius Sans One', sans-serif;">Scegli il tuo percorso</h2>
+          <h2 class="text-gold" style="text-align: center; font-size: clamp(1.35rem, 4.5vw, 2.2rem); font-family: 'Julius Sans One', sans-serif;">Scegli il tuo percorso</h2>
           <p style="text-align: center; color: #ccc; margin-bottom: 2rem;">Seleziona con quale veste vuoi varcare le porte dell'Inferno.</p>
           
           <div style="display: flex; flex-direction: column; gap: 15px; max-width: 600px; margin: 0 auto; padding: 0 1rem;">
@@ -293,10 +293,10 @@
         <!-- VISTA PROFILO (LIBRERIA) -->
         <section id="view-dashboard" class="view animate-fade-in">
           <div style="text-align: center; margin-bottom: 2rem;">
-            <h2 class="text-gold" id="welcome-message" style="font-size: 2.5rem; text-shadow: 0 0 20px rgba(212,175,55,0.5); font-family: 'Julius Sans One', sans-serif;">La Tua Libreria</h2>
+            <h2 class="text-gold" id="welcome-message" style="font-size: clamp(1.35rem, 4.5vw, 2.2rem); text-shadow: 0 0 20px rgba(212,175,55,0.5); font-family: 'Julius Sans One', sans-serif;">La Tua Libreria</h2>
           </div>
           
-          <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 2rem; margin-top: 2rem; align-items: start;">
+          <div class="dashboard-libreria-grid" style="display: grid; gap: 1.5rem; margin-top: 1.5rem; align-items: start;">
             
             <!-- Pannello Medaglie / Badge -->
             <div class="parchment-panel" style="text-align: center;">
@@ -584,7 +584,7 @@
         <!-- VISTA PELLEGRINI -->
         <section id="view-external-dashboard" class="view animate-fade-in">
           <div style="text-align: center; margin-bottom: 2rem;">
-            <h2 class="text-gold" style="font-size: 2.5rem; text-shadow: 0 0 20px rgba(212,175,55,0.5); font-family: 'Julius Sans One', sans-serif;">Rifugio dei Pellegrini</h2>
+            <h2 class="text-gold" style="font-size: clamp(1.35rem, 4.5vw, 2.2rem); text-shadow: 0 0 20px rgba(212,175,55,0.5); font-family: 'Julius Sans One', sans-serif;">Rifugio dei Pellegrini</h2>
             <p style="color: #ccc; font-style: italic;">Benvenuto, Viaggiatore</p>
           </div>
           <div class="parchment-panel" style="margin-top: 2rem; border-radius: 15px; text-align: center;">
@@ -620,7 +620,7 @@
         <!-- VISTA MAPPA -->
         <section id="view-map" class="view animate-fade-in">
           <div style="text-align: center; margin-bottom: 2rem;">
-            <h2 class="text-gold" style="font-size: 2.5rem; text-shadow: 0 0 20px rgba(212,175,55,0.5); font-family: 'Julius Sans One', sans-serif;">I Regni Oltremondani</h2>
+            <h2 class="text-gold" style="font-size: clamp(1.35rem, 4.5vw, 2.2rem); text-shadow: 0 0 20px rgba(212,175,55,0.5); font-family: 'Julius Sans One', sans-serif;">I Regni Oltremondani</h2>
           </div>
           
           <!-- Tabs -->
@@ -645,7 +645,7 @@
         <!-- VISTA REGOLAMENTO -->
         <section id="view-regolamento" class="view animate-fade-in">
           <div style="text-align: center; margin-bottom: 2rem;">
-            <h2 class="text-gold" style="font-size: 2.5rem; text-shadow: 0 0 20px rgba(212,175,55,0.5); font-family: 'Julius Sans One', sans-serif;">Regolamento</h2>
+            <h2 class="text-gold" style="font-size: clamp(1.35rem, 4.5vw, 2.2rem); text-shadow: 0 0 20px rgba(212,175,55,0.5); font-family: 'Julius Sans One', sans-serif;">Regolamento</h2>
           </div>
           
           <!-- REGOLAMENTO UFFICIALE -->
@@ -718,7 +718,7 @@
         <!-- ARCHIVIO (Storico Verdetti) -->
         <section id="view-archivio" class="view animate-fade-in" style="background: radial-gradient(circle at 50% 50%, #fcf8f0 0%, #f3ebd7 60%, #e5d7ba 100%); border-radius: 12px; color: #222;">
             <div style="background: rgba(255,255,255,0.7); min-height: 100%; padding: 20px; border-radius: 12px;">
-                <h2 style="font-size: 2.5rem; text-shadow: 0 0 10px rgba(0,0,0,0.2); font-family: 'Julius Sans One', sans-serif; color: var(--accent-crimson); text-align: center; margin-bottom: 20px;">
+                <h2 style="font-size: clamp(1.35rem, 4.5vw, 2.2rem); text-shadow: 0 0 10px rgba(0,0,0,0.2); font-family: 'Julius Sans One', sans-serif; color: var(--accent-crimson); text-align: center; margin-bottom: 20px;">
                     <i class="fa-solid fa-scroll"></i> Il Tuo Archivio Segreto
                 </h2>
                 <p style="text-align: center; font-style: italic; color: #555; margin-bottom: 30px;">
@@ -759,7 +759,7 @@
         <!-- DOSSIER DOCENTE -->
         <section id="view-teacher-dossier" class="view flex-view animate-fade-in" style="padding-top: 10px; height: 100%; flex-direction: column;">
           <div style="text-align: center; margin-bottom: 2rem;">
-            <h2 class="text-gold" style="font-size: 2.5rem; text-shadow: 0 0 20px rgba(212,175,55,0.5); font-family: 'Julius Sans One', sans-serif;">Dossier del Giudice Supremo</h2>
+            <h2 class="text-gold" style="font-size: clamp(1.35rem, 4.5vw, 2.2rem); text-shadow: 0 0 20px rgba(212,175,55,0.5); font-family: 'Julius Sans One', sans-serif;">Dossier del Giudice Supremo</h2>
             <p style="color: #ccc; font-style: italic;">Materiali e risposte esatte per la LIM (Visibile solo ai docenti).</p>
           </div>
           <div id="teacher-dossier-list" style="flex: 1; overflow-y: auto; padding-right: 5px; display: flex; flex-direction: column; gap: 15px;">
