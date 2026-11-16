@@ -830,7 +830,7 @@
           <a href="javascript:void(0)" onclick="openSharedModal('contatti')" data-legal="contatti" style="color: inherit; text-decoration: underline; opacity: 0.85;">Contatti</a>
           <a href="https://prof-memmo.github.io/games/condividi-esperienza.html" target="_blank" rel="noopener noreferrer" style="color: inherit; text-decoration: underline; opacity: 0.85;">Condividi Esperienza</a>
         </div>
-        <div style="display: flex; align-items: center; justify-content: flex-start; gap: 15px; width: 100%; box-sizing: border-box;">
+        <div style="display: flex; align-items: center; justify-content: flex-start; gap: 15px; width: 100%; box-sizing: border-box; flex-wrap: wrap;">
             <img src="https://prof-memmo.github.io/prof-memmo-gestione-siti/shared/assets/legal/patamu-badge.png" alt="Patamu" style="height: 52px; object-fit: contain; flex-shrink: 0;" onerror="this.src='public/assets/patamu_pencil.png'">
             <p style="text-align: left; margin: 0; flex: 1; width: 100%; color: inherit; opacity: 0.9; text-transform: uppercase; font-size: 0.78rem;">&copy; 2026 Guglielmo Piersanti. Tutti i contenuti presenti su questo sito sono di proprietà dell'autore e sono protetti tramite deposito e marcatura temporale presso Patamu. I contenuti sono inoltre distribuiti con licenza Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0).</p>
         </div>
@@ -870,7 +870,7 @@
             <div style="width: 33%; background: #f8fafc; display: flex; align-items: flex-end; justify-content: center; border-right: 2px solid #f1f5f9; padding-top: 20px;" class="hide-mobile">
                 <img src="assets/prof_memmo_full.png" onerror="this.src='https://prof-memmo.github.io/prof-memmo-gestione-siti/shared/assets/branding/prof-memmo/prof-memmo-full.png';" alt="Prof Memmo" style="width: 120%; object-fit: contain; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.2));">
             </div>
-            <div style="flex: 1; padding: 30px 40px; display: flex; flex-direction: column; position: relative; min-height: 450px;">
+            <div class="miniguida-content-col" style="flex: 1; padding: 30px 40px; display: flex; flex-direction: column; position: relative; min-height: 450px;">
                 <button onclick="closeMiniguida()" style="position: absolute; top: 15px; right: 15px; width: 36px; height: 36px; border-radius: 50%; border: none; background: #f1f5f9; color: #475569; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.2s;"><i class="fa-solid fa-xmark"></i></button>
                 
                 <h2 id="miniguida-title" style="font-size: 2rem; font-weight: 900; color: #ef4444; margin-bottom: 30px; text-align: center; text-transform: uppercase; border-bottom: 4px solid rgba(239, 68, 68, 0.2); padding-bottom: 10px; display: inline-block; margin-left: auto; margin-right: auto;">Miniguida</h2>
@@ -905,7 +905,7 @@
                     <p style="font-size: 1.25rem; color: #475569; line-height: 1.6; font-weight: 500; max-width: 540px; margin: 0 auto;">Clicca su <strong>Archivio</strong> per consultare lo storico delle cause concluse e rileggere le tue pergamene con sigillo.<br><br><em>Consulta il regolamento per saperne di più.</em></p>
                 </div>
                 
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
+                <div class="miniguida-footer-row" style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
                     <div style="display: flex; gap: 8px;" id="miniguida-dots">
                         <div class="dot active" style="width: 12px; height: 12px; border-radius: 50%; background: #ef4444; transition: 0.3s;"></div>
                         <div class="dot" style="width: 12px; height: 12px; border-radius: 50%; background: #e2e8f0; transition: 0.3s;"></div>
@@ -927,8 +927,16 @@
         }
         @media (max-width: 768px) {
             .hide-mobile { display: none !important; }
-            .miniguida-step p { font-size: 1.1rem !important; }
-            .miniguida-step i { font-size: 4rem !important; }
+            #modal-miniguida { padding: 10px !important; }
+            #modal-miniguida .modal-content { max-height: 88dvh !important; border-radius: 18px !important; }
+            .miniguida-content-col { padding: 24px 16px 16px 16px !important; min-height: auto !important; }
+            #miniguida-title { font-size: 1.4rem !important; margin-bottom: 15px !important; }
+            .miniguida-step i { font-size: 3rem !important; margin-bottom: 12px !important; }
+            .miniguida-step p { font-size: 0.92rem !important; line-height: 1.45 !important; }
+            .miniguida-footer-row { flex-wrap: wrap !important; gap: 12px !important; justify-content: center !important; margin-top: 15px !important; }
+            #miniguida-dots { gap: 6px !important; justify-content: center !important; }
+            #miniguida-dots .dot { width: 9px !important; height: 9px !important; }
+            #miniguida-next-btn { padding: 10px 24px !important; font-size: 0.95rem !important; border-radius: 10px !important; width: 100% !important; max-width: 220px !important; }
         }
     </style>
     
